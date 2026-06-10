@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pronósticos Mundial 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 30px 10px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    thead tr {
+      background: #2d6a2d;
+      color: #fff;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    thead th {
+      padding: 10px 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    thead th:nth-child(3) { text-align: center; }
+
+    tbody tr {
+      border-bottom: 1px dashed #c8e6c8;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: #f0f9f0; }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    td {
+      padding: 9px 8px;
+      font-size: 0.82rem;
+      text-align: center;
+      color: #222;
+      vertical-align: middle;
+    }
+
+    td.id {
+      font-weight: 700;
+      color: #2d6a2d;
+      width: 36px;
+    }
+
+    td.horario {
+      color: #555;
+      white-space: nowrap;
+      width: 110px;
+    }
+
+    td.partido {
+      text-align: center;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    td.pronostico {
+      white-space: nowrap;
+    }
+
+    .score-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #2d6a2d;
+      color: #fff;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .score-box .flag { font-size: 1rem; }
+    .score-box .dash { color: #a8d5a8; margin: 0 2px; }
+
+    .confianza {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .alta    { background: #c8f7c5; color: #1a6b17; }
+    .media   { background: #fff3cd; color: #856404; }
+    .incierta{ background: #fde2e2; color: #842029; }
+
+    .date-header td {
+      background: #e8f5e9;
+      color: #2d6a2d;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      text-align: left;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #2d6a2d;
+    }
+
+    tfoot tr td {
+      background: #2d6a2d;
+      color: #fff;
+      text-align: center;
+      font-size: 0.75rem;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>⚽ Pronósticos Mundial 2026</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Horario</th>
+        <th>Partido</th>
+        <th>Pronóstico</th>
+        <th>Confianza</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- 11 JUN -->
+      <tr class="date-header"><td colspan="5">📅 11 de Junio</td></tr>
+      <tr>
+        <td class="id">1</td>
+        <td class="horario">11 Jun - 14:00</td>
+        <td class="partido">🇲🇽 México – Sudáfrica 🇿🇦</td>
+        <td class="pronostico"><span class="score-box">🇲🇽 2 <span class="dash">-</span> 0 🇿🇦</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">2</td>
+        <td class="horario">11 Jun - 21:00</td>
+        <td class="partido">🇰🇷 Corea del Sur – Rep. Checa 🇨🇿</td>
+        <td class="pronostico"><span class="score-box">🇰🇷 1 <span class="dash">-</span> 1 🇨🇿</span></td>
+        <td><span class="confianza media">🟡 Media</span></td>
+      </tr>
+
+      <!-- 12 JUN -->
+      <tr class="date-header"><td colspan="5">📅 12 de Junio</td></tr>
+      <tr>
+        <td class="id">3</td>
+        <td class="horario">12 Jun - 14:00</td>
+        <td class="partido">🇨🇦 Canadá – Bosnia-Herzegovina 🇧🇦</td>
+        <td class="pronostico"><span class="score-box">🇨🇦 2 <span class="dash">-</span> 1 🇧🇦</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">4</td>
+        <td class="horario">12 Jun - 20:00</td>
+        <td class="partido">🇺🇸 Estados Unidos – Paraguay 🇵🇾</td>
+        <td class="pronostico"><span class="score-box">🇺🇸 2 <span class="dash">-</span> 0 🇵🇾</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+
+      <!-- 13 JUN -->
+      <tr class="date-header"><td colspan="5">📅 13 de Junio</td></tr>
+      <tr>
+        <td class="id">8</td>
+        <td class="horario">13 Jun - 14:00</td>
+        <td class="partido">🇶🇦 Catar – Suiza 🇨🇭</td>
+        <td class="pronostico"><span class="score-box">🇶🇦 0 <span class="dash">-</span> 2 🇨🇭</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">7</td>
+        <td class="horario">13 Jun - 17:00</td>
+        <td class="partido">🇧🇷 Brasil – Marruecos 🇲🇦</td>
+        <td class="pronostico"><span class="score-box">🇧🇷 2 <span class="dash">-</span> 0 🇲🇦</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">5</td>
+        <td class="horario">13 Jun - 20:00</td>
+        <td class="partido">🇭🇹 Haití – Escocia 🏴󠁧󠁢󠁳󠁣󠁴󠁿</td>
+        <td class="pronostico"><span class="score-box">🇭🇹 0 <span class="dash">-</span> 2 🏴󠁧󠁢󠁳󠁣󠁴󠁿</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">6</td>
+        <td class="horario">13 Jun - 23:00</td>
+        <td class="partido">🇦🇺 Australia – Turquía 🇹🇷</td>
+        <td class="pronostico"><span class="score-box">🇦🇺 1 <span class="dash">-</span> 2 🇹🇷</span></td>
+        <td><span class="confianza media">🟡 Media</span></td>
+      </tr>
+
+      <!-- 14 JUN -->
+      <tr class="date-header"><td colspan="5">📅 14 de Junio</td></tr>
+      <tr>
+        <td class="id">10</td>
+        <td class="horario">14 Jun - 12:00</td>
+        <td class="partido">🇩🇪 Alemania – Curazao 🇨🇼</td>
+        <td class="pronostico"><span class="score-box">🇩🇪 5 <span class="dash">-</span> 0 🇨🇼</span></td>
+        <td><span class="confianza alta">🟢 Muy Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">11</td>
+        <td class="horario">14 Jun - 15:00</td>
+        <td class="partido">🇳🇱 Países Bajos – Japón 🇯🇵</td>
+        <td class="pronostico"><span class="score-box">🇳🇱 2 <span class="dash">-</span> 1 🇯🇵</span></td>
+        <td><span class="confianza media">🟡 Media</span></td>
+      </tr>
+      <tr>
+        <td class="id">9</td>
+        <td class="horario">14 Jun - 18:00</td>
+        <td class="partido">🇨🇮 Costa de Marfil – Ecuador 🇪🇨</td>
+        <td class="pronostico"><span class="score-box">🇨🇮 1 <span class="dash">-</span> 1 🇪🇨</span></td>
+        <td><span class="confianza media">🟡 Media</span></td>
+      </tr>
+      <tr>
+        <td class="id">12</td>
+        <td class="horario">14 Jun - 21:00</td>
+        <td class="partido">🇸🇪 Suecia – Túnez 🇹🇳</td>
+        <td class="pronostico"><span class="score-box">🇸🇪 2 <span class="dash">-</span> 0 🇹🇳</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+
+      <!-- 15 JUN -->
+      <tr class="date-header"><td colspan="5">📅 15 de Junio</td></tr>
+      <tr>
+        <td class="id">14</td>
+        <td class="horario">15 Jun - 11:00</td>
+        <td class="partido">🇪🇸 España – Cabo Verde 🇨🇻</td>
+        <td class="pronostico"><span class="score-box">🇪🇸 4 <span class="dash">-</span> 0 🇨🇻</span></td>
+        <td><span class="confianza alta">🟢 Muy Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">16</td>
+        <td class="horario">15 Jun - 14:00</td>
+        <td class="partido">🇧🇪 Bélgica – Egipto 🇪🇬</td>
+        <td class="pronostico"><span class="score-box">🇧🇪 3 <span class="dash">-</span> 0 🇪🇬</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">13</td>
+        <td class="horario">15 Jun - 17:00</td>
+        <td class="partido">🇸🇦 Arabia Saudita – Uruguay 🇺🇾</td>
+        <td class="pronostico"><span class="score-box">🇸🇦 0 <span class="dash">-</span> 2 🇺🇾</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">15</td>
+        <td class="horario">15 Jun - 20:00</td>
+        <td class="partido">🇮🇷 Irán – Nueva Zelanda 🇳🇿</td>
+        <td class="pronostico"><span class="score-box">🇮🇷 1 <span class="dash">-</span> 1 🇳🇿</span></td>
+        <td><span class="confianza media">🟡 Media</span></td>
+      </tr>
+
+      <!-- 16 JUN -->
+      <tr class="date-header"><td colspan="5">📅 16 de Junio</td></tr>
+      <tr>
+        <td class="id">17</td>
+        <td class="horario">16 Jun - 14:00</td>
+        <td class="partido">🇫🇷 Francia – Senegal 🇸🇳</td>
+        <td class="pronostico"><span class="score-box">🇫🇷 2 <span class="dash">-</span> 1 🇸🇳</span></td>
+        <td><span class="confianza media">🟡 Media-Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">18</td>
+        <td class="horario">16 Jun - 17:00</td>
+        <td class="partido">🇮🇶 Irak – Noruega 🇳🇴</td>
+        <td class="pronostico"><span class="score-box">🇮🇶 0 <span class="dash">-</span> 3 🇳🇴</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">19</td>
+        <td class="horario">16 Jun - 20:00</td>
+        <td class="partido">🇦🇷 Argentina – Argelia 🇩🇿</td>
+        <td class="pronostico"><span class="score-box">🇦🇷 3 <span class="dash">-</span> 0 🇩🇿</span></td>
+        <td><span class="confianza alta">🟢 Muy Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">20</td>
+        <td class="horario">16 Jun - 23:00</td>
+        <td class="partido">🇦🇹 Austria – Jordania 🇯🇴</td>
+        <td class="pronostico"><span class="score-box">🇦🇹 3 <span class="dash">-</span> 0 🇯🇴</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+
+      <!-- 17 JUN -->
+      <tr class="date-header"><td colspan="5">📅 17 de Junio</td></tr>
+      <tr>
+        <td class="id">23</td>
+        <td class="horario">17 Jun - 12:00</td>
+        <td class="partido">🇵🇹 Portugal – RD Congo 🇨🇩</td>
+        <td class="pronostico"><span class="score-box">🇵🇹 4 <span class="dash">-</span> 0 🇨🇩</span></td>
+        <td><span class="confianza alta">🟢 Muy Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">22</td>
+        <td class="horario">17 Jun - 15:00</td>
+        <td class="partido">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra – Croacia 🇭🇷</td>
+        <td class="pronostico"><span class="score-box">🏴󠁧󠁢󠁥󠁮󠁧󠁿 2 <span class="dash">-</span> 1 🇭🇷</span></td>
+        <td><span class="confianza media">🟡 Media-Alta</span></td>
+      </tr>
+      <tr>
+        <td class="id">21</td>
+        <td class="horario">17 Jun - 18:00</td>
+        <td class="partido">🇬🇭 Ghana – Panamá 🇵🇦</td>
+        <td class="pronostico"><span class="score-box">🇬🇭 1 <span class="dash">-</span> 1 🇵🇦</span></td>
+        <td><span class="confianza incierta">🔴 Incierta</span></td>
+      </tr>
+      <tr>
+        <td class="id">24</td>
+        <td class="horario">17 Jun - 21:00</td>
+        <td class="partido">🇺🇿 Uzbekistán – Colombia 🇨🇴</td>
+        <td class="pronostico"><span class="score-box">🇺🇿 0 <span class="dash">-</span> 2 🇨🇴</span></td>
+        <td><span class="confianza alta">🟢 Alta</span></td>
+      </tr>
+
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5">Mundial 2026 · Pronósticos basados en rankings FIFA y forma reciente de los equipos</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+</body>
+</html>
