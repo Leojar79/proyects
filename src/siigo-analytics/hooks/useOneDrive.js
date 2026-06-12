@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useMsal } from "@azure/msal-react";
 import { Client } from "@microsoft/microsoft-graph-client";
-import { loginRequest } from "../config/msalConfig";
+import { loginRequest, ONEDRIVE_FOLDER, REFRESH_INTERVAL_MS } from "../config/msalConfig";
 import { parseExcelBuffer, extractMetrics } from "../utils/excelParser";
 
 function getGraphClient(accessToken) {
@@ -12,11 +12,12 @@ function getGraphClient(accessToken) {
 
 export function useOneDrive() {
   const { instance, accounts } = useMsal();
-  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [metrics, setMetrics] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [lastRefresh, setLastRefresh] = useState(null);
+  const timerRef = useRef(null);
 
   const getToken = useCallback(async () => {
     const response = await instance.acquireTokenSilent({
@@ -26,80 +27,71 @@ export function useOneDrive() {
     return response.accessToken;
   }, [instance, accounts]);
 
-  const listExcelFiles = useCallback(async (folderPath = "root") => {
+  // Carga el Excel más reciente de la carpeta configurada
+  const loadLatestFile = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
       const client = getGraphClient(token);
 
-      const endpoint =
-        folderPath === "root"
-          ? "/me/drive/root/children"
-          : `/me/drive/root:/${folderPath}:/children`;
+      // Lista archivos Excel en la carpeta de empresa
+      const endpoint = `/me/drive/root:/${ONEDRIVE_FOLDER}:/children`;
+      const response = await client
+        .api(endpoint)
+        .orderby("lastModifiedDateTime desc")
+        .get();
 
-      const response = await client.api(endpoint).get();
       const excelFiles = response.value.filter((f) =>
         /\.(xlsx|xls|csv)$/i.test(f.name)
       );
-      setFiles(excelFiles);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken]);
 
-  const analyzeFile = useCallback(async (fileId, fileName) => {
-    setLoading(true);
-    setError(null);
-    setSelectedFile(fileName);
-    try {
-      const token = await getToken();
-      const client = getGraphClient(token);
+      if (!excelFiles.length) {
+        setError(`No se encontraron archivos Excel en la carpeta "${ONEDRIVE_FOLDER}".`);
+        return;
+      }
 
-      const response = await client
-        .api(`/me/drive/items/${fileId}/content`)
+      // Toma el más reciente
+      const latest = excelFiles[0];
+      setSelectedFile(`${latest.name} (${new Date(latest.lastModifiedDateTime).toLocaleString()})`);
+
+      const content = await client
+        .api(`/me/drive/items/${latest.id}/content`)
         .responseType("arraybuffer")
         .get();
 
-      const rows = parseExcelBuffer(new Uint8Array(response));
+      const rows = parseExcelBuffer(new Uint8Array(content));
       const result = extractMetrics(rows);
       setMetrics(result);
+      setLastRefresh(new Date());
     } catch (err) {
-      setError(err.message);
+      // Carpeta no existe — sugiere crearla
+      if (err.statusCode === 404) {
+        setError(`La carpeta "${ONEDRIVE_FOLDER}" no existe en OneDrive. Créala y sube un Excel.`);
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
   }, [getToken]);
 
-  const analyzeLocalFile = useCallback((file) => {
-    setLoading(true);
-    setError(null);
-    setSelectedFile(file.name);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const rows = parseExcelBuffer(new Uint8Array(e.target.result));
-        const result = extractMetrics(rows);
-        setMetrics(result);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  }, []);
+  // Carga automáticamente al autenticarse y cada REFRESH_INTERVAL_MS
+  useEffect(() => {
+    if (!accounts.length) return;
+
+    loadLatestFile();
+
+    timerRef.current = setInterval(loadLatestFile, REFRESH_INTERVAL_MS);
+    return () => clearInterval(timerRef.current);
+  }, [accounts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
-    files,
     loading,
     error,
     metrics,
     selectedFile,
-    listExcelFiles,
-    analyzeFile,
-    analyzeLocalFile,
+    lastRefresh,
+    refresh: loadLatestFile,
   };
 }

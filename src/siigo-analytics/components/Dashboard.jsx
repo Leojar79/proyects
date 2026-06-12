@@ -9,7 +9,7 @@ import MetricCard from "./MetricCard";
 
 const COLORS = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626"];
 
-export default function Dashboard({ metrics, fileName }) {
+export default function Dashboard({ metrics, fileName, loading }) {
   if (!metrics) return null;
 
   const {
@@ -31,7 +31,10 @@ export default function Dashboard({ metrics, fileName }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Dashboard de Usabilidad</h2>
-          <p className="text-sm text-gray-500 mt-1">Agente Siigo — {fileName}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Agente Siigo — {fileName}
+            {loading && <span className="ml-2 text-blue-500 animate-pulse">actualizando…</span>}
+          </p>
         </div>
         {detectedColumns.length > 0 && (
           <div className="text-xs text-gray-400 text-right">

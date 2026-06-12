@@ -14,7 +14,9 @@ export const loginRequest = {
   scopes: ["Files.Read", "Files.Read.All", "User.Read"],
 };
 
-export const graphConfig = {
-  graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
-  graphDriveEndpoint: "https://graph.microsoft.com/v1.0/me/drive",
-};
+// Carpeta de OneDrive de la empresa donde se depositan los Excel del agente Siigo.
+// Cambia este valor con la ruta real (ej: "Siigo/Reportes/Agente").
+export const ONEDRIVE_FOLDER = import.meta.env.VITE_ONEDRIVE_FOLDER || "Siigo/Analytics";
+
+// Intervalo de refresco automático en milisegundos (por defecto 5 minutos).
+export const REFRESH_INTERVAL_MS = Number(import.meta.env.VITE_REFRESH_INTERVAL_MS) || 5 * 60 * 1000;
