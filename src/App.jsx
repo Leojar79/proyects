@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './components/layout/Header';
 import Hero from './components/sections/Hero';
 import Properties from './components/sections/Properties';
@@ -8,9 +8,31 @@ import Testimonials from './components/sections/Testimonials';
 import FAQ from './components/sections/FAQ';
 import Contact from './components/sections/Contact';
 import Footer from './components/layout/Footer';
-import { MessageCircle } from 'lucide-react';
+import Dashboard from './components/dashboard/Dashboard';
+import { MessageCircle, BarChart2, Home } from 'lucide-react';
 
 function App() {
+  const [view, setView] = useState('home');
+
+  if (view === 'dashboard') {
+    return (
+      <>
+        <button
+          onClick={() => setView('home')}
+          style={{
+            position: 'fixed', top: 16, left: 16, zIndex: 9999,
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: '#6366f1', color: '#fff', border: 'none',
+            borderRadius: 8, padding: '8px 14px', cursor: 'pointer', fontSize: 14,
+          }}
+        >
+          <Home size={15} /> Inicio
+        </button>
+        <Dashboard />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
@@ -37,6 +59,21 @@ function App() {
       >
         <MessageCircle size={32} />
       </a>
+
+      {/* Dashboard Button */}
+      <button
+        onClick={() => setView('dashboard')}
+        style={{
+          position: 'fixed', bottom: 96, right: 24, zIndex: 40,
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: '#6366f1', color: '#fff', border: 'none',
+          borderRadius: '50%', width: 56, height: 56, cursor: 'pointer',
+          justifyContent: 'center', boxShadow: '0 4px 14px rgba(99,102,241,0.5)',
+        }}
+        title="Copilot Dashboard"
+      >
+        <BarChart2 size={26} />
+      </button>
     </div>
   );
 }
