@@ -9,8 +9,12 @@ import FAQ from './components/sections/FAQ';
 import Contact from './components/sections/Contact';
 import Footer from './components/layout/Footer';
 import { MessageCircle } from 'lucide-react';
+import SiigoAnalyticsApp from './siigo-analytics/SiigoAnalyticsApp';
 
 function App() {
+  const isSiigo = window.location.hash === "#/siigo-analytics";
+  if (isSiigo) return <SiigoAnalyticsApp />;
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
