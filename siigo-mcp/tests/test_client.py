@@ -806,10 +806,9 @@ async def test_keyed_post_retries_with_same_key(fake, clock, settings):
         httpx.Response(201, json={"id": "inv"}),
     )
     client = make_client(fake, clock, settings)
-    assert await client.post("/v1/invoices", {"x": 1}) == {"id": "inv"}
+    assert await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1") == {"id": "inv"}
     keys = [c.headers["idempotency-key"] for c in fake.data_calls()]
-    assert len(keys) == 3 and len(set(keys)) == 1
-    assert re.fullmatch(r"[A-Za-z0-9]{1,30}", keys[0])
+    assert keys == ["K1", "K1", "K1"]
 
 
 @pytest.mark.parametrize(
@@ -837,7 +836,7 @@ async def test_retry_matrix(fake, clock, settings, method, path, status, attempt
     fake.on(method, path, siigo_error(status, "some_code", "fail"))
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError):
-        await client.request(method, path)
+        await client.request(method, path, **_key(method, path))
     assert fake.paths().count(path) == attempts
 
 
@@ -854,7 +853,7 @@ async def test_5xx_retry_waits_what_siigo_asks(fake, clock, settings, method, pa
     """Spec B.4 wait order (message, Retry-After, backoff) applies to every retryable status."""
     fake.on(method, path, response, httpx.Response(200, json={"id": "ok"}))
     client = make_client(fake, clock, settings)
-    assert await client.request(method, path) == {"id": "ok"}
+    assert await client.request(method, path, **_key(method, path)) == {"id": "ok"}
     assert retry_waits(clock) == [float(wait)]
 
 
@@ -909,7 +908,7 @@ async def test_transport_error_keyed_post_retried(fake, clock, settings):
     fake.on("POST", "/v1/journals", down)
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoNetworkError):
-        await client.post("/v1/journals", {})
+        await client.post("/v1/journals", {}, idempotency_key="K1")
     calls = [c for c in fake.calls if c.path == "/v1/journals"]
     assert len(calls) == 3
     assert len({c.headers["idempotency-key"] for c in calls}) == 1
@@ -922,13 +921,13 @@ async def test_keyed_post_error_after_a_timeout_is_marked_uncertain(fake, clock,
     fake.on("POST", "/v1/invoices", slow, siigo_error(409, "duplicated_document", "dup"))
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.post("/v1/invoices", {"x": 1})
+        await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1")
     assert info.value.status == 409 and info.value.may_have_executed is True
 
     fresh = FakeSiigo().on("POST", "/v1/invoices", siigo_error(409, "duplicated_document", "d"))
     client = make_client(fresh, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.post("/v1/invoices", {"x": 1})
+        await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1")
     assert info.value.may_have_executed is False
 
 
@@ -957,7 +956,7 @@ async def test_keyed_post_reauth_failure_after_uncertain_attempt_is_uncertain(
     fake.on("POST", "/auth", _auth_ok(), auth_failure)
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.post("/v1/invoices", {"x": 1})
+        await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1")
     assert info.value.during_auth and info.value.may_have_executed is True
     assert fake.paths() == ["/auth", "/v1/invoices", "/v1/invoices", "/auth"]
 
@@ -970,7 +969,7 @@ async def test_keyed_post_token_renewal_failure_after_uncertain_attempt_is_uncer
     fake.on("POST", "/auth", _auth_ok(expires_in=310), siigo_error(500, "unhandled_error", "x"))
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.post("/v1/invoices", {"x": 1})
+        await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1")
     assert info.value.during_auth and info.value.may_have_executed is True
     assert fake.paths() == ["/auth", "/v1/invoices", "/auth"]
 
@@ -983,7 +982,7 @@ async def test_keyed_post_renewal_network_error_after_uncertain_attempt(fake, cl
     fake.on("POST", "/auth", _auth_ok(), down)
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoNetworkError) as info:
-        await client.post("/v1/invoices", {"x": 1})
+        await client.post("/v1/invoices", {"x": 1}, idempotency_key="K1")
     assert info.value.may_have_executed is True
     assert "pudo haberse ejecutado" in format_network_error(info.value)
 
@@ -994,7 +993,9 @@ async def test_reauth_failure_on_a_get_or_a_first_attempt_is_not_uncertain(fake,
     fake.on("POST", "/auth", _auth_ok(), siigo_error(503, "service_unavailable", "down"))
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.post("/v1/invoices", {"x": 1})  # Siigo rejected the only attempt
+        await client.post(
+            "/v1/invoices", {"x": 1}, idempotency_key="K1"
+        )  # Siigo rejected the only attempt
     assert info.value.may_have_executed is False
     with pytest.raises(SiigoAPIError) as info:
         await client.get("/v1/customers")
@@ -1031,7 +1032,7 @@ async def test_undecodable_body_is_an_invalid_response_with_its_status(
     fake.on(method, path, lambda request: _undecodable(status))
     client = make_client(fake, clock, settings)
     with pytest.raises(SiigoAPIError) as info:
-        await client.request(method, path)
+        await client.request(method, path, **_key(method, path))
     err = info.value
     assert err.code == "invalid_response" and err.status == status
     assert err.may_have_executed is maybe_done
@@ -1067,8 +1068,10 @@ async def test_get_network_error_after_retries(fake, clock, settings):
 async def test_idempotency_key_on_the_four_post_endpoints(fake, clock, settings, path):
     fake.on("POST", path, {"id": "x"})
     client = make_client(fake, clock, settings)
-    await client.post(path, {})
-    assert re.fullmatch(r"[A-Za-z0-9]{1,30}", fake.calls[-1].headers["idempotency-key"])
+    await client.post(path, {}, idempotency_key="K1")
+    assert fake.calls[-1].headers["idempotency-key"] == "K1"
+    with pytest.raises(ValueError, match="Idempotency-Key"):
+        await client.post(path, {})  # the caller owns the key; the client never invents one
 
 
 @pytest.mark.parametrize(
@@ -1086,7 +1089,7 @@ async def test_idempotency_key_on_the_four_post_endpoints(fake, clock, settings,
 async def test_no_idempotency_key_elsewhere(fake, clock, settings, method, path):
     fake.on(method, path, {"ok": True})
     client = make_client(fake, clock, settings)
-    await client.request(method, path)
+    await client.request(method, path, **_key(method, path))
     assert "idempotency-key" not in fake.calls[-1].headers
 
 
@@ -1352,3 +1355,8 @@ def test_filter_active():
     rows = [{"id": 1, "active": True}, {"id": 2, "active": False}, {"id": 3}]
     assert [r["id"] for r in filter_active(rows, False)] == [1, 3]
     assert len(filter_active(rows, True)) == 3
+
+
+def _key(method: str, path: str) -> dict[str, str]:
+    """Idempotency-Key kwargs for the four keyed POST endpoints (the caller owns the key)."""
+    return {"idempotency_key": "K1"} if method == "POST" and path in IDEMPOTENT_POST_PATHS else {}

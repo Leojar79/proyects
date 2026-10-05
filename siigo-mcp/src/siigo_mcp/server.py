@@ -62,6 +62,7 @@ from .errors import (
     format_error,
     format_network_error,
     lower_keys,
+    without_lone_surrogates,
 )
 from .idempotency import AnsweredKeys, call_reference, check_replay, differences, utc_now
 from .models import EMAIL_PATTERN, CustomerCreate, InvoiceCreate, to_body
@@ -268,7 +269,7 @@ def _tool_result(data: dict[str, Any]) -> CallToolResult:
     The SDK would render the text block as indented JSON (about 1.6 times longer): the
     25,000-character cap is measured with ``render_json``, the exact text sent here.
     """
-    structured = to_jsonable_python(data, fallback=str)
+    structured = without_lone_surrogates(to_jsonable_python(data, fallback=str))
     return CallToolResult(
         content=[TextContent(type="text", text=render_json(structured))],
         structured_content=structured,
@@ -280,6 +281,16 @@ def _translate_errors(fn: _F) -> Callable[..., Awaitable[CallToolResult]]:
 
     @functools.wraps(fn)
     async def wrapper(*args: Any, **kwargs: Any) -> CallToolResult:
+        try:
+            return await _call(*args, **kwargs)
+        except ToolError as exc:
+            # Last line of defence: a lone surrogate in the text would crash the stdio writer.
+            clean = without_lone_surrogates(str(exc))
+            if clean == str(exc):
+                raise
+            raise ToolError(clean) from exc.__cause__
+
+    async def _call(*args: Any, **kwargs: Any) -> CallToolResult:
         try:
             return _tool_result(await fn(*args, **kwargs))
         except ToolError:
@@ -1142,7 +1153,16 @@ def _report_body(
     return body
 
 
-_REPORT_MESSAGE = "Reporte generado en Excel: ábrelo o descárgalo desde file_url."
+async def _report(ctx: Context, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    """POST of a read-only report: a failure never "may have executed" anything."""
+    try:
+        data = await _state(ctx).client.post(path, body)
+    except (SiigoAPIError, SiigoNetworkError) as exc:
+        exc.may_have_executed = False  # generating a report changes nothing: repeating is safe
+        raise
+    return _as_result(
+        data, message="Reporte generado en Excel: ábrelo o descárgalo desde file_url."
+    )
 
 
 @siigo_tool("siigo_trial_balance_report", "Balance de prueba")
@@ -1165,8 +1185,7 @@ async def siigo_trial_balance_report(
     body = _report_body(
         year, month_start, month_end, account_start, account_end, includes_tax_difference
     )
-    data = await _state(ctx).client.post("/v1/test-balance-report", body)
-    return _as_result(data, message=_REPORT_MESSAGE)
+    return await _report(ctx, "/v1/test-balance-report", body)
 
 
 @siigo_tool("siigo_trial_balance_by_third_party", "Balance de prueba por tercero")
@@ -1197,8 +1216,7 @@ async def siigo_trial_balance_by_third_party(
         "identification": customer_identification,
         "branch_office": customer_branch_office,
     }
-    data = await _state(ctx).client.post("/v1/test-balance-report-by-thirdparty", body)
-    return _as_result(data, message=_REPORT_MESSAGE)
+    return await _report(ctx, "/v1/test-balance-report-by-thirdparty", body)
 
 
 # =========================================================================== tools: write
@@ -1294,8 +1312,7 @@ async def siigo_create_invoice(
 
     ADVERTENCIA: invoice.stamp.send=true ENVÍA LA FACTURA ELECTRÓNICA A LA DIAN, un acto legal
     e IRREVERSIBLE. Por defecto es false y la factura queda como borrador (stamp.status=Draft).
-    Úsalo solo si el usuario lo confirma explícitamente. mail.send=true envía el correo al
-    cliente.
+    Úsalo solo si el usuario lo confirma explícitamente.
     Antes de usarla obtén: document.id (siigo_list_document_types type=FV), seller
     (siigo_list_users), payments[].id (siigo_list_payment_types FV), impuestos
     (siigo_list_taxes) y códigos de producto (siigo_list_products); el cliente debe existir.
@@ -1305,15 +1322,17 @@ async def siigo_create_invoice(
     impuestos IVA o Impoconsumo, sin retenciones, anticipo ni moneda extranjera), que los
     pagos sumen el total; en los demás casos esa suma la valida Siigo (preflight.warnings).
     IDEMPOTENCIA: idempotency_key es obligatoria, NUEVA y única por cada venta; REUTILIZA LA
-    MISMA en cualquier reintento de esa venta (ver su descripción). Con una clave ya usada
-    Siigo devuelve la factura que creó con ella TAL COMO ESTÁ: cambiar los datos (p. ej.
-    corregir un precio) no la modifica ni crea otra.
+    MISMA en cualquier reintento de esa venta. Con una clave ya usada Siigo devuelve la
+    factura que creó con ella TAL COMO ESTÁ: cambiar los datos (p. ej. corregir un precio) no
+    la modifica ni crea otra.
     Devuelve replayed, la factura, idempotency_key, dian_send_requested (lo pedido en
     stamp.send) y dian_status/dian_note (lo que Siigo informa: Draft = no enviada a la DIAN).
     replayed=true: Siigo devolvió una factura que ya existía con esa clave; esta llamada no
-    creó ninguna (lee `warning`; `differences` lista los datos que no coinciden con lo
-    pedido). replayed=false: es nueva o la creó un intento anterior de esta venta hace menos
-    de 2 minutos. replayed=null: no se pudo determinar.
+    creó ninguna (lee `warning`; `differences` dice qué no coincide con lo pedido entre:
+    cliente, sucursal, tipo, fecha enviada, códigos y cantidades de ítems y suma de pagos).
+    Otros cambios (vendedor, observaciones...) no se detectan: revisa la factura devuelta.
+    replayed=false: es nueva o la creó un intento anterior de esta venta hace menos de
+    2 minutos. replayed=null: no se pudo determinar.
     """
     state = _state(ctx)
     key = idempotency_key
@@ -1325,10 +1344,23 @@ async def siigo_create_invoice(
         )
         if report.problems:
             problems = "\n".join(f"- {p}" for p in report.problems)
+            advice = (
+                "Corrígelos y vuelve a intentar (skip_preflight=true solo si estás seguro de que "
+                "Siigo la aceptará)."
+            )
+            if report.past_date:
+                # The same call on a later day: the attempt that got no answer may have created it.
+                advice = (
+                    "Si esta llamada repite un intento anterior de esta misma venta que falló o "
+                    "quedó sin respuesta, esa factura pudo haberse creado ya con esa fecha: para "
+                    "obtenerla sin duplicarla, repite la llamada sin cambiar nada (tampoco la "
+                    f"fecha), con la MISMA idempotency_key='{key}' y skip_preflight=true; Siigo "
+                    "devolverá la factura creada con esa clave. Si es una venta nueva, corrígelos "
+                    "y vuelve a intentar."
+                )
             raise ToolError(
                 "La factura NO se envió a Siigo: la validación local encontró problemas:\n"
-                f"{problems}\nCorrígelos y vuelve a intentar (skip_preflight=true solo si estás "
-                "seguro de que Siigo la aceptará)."
+                f"{problems}\n{advice}"
             )
         preflight = report.as_dict()
     # Logged before sending (whatever SIIGO_LOG_LEVEL is): if the answer never arrives,
@@ -1353,10 +1385,17 @@ async def siigo_create_invoice(
             retryable=exc.during_auth or exc.status == 429 or "requests_limit" in exc.codes,
         )
         raise ToolError(format_api_error(exc, execution_note=False) + note) from exc
-    answer = created if isinstance(created, dict) else {"response": created}
-    totals = preflight.get("totals")
-    expected_total = totals.get("payments") if isinstance(totals, dict) else None
-    mismatched = differences(answer, body, expected_total)
+    if not isinstance(created, dict) or not created.get("id"):
+        # A 2xx without the invoice (empty, 204, not an object): like an unreadable 2xx.
+        raise ToolError(
+            "La respuesta de Siigo a POST /v1/invoices no trae la factura (falta su id)."
+            + _invoice_error_note(key, True, status=info.get("status", 0))
+        )
+    answer = created
+    compared = dict(body)
+    if "date" not in invoice.model_fields_set:
+        del compared["date"]  # the default ("today") changes at midnight: not the caller's data
+    mismatched = differences(answer, compared)
     replayed, reason = check_replay(
         answer,
         earlier_id=state.invoice_answers.get(key),
@@ -1369,7 +1408,7 @@ async def siigo_create_invoice(
     status = stamp.get("status")
     dian_note = _dian_note(invoice.stamp.send, status, stamp.get("cufe"), replayed=replayed)
     out: dict[str, Any] = {"replayed": replayed}
-    name = answer.get("name") or answer.get("id") or "(sin nombre)"
+    name = answer.get("name") or answer["id"]
     if mismatched:
         detail = "; ".join(
             f"{d['field']}: pedido {d['requested']}, devuelto {d['returned']}" for d in mismatched

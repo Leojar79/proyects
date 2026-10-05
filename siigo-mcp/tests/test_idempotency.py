@@ -137,26 +137,38 @@ BODY = {
     "date": "2099-01-01",
     "customer": {"identification": "13832081", "branch_office": 0},
     "items": [{"code": "Item-1", "quantity": 1.0, "price": 1069.77}],
+    "payments": [{"id": 5636, "value": 1000}, {"id": 5637, "value": 273.03}],
 }
 
 
 @pytest.mark.parametrize(
     "answer",
-    [{}, {"customer": "x", "document": [], "items": "x", "total": "abc", "date": 5},
+    [{}, {"customer": "x", "document": [], "items": "x", "payments": "abc", "date": 5},
      {"customer": {"identification": None, "branch_office": "x"}, "document": {"id": True}},
      {"items": [1, None]}, {"items": [{"code": {"a": 1}, "quantity": "1"}]},
      {"items": [{"code": "Item-1", "quantity": "inf"}]}, {"date": "ayer"},
-     {"total": float("nan")}, {"total": 10**400}, {"customer": {"identification": "\ud800"}}],
+     {"payments": [1, None]}, {"payments": [{"value": float("nan")}]},
+     {"payments": [{"value": 10**400}]}, {"payments": [{"value": 1e308}, {"value": 1e308}]},
+     {"payments": [{"value": True}]}, {"customer": {"identification": "\ud800"}}],
 )  # fmt: skip
 def test_differences_never_raises_on_odd_answers(answer):
-    found = differences(answer, BODY, 1273.03)
+    found = differences(answer, BODY)
     assert isinstance(found, list)
     assert {d["field"] for d in found} <= {"customer.identification"}
 
 
 def test_differences_compares_only_what_the_answer_carries():
-    assert differences({"id": "x", "total": 1273.03}, BODY, None) == []
-    found = differences({"total": 1190.0}, BODY, 1273.03)
-    assert found == [{"field": "total", "requested": 1273.03, "returned": 1190.0}]
+    assert differences({"id": "x", "total": 1190.0}, BODY) == []
+    paid = {"payments": [{"id": 5636, "value": "1273.03"}]}  # same sum, other split
+    assert differences(paid, BODY) == []
+    found = differences({"payments": [{"id": 5636, "value": 1190}]}, BODY)
+    assert found == [{"field": "payments", "requested": 1273.03, "returned": 1190.0}]
     two = {"items": [{"code": "Item-1", "quantity": 1}, {"code": "Item-1", "quantity": 1}]}
-    assert differences(two, BODY, None)[0]["field"] == "items"
+    assert differences(two, BODY)[0]["field"] == "items"
+
+
+def test_differences_ignore_a_date_the_request_does_not_carry():
+    """Regression: the default date ("today") changes at midnight; only the caller's counts."""
+    answer = {"date": "2026-10-05"}
+    assert differences(answer, BODY)[0]["field"] == "date"
+    assert differences(answer, {k: v for k, v in BODY.items() if k != "date"}) == []

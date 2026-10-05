@@ -14,7 +14,6 @@ import logging
 import os
 import re
 import time
-import uuid
 from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -33,6 +32,7 @@ from .errors import (
     clone_error,
     lower_keys,
     parse_error,
+    without_lone_surrogates,
 )
 
 __all__ = [
@@ -49,7 +49,6 @@ __all__ = [
     "filter_active",
     "http_env_vars",
     "http_init_problem",
-    "new_idempotency_key",
     "normalize_list",
     "parse_error",
     "redact_secrets",
@@ -332,10 +331,6 @@ class RateLimiter:
 
 
 # --------------------------------------------------------------------------- client
-
-
-def new_idempotency_key() -> str:
-    return uuid.uuid4().hex[:30]
 
 
 def backoff_seconds(attempt: int) -> float:
@@ -638,7 +633,8 @@ class SiigoClient:
             if not IDEMPOTENCY_KEY_RE.fullmatch(idempotency_key):
                 raise ValueError("Idempotency-Key inválida: 1 a 30 letras o dígitos")
         elif idem_path:
-            idempotency_key = new_idempotency_key()
+            # The caller owns the key (it must reuse it to retry the same document safely).
+            raise ValueError(f"POST {path} requiere una Idempotency-Key del llamador")
         keyed = idempotency_key is not None
         clean = _clean_params(params)
 
@@ -745,7 +741,7 @@ class SiigoClient:
         if resp.status_code == 204 or not resp.content:
             return {}
         try:
-            return _without_lone_surrogates(resp.json())
+            return without_lone_surrogates(resp.json())
         except ValueError:
             err = SiigoAPIError(
                 resp.status_code,
@@ -778,25 +774,6 @@ class SiigoClient:
 
     async def delete(self, path: str) -> Any:
         return await self.request("DELETE", path)
-
-
-def _without_lone_surrogates(value: Any) -> Any:
-    """Replace lone UTF-16 surrogates (``\\ud83d``: text cut in the middle of an emoji) by U+FFFD.
-
-    ``json`` decodes them, but no UTF-8 text can carry them: the tool's result could never be
-    sent, and a retry of an invoice with the same key would fail the same way every time.
-    """
-    if isinstance(value, str):
-        try:
-            value.encode("utf-8")
-        except UnicodeEncodeError:
-            return value.encode("utf-16", "surrogatepass").decode("utf-16", "replace")
-        return value
-    if isinstance(value, list):
-        return [_without_lone_surrogates(v) for v in value]
-    if isinstance(value, dict):
-        return {_without_lone_surrogates(k): _without_lone_surrogates(v) for k, v in value.items()}
-    return value
 
 
 # --------------------------------------------------------------------------- list helpers

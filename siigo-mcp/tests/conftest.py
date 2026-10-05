@@ -264,7 +264,8 @@ class InvoiceStore:
     """``POST /v1/invoices`` as Siigo documents it (Blueprint "# Idempotencia").
 
     A repeated Idempotency-Key returns the invoice created earlier for that key ("la
-    información del comprobante creado previamente"), never a new one. ``now`` is Siigo's
+    información del comprobante creado previamente"), never a new one. The answer echoes
+    the items and payments as sent (``InvoiceOutDian``). ``now`` is Siigo's
     clock: it stamps ``metadata.created`` (``+00:00``, 7 fractional digits, as in the
     Blueprint) and the ``Date`` header; tests move it to simulate later sales.
     """
@@ -294,6 +295,15 @@ class InvoiceStore:
                 "name": f"FV-1-{n}",
                 "date": body["date"],
                 "customer": dict(body["customer"]),
+                "items": [
+                    {
+                        "code": i["code"],
+                        "quantity": i["quantity"],
+                        "price": i.get("price", i.get("taxed_price")),
+                    }
+                    for i in body["items"]
+                ],
+                "payments": [{"id": p["id"], "value": p["value"]} for p in body["payments"]],
                 "total": total,
                 "balance": total,
                 "stamp": {"status": "Draft"},

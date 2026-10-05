@@ -97,6 +97,7 @@ class PreflightReport:
     warnings: list[str] = field(default_factory=list)
     checks: list[str] = field(default_factory=list)
     totals: dict[str, float] | None = None
+    past_date: bool = False  # electronic type dated before today (Colombia)
 
     @property
     def ok(self) -> bool:
@@ -210,6 +211,7 @@ def evaluate_invoice(
                 "validó como factura electrónica (la fecha no puede ser anterior a hoy)."
             )
         if is_electronic and invoice.date < today:
+            report.past_date = True
             problems.append(
                 f"La fecha {invoice.date.isoformat()} es anterior a hoy ({today.isoformat()}, "
                 "hora de Colombia): una factura electrónica no puede tener fecha pasada."

@@ -121,16 +121,35 @@ def _retry_after(errors: list[ErrorItem], text: str, headers: httpx.Headers) -> 
     return None
 
 
+def without_lone_surrogates(value: Any) -> Any:
+    """Replace lone UTF-16 surrogates (``\\ud83d``: text cut in the middle of an emoji) by U+FFFD.
+
+    ``json`` decodes them, but no UTF-8 text can carry them: a tool result or error holding one
+    can never be sent, and the stdio writer would crash the whole server trying.
+    """
+    if isinstance(value, str):
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            return value.encode("utf-16", "surrogatepass").decode("utf-16", "replace")
+        return value
+    if isinstance(value, list):
+        return [without_lone_surrogates(v) for v in value]
+    if isinstance(value, dict):
+        return {without_lone_surrogates(k): without_lone_surrogates(v) for k, v in value.items()}
+    return value
+
+
 def parse_error(
     resp: httpx.Response, *, redact: Callable[[str], str] = lambda s: s
 ) -> SiigoAPIError:
     """Parse Siigo's error envelope case-insensitively, keeping every entry."""
     try:
-        text = resp.text or ""
+        text = without_lone_surrogates(resp.text or "")
     except Exception:  # undecodable body
         text = ""
     try:
-        body = resp.json()
+        body = without_lone_surrogates(resp.json())
     except ValueError:
         body = None
     items: list[ErrorItem] = []

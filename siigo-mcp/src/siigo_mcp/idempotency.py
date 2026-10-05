@@ -151,7 +151,7 @@ def check_replay(
 
 # --------------------------------------------------------------------------- data check
 
-TOTAL_TOLERANCE = 1.0  # pesos; Siigo computes the total itself
+PAYMENTS_TOLERANCE = 0.005  # payments are stored as sent, with at most 2 decimals
 
 
 def _text(value: Any) -> str | None:
@@ -188,14 +188,27 @@ def _show_items(rows: list[tuple[str, float, str]]) -> str:
     return ", ".join(f"{shown} x {quantity:g}" for _, quantity, shown in rows)
 
 
-def differences(
-    answer: Mapping[str, Any], body: Mapping[str, Any], expected_total: float | None
-) -> list[dict[str, Any]]:
+def _paid(rows: Any) -> float | None:
+    """Sum of ``payments[].value``; ``None`` if missing or any value is unreadable."""
+    if not isinstance(rows, list) or not rows:
+        return None
+    paid = 0.0
+    for row in rows:
+        value = _number(row.get("value")) if isinstance(row, Mapping) else None
+        if value is None:
+            return None
+        paid += value
+    return round(paid, 2) if math.isfinite(paid) else None
+
+
+def differences(answer: Mapping[str, Any], body: Mapping[str, Any]) -> list[dict[str, Any]]:
     """Fields of the returned invoice that contradict the request ``body`` (never raises).
 
     Only what Siigo echoes for a new invoice, when the answer carries it: customer and
-    branch office, document type, date, item codes and quantities and, when the preflight
-    computed it (simple invoices), the total.
+    branch office, document type, date (only when ``body`` has one: the caller's own, not a
+    default that changes at midnight), item codes and quantities, and the sum of the
+    payments. Siigo stores the payments as sent and requires them to match the invoice, so
+    any correction that changes the total (a price, a discount, a tax) changes that sum.
     """
     found: list[dict[str, Any]] = []
 
@@ -216,7 +229,11 @@ def differences(
     if returned_doc is not None and returned_doc != _number(requested_doc):
         differ("document.id", requested_doc, document.get("id"))
     date = answer.get("date").strip() if isinstance(answer.get("date"), str) else ""
-    if re.match(r"\d{4}-\d{2}-\d{2}", date) and date[:10] != str(body.get("date")):
+    if (
+        "date" in body
+        and re.match(r"\d{4}-\d{2}-\d{2}", date)
+        and date[:10] != str(body.get("date"))
+    ):
         differ("date", body.get("date"), answer.get("date"))
     asked_items, got_items = _items(body.get("items")), _items(answer.get("items"))
     if asked_items is not None and got_items is not None:
@@ -226,7 +243,7 @@ def differences(
         )
         if not same:
             differ("items", _show_items(asked_items), _show_items(got_items))
-    total = _number(answer.get("total"))
-    if None not in (expected_total, total) and abs(total - expected_total) > TOTAL_TOLERANCE:
-        differ("total", expected_total, answer.get("total"))
+    asked_paid, got_paid = _paid(body.get("payments")), _paid(answer.get("payments"))
+    if None not in (asked_paid, got_paid) and abs(asked_paid - got_paid) > PAYMENTS_TOLERANCE:
+        differ("payments", asked_paid, got_paid)
     return found

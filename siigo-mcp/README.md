@@ -257,28 +257,31 @@ Después reinicia Claude Code, o cierra y abre Claude Desktop. `siigo_check_conn
   no crea la nueva. **Cambiar los datos no cambia una factura ya creada con esa clave:** si un
   intento interrumpido ya creó la factura con un precio equivocado, repetirlo con el precio
   corregido y la misma clave devuelve la factura original tal como está (el resultado lo
-  advierte, ver `differences` abajo). El servidor no genera claves para facturas ni recuerda el
-  contenido de llamadas anteriores.
+  advierte porque cambió la suma de los pagos; ver abajo qué datos se comparan en
+  `differences`). El servidor no genera claves para facturas ni recuerda el contenido de
+  llamadas anteriores.
 - **`replayed` en el resultado.** Una respuesta exitosa puede ser una factura que Siigo creó
   antes con esa misma clave. El servidor lo indica así, sin poder detectarlo siempre:
   - `replayed: true`, con un `warning` al inicio: este mismo proceso del servidor ya había
     recibido esa factura con esa clave, su `metadata.created` es más de 2 minutos anterior al
     inicio de la llamada (según el reloj de Siigo, la cabecera `Date`, no el de tu equipo) o sus
     datos no coinciden con los pedidos. El servidor compara, cuando Siigo los devuelve, el
-    cliente y su sucursal, el tipo de comprobante, la fecha, los códigos y cantidades de los
-    ítems y, en las facturas simples validadas localmente, el total (un cambio de precio en
-    otras facturas o con `skip_preflight` no se detecta); las diferencias vienen en
-    `differences`. Esa llamada **no creó
-    ni modificó** ninguna factura: si era un reintento de la misma venta con los mismos datos,
-    esa es su factura. Si no corresponde a lo pedido, sigue existiendo tal cual: Claude debe
-    mostrártela y, si era de un intento anterior de esta misma venta, eliminarla (si es
-    borrador) o anularla con tu confirmación antes de crear la corregida con una clave nueva; si
-    era de otra venta, crear esta con una clave nueva.
+    cliente y su sucursal, el tipo de comprobante, la fecha (solo si la llamada la envió: la
+    fecha por defecto, «hoy», cambia a medianoche y no cuenta), los códigos y cantidades de los
+    ítems y la suma de los pagos, que cambia con cualquier corrección de precio, descuento o
+    impuesto en cualquier factura; las diferencias vienen en `differences`. Los demás datos
+    (vendedor, observaciones, centro de costo, otra forma de pago por el mismo valor...) no se
+    comparan. Esa llamada **no creó ni modificó** ninguna factura: si era un reintento de la
+    misma venta con los mismos datos, esa es su factura. Si no corresponde a lo pedido, sigue
+    existiendo tal cual: Claude debe mostrártela y, si era de un intento anterior de esta misma
+    venta, eliminarla (si es borrador) o anularla con tu confirmación antes de crear la
+    corregida con una clave nueva; si era de otra venta, crear esta con una clave nueva.
   - `replayed: false`: `metadata.created` no es tan antiguo y no hay diferencias. **No
     garantiza** que la factura la creó esa llamada: un reintento hecho menos de 2 minutos después
     del intento que sí la creó (por ejemplo, tras perderse la respuesta) también da `false`,
     igual que una clave reutilizada dentro de esos 2 minutos (desde otra sesión o tras reiniciar
-    el servidor) para otra venta con los mismos datos comparados.
+    el servidor) para otra venta con los mismos datos comparados. Si en un reintento cambiaste
+    datos que no se comparan, Claude debe revisar la factura devuelta frente a lo pedido.
   - `replayed: null`: Siigo no devolvió un `metadata.created` legible y no hay otra evidencia.
   - Si Siigo envía `metadata.created` sin zona horaria, se toma como hora de Colombia (la lectura
     que nunca hace parecer antigua una factura nueva); si en realidad era UTC, una repetición de
@@ -286,10 +289,10 @@ Después reinicia Claude Code, o cierra y abre Claude Desktop. `siigo_check_conn
 - La clave se escribe en el log (stderr) antes de enviar la factura, sea cual sea
   `SIIGO_LOG_LEVEL`, y viene en el resultado (`idempotency_key`) y en todos los errores en los que
   la factura pudo haberse creado (falla de red, tiempo de espera, error 5xx/408, una respuesta
-  2xx ilegible o un fallo al renovar el token durante un reintento). Esos errores indican
-  repetir la llamada con la **misma** `idempotency_key`: si Siigo ya creó la factura, devuelve
-  esa en vez de duplicarla. Si la autenticación falla antes de que la factura llegue a Siigo,
-  el error dice que no se creó.
+  2xx ilegible o sin la factura, o un fallo al renovar el token durante un reintento). Esos
+  errores indican repetir la llamada con la **misma** `idempotency_key`: si Siigo ya creó la
+  factura, devuelve esa en vez de duplicarla. Si la autenticación falla antes de que la factura
+  llegue a Siigo, el error dice que no se creó.
 - El resultado separa lo pedido de lo ocurrido: `dian_send_requested` es el valor de
   `stamp.send`, y `dian_status`/`dian_note` describen lo que respondió Siigo (`Draft` = no se
   envió a la DIAN, por ejemplo porque el tipo de comprobante no es electrónico o porque Siigo
@@ -342,9 +345,10 @@ fallan en 7 días, Siigo lo bloquea temporalmente y avisa por correo. Por eso el
 fechas, IDs y facturas antes de enviarlas y nunca reintenta errores 4xx de datos (400, 404,
 409…): solo reintenta un 429 (hasta 2 veces, ver arriba) y un 401 (una vez, tras renovar el
 token). Tampoco repite un `POST /auth` fallido: las llamadas que esperaban ese token (aunque
-Claude lance varias en paralelo) y las siguientes reciben el mismo error sin contactar a Siigo,
-durante 5 s tras una falla de red o 5xx, durante el tiempo que pidió Siigo tras un 429 y, si
-rechazó las credenciales o el Partner-Id (o la URL es incorrecta), hasta que uses
+Claude lance varias en paralelo) y las siguientes reciben el mismo error sin contactar a Siigo:
+durante 5 s tras una falla de red, un 408, un 5xx o una respuesta sin `access_token` (también una
+redirección), durante el tiempo que pidió Siigo tras un 429 y, si rechazó las credenciales o el
+Partner-Id o respondió otro error 4xx (como 404 o 405 por una URL incorrecta), hasta que uses
 `siigo_check_connection` (que siempre lo intenta de nuevo). Si `siigo_check_connection` falla mientras el token anterior sigue vigente, las demás
 herramientas lo siguen usando. Si te bloquean, corrige la causa (Partner-Id, credenciales, datos) y contacta a
 soporte de Siigo.
@@ -390,9 +394,14 @@ el cliente MCP puede rendirse antes que el servidor (o tú puedes interrumpir co
 no llega ningún error, pero la factura pudo haberse creado. Repite la llamada con la **misma**
 `idempotency_key` de la llamada original: si Siigo ya la creó, devuelve esa factura en vez de
 crear otra; si no, la crea. No uses una clave nueva para esa venta. Si al repetirla cambiaste
-datos (por ejemplo, corregiste un precio) y la factura ya existía, Siigo la devuelve sin cambios:
-el resultado lo marca con `replayed: true` y `differences` (ver
-[Habilitar escritura](#habilitar-escritura)). La clave está en los
+datos y la factura ya existía, Siigo la devuelve sin cambios: si cambiaste un dato que el
+servidor compara (por ejemplo, un precio, que cambia la suma de los pagos), el resultado lo
+marca con `replayed: true` y `differences`; otros cambios, como el vendedor o las
+observaciones, no se detectan (ver [Habilitar escritura](#habilitar-escritura)). Si repites la
+llamada otro día (por ejemplo, pasada la medianoche, hora de Colombia), una factura electrónica
+con fecha explícita ya tiene fecha pasada y la validación local la rechaza: el error indica
+repetirla sin cambios, con la misma clave y `skip_preflight=true`, para que Siigo devuelva la
+que ya creó. La clave está en los
 argumentos de esa llamada en la conversación y en el log del servidor, en la línea
 `Idempotency-Key=...` (se escribe siempre, sea cual sea `SIIGO_LOG_LEVEL`). Dónde está el log:
 Claude Desktop guarda el stderr de cada servidor en `mcp-server-siigo_mcp.log` (habitualmente en

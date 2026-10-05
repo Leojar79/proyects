@@ -16,6 +16,7 @@ from typing import Any
 
 import anyio
 import pytest
+from conftest import invoice_payload
 from mcp import Client, StdioServerParameters
 
 from siigo_mcp.server import WRITE_TOOL_NAMES
@@ -203,6 +204,63 @@ async def test_stdio_parallel_calls_share_one_failed_auth():
     assert len(results) == 5 and all(r.is_error for r in results)
     assert [s["path"] for s in _RejectingAuthHandler.seen] == ["/auth"]
     assert all("SIIGO_ACCESS_KEY" in r.content[0].text for r in results)
+
+
+class _SurrogateErrorHandler(_FakeSiigoHandler):
+    """A Siigo whose error messages carry half an emoji (a lone UTF-16 surrogate)."""
+
+    seen: list[dict[str, Any]] = []
+    CUT = "Gracias por su compra \ud83d"  # json.dumps escapes it as \\ud83d
+
+    def do_POST(self) -> None:  # noqa: N802 - http.server API
+        length = int(self.headers.get("Content-Length") or 0)
+        self.rfile.read(length)
+        self.seen.append({"method": "POST", "path": self.path})
+        if self.path == "/auth":
+            self._reply(200, {"access_token": "stdio-token", "expires_in": 86400})
+        else:
+            self._reply(500, {"Errors": [{"Code": "unhandled_error", "Message": self.CUT}]})
+
+    def do_GET(self) -> None:  # noqa: N802 - http.server API
+        self.seen.append({"method": "GET", "path": self.path})
+        self._reply(400, {"Errors": [{"Code": "invalid_name", "Message": self.CUT,
+                                      "Params": [self.CUT]}]})  # fmt: skip
+
+
+async def test_stdio_error_with_a_lone_surrogate_keeps_the_server_alive(tmp_path: Path):
+    """Regression: a lone surrogate in a Siigo error body reached the ToolError text and the
+    stdio writer crashed the whole server, so a possibly created invoice lost its key notice."""
+    _SurrogateErrorHandler.seen = []
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), _SurrogateErrorHandler)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    env = {
+        "SIIGO_USERNAME": "api@empresa.com",
+        "SIIGO_ACCESS_KEY": "StdioSecretKey",
+        "SIIGO_PARTNER_ID": "TestApp",
+        "SIIGO_BASE_URL": f"http://127.0.0.1:{httpd.server_address[1]}",
+        "SIIGO_RATE_LIMIT_PER_MINUTE": "1000",
+        "SIIGO_DOWNLOAD_DIR": str(tmp_path),
+        "SIIGO_ENABLE_WRITE": "true",
+    }
+    try:
+        with anyio.fail_after(60):
+            async with Client(params(env)) as client:
+                listing = await client.call_tool("siigo_list_customers", {})
+                invoice = await client.call_tool(
+                    "siigo_create_invoice",
+                    {"invoice": invoice_payload(), "idempotency_key": "VentaSur1",
+                     "skip_preflight": True},
+                )  # fmt: skip
+                alive = await client.call_tool("siigo_check_connection", {})
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    assert listing.is_error and "invalid_name" in listing.content[0].text
+    assert "\ufffd" in listing.content[0].text
+    assert invoice.is_error and "VentaSur1" in invoice.content[0].text
+    assert "MISMA idempotency_key" in invoice.content[0].text
+    assert not alive.is_error
 
 
 # --------------------------------------------------------------------------- raw JSON-RPC pipe

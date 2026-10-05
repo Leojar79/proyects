@@ -234,3 +234,40 @@ def test_readme_says_a_reused_key_never_changes_the_invoice():
     assert "si no corresponde a la venta, la clave ya se había usado" not in text
     assert "`differences`" in troubleshooting_paragraph("Tiempo de espera agotado")
     assert "/alliances/api" in troubleshooting_paragraph("responde 404")
+
+
+def test_readme_says_which_changes_a_same_key_retry_detects():
+    """Regression: two passages promised that any changed data (e.g. a corrected price) is
+    flagged with `replayed: true` and `differences`; only the compared fields are, and the
+    price only through the sum of the payments."""
+    writes = flat(section("Habilitar escritura"))
+    assert "la suma de los pagos" in writes and "no se comparan" in writes
+    assert "Claude debe revisar la factura devuelta frente a lo pedido" in writes
+    assert "(un cambio de precio en otras facturas o con `skip_preflight` no se detecta)" not in (
+        writes
+    )
+    assert "la fecha (solo si la llamada la envió" in writes
+    timeout = troubleshooting_paragraph("Tiempo de espera agotado")
+    assert "(por ejemplo, corregiste un precio) y la factura ya existía" not in timeout
+    assert "si cambiaste un dato que el servidor compara" in timeout
+    assert "no se detectan" in timeout
+    # A retry on another day: the past date of an electronic invoice is refused locally.
+    assert "pasada la medianoche" in timeout and "`skip_preflight=true`" in timeout
+
+
+def test_readme_auth_hold_matches_the_client():
+    """Regression: the README held a wrong-URL /auth failure until siigo_check_connection,
+    but a 2xx without access_token or a redirect is held only AUTH_TRANSIENT_PAUSE."""
+    from siigo_mcp.client import AUTH_TRANSIENT_PAUSE, _auth_pause
+    from siigo_mcp.errors import ErrorItem, SiigoAPIError
+
+    def pause(status: int) -> float:
+        return _auth_pause(SiigoAPIError(status, [ErrorItem("x", "y")]))
+
+    assert pause(200) == pause(301) == pause(503) == AUTH_TRANSIENT_PAUSE == 5.0
+    assert pause(401) == pause(404) == pause(405) == float("inf")
+    text = troubleshooting_paragraph("Usuario API bloqueado")
+    assert "(o la URL es incorrecta), hasta que uses" not in text
+    assert "durante 5 s tras una falla de red, un 408, un 5xx o una respuesta sin" in text
+    assert "(también una redirección)" in text
+    assert "otro error 4xx (como 404 o 405 por una URL incorrecta), hasta que uses" in text
