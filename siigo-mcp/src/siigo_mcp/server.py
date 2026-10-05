@@ -12,13 +12,13 @@ import binascii
 import contextlib
 import datetime as dt
 import functools
+import inspect
 import logging
 import os
 import re
 import signal
 import sys
 import tempfile
-import time
 import unicodedata
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
@@ -44,11 +44,9 @@ from .client import (
     SiigoClient,
     SleepFn,
     active_positions,
-    body_fingerprint,
     filter_active,
     http_env_vars,
     http_init_problem,
-    new_idempotency_key,
     normalize_list,
     redact_secrets,
     register_secret,
@@ -65,14 +63,7 @@ from .errors import (
     format_network_error,
     lower_keys,
 )
-from .idempotency import (
-    CreatedInvoice,
-    InvoiceKeyMemory,
-    call_reference,
-    check_replay,
-    mismatches,
-    utc_now,
-)
+from .idempotency import AnsweredKeys, call_reference, check_replay, differences, utc_now
 from .models import EMAIL_PATTERN, CustomerCreate, InvoiceCreate, to_body
 from .preflight import (
     DOCUMENT_TYPES_PATH,
@@ -105,26 +96,27 @@ INSTRUCTIONS = """\
 Servidor MCP de Siigo Nube (software contable de Colombia).
 
 Flujo recomendado: siigo_check_connection -> catálogos (siigo_list_document_types,
-siigo_list_payment_types, siigo_list_taxes, siigo_list_users) -> consultas.
-- Los IDs de documentos (facturas, clientes, productos...) son GUID; los IDs de catálogos
-  (tipo de comprobante, impuesto, forma de pago, vendedor, centro de costo, bodega) son enteros.
+siigo_list_payment_types, siigo_list_taxes) y vendedores (siigo_list_users) -> consultas.
+- Los IDs de documentos (facturas, clientes, productos...) son GUID; los de tipos de
+  comprobante, impuestos, formas de pago, vendedores, centros de costo y bodegas son enteros.
 - Siigo permite 100 solicitudes por minuto (10 en la empresa de pruebas) y BLOQUEA al usuario
-  API si más del 80% de sus solicitudes fallan en 7 días: no repitas una llamada que falló con
-  un error 4xx sin corregir los datos.
-- Si un listado trae `resume`, NO sigas con next_page (te saltarías registros): llama de
-  nuevo la misma herramienta con los mismos filtros y page, page_size y skip de `resume`;
-  cuando la respuesta ya no traiga `resume`, sigue con next_page, el mismo page_size y skip=0.
-  Las filas con `_compact: true` vienen resumidas: usa siigo_get_* con su id para el detalle.
+  API si más del 80% de sus solicitudes fallan en 7 días: no repitas sin corregir los datos
+  una llamada que falló con un error 4xx (salvo un 429: espera lo indicado y repítela).
+- Si un listado trae `resume`, NO sigas con next_page (te saltarías registros): repite la
+  llamada con los mismos filtros y page, page_size y skip de `resume`; cuando ya no traiga
+  `resume`, sigue con next_page, el mismo page_size y skip=0. Las filas con `_compact: true`
+  vienen resumidas; `truncation_message` dice qué siigo_get_* da el detalle, si existe
+  (catálogos, vendedores y cuentas por pagar no la tienen).
 - Las herramientas de escritura solo existen si SIIGO_ENABLE_WRITE=true.
 - En siigo_create_invoice, stamp.send=true ENVÍA LA FACTURA A LA DIAN (acto legal e
   irreversible): pide confirmación explícita del usuario antes de usarlo.
-- Antes de llamar siigo_create_invoice genera tu propia idempotency_key (1-30 letras o
-  dígitos), una NUEVA por cada venta, y reutilízala en CUALQUIER reintento de esa misma
-  factura, también si la llamada expiró, fue cancelada o interrumpida o no devolvió
-  respuesta: así Siigo no la duplica. Si no hubo respuesta, verifica primero con
-  siigo_list_invoices.
-- Si siigo_create_invoice responde created=false y replayed=true, Siigo devolvió una factura
-  que ya existía con esa clave: NO digas que se creó una factura nueva (lee `warning`).
+- siigo_create_invoice exige idempotency_key: genera una NUEVA y única por cada venta y
+  REUTILIZA LA MISMA en cualquier reintento de esa venta (tras un error, tiempo de espera,
+  cancelación, interrupción o falta de respuesta): Siigo devuelve la factura ya creada con esa
+  clave, tal como se creó, en vez de duplicarla. Nunca reutilices la clave de una venta para
+  otra.
+- Con replayed=true, siigo_create_invoice no creó ni cambió nada: Siigo devolvió una factura
+  que ya existía con esa clave (lee `warning` y `differences`).
 """
 
 # --------------------------------------------------------------------------- state
@@ -135,7 +127,7 @@ class AppState:
     settings: Settings
     client: SiigoClient
     catalogs: CatalogCache
-    invoice_keys: InvoiceKeyMemory
+    invoice_answers: AnsweredKeys
 
 
 def _state(ctx: Context) -> AppState:
@@ -190,6 +182,16 @@ Guid = Annotated[
     Field(
         pattern=GUID_PATTERN,
         description="ID del documento en Siigo (GUID); obténlo con la herramienta siigo_list_*",
+    ),
+]
+PurchaseId = Annotated[
+    str,
+    Field(
+        pattern=GUID_PATTERN,
+        description=(
+            "ID (GUID) de la factura de compra. Este servidor no tiene un listado de compras: "
+            "el usuario debe darte el ID"
+        ),
     ),
 ]
 Identification = Annotated[
@@ -327,12 +329,29 @@ def siigo_tool(
 # --------------------------------------------------------------------------- shared helpers
 
 
+# The siigo_get_* tool that returns a full row of each listing (named in truncation advice).
+DETAIL_TOOLS = {
+    "/v1/customers": "siigo_get_customer",
+    "/v1/products": "siigo_get_product",
+    "/v1/invoices": "siigo_get_invoice",
+    "/v1/credit-notes": "siigo_get_credit_note",
+    "/v1/vouchers": "siigo_get_voucher",
+    "/v1/payment-receipts": "siigo_get_payment_receipt",
+    "/v1/journals": "siigo_get_journal",
+    "/v1/quotations": "siigo_get_quotation",
+}
+
+
 async def _list(
     ctx: Context, path: str, page: int, page_size: int, skip: int, **filters: Any
 ) -> dict[str, Any]:
     data = await _state(ctx).client.get(path, {"page": page, "page_size": page_size, **filters})
     return truncate_output(
-        normalize_list(data, page), paginated=not isinstance(data, list), skip=skip
+        normalize_list(data, page),
+        paginated=not isinstance(data, list),
+        skip=skip,
+        detail_tool=DETAIL_TOOLS.get(path),
+        filterable=bool(filters),
     )
 
 
@@ -854,7 +873,7 @@ async def siigo_get_journal(ctx: Context, journal_id: Guid) -> dict[str, Any]:
 
 
 @siigo_tool("siigo_get_purchase", "Ver factura de compra")
-async def siigo_get_purchase(ctx: Context, purchase_id: Guid) -> dict[str, Any]:
+async def siigo_get_purchase(ctx: Context, purchase_id: PurchaseId) -> dict[str, Any]:
     """Obtiene el detalle de una factura de compra (FC, gasto o compra a proveedor) por su GUID.
 
     Siigo no documenta un listado de compras; para saldos pendientes con proveedores usa
@@ -1248,6 +1267,20 @@ async def siigo_create_invoice(
             )
         ),
     ],
+    idempotency_key: Annotated[
+        str,
+        Field(
+            pattern=r"^[A-Za-z0-9]{1,30}$",
+            description=(
+                "Obligatoria. Clave de idempotencia de ESTA venta: 1 a 30 letras o dígitos, sin "
+                "guiones ni espacios. Genera una NUEVA y única por cada venta, p. ej. fecha + "
+                "identificación del cliente + algo aleatorio (20261005x13832081x7Kq2). REUTILIZA "
+                "LA MISMA si repites esta venta tras cualquier error, tiempo de espera, "
+                "cancelación, interrupción o falta de respuesta: Siigo devuelve la factura ya "
+                "creada con esa clave en vez de duplicarla. Nunca uses la clave de otra venta"
+            ),
+        ),
+    ],
     skip_preflight: Annotated[
         bool,
         Field(description="Omitir la validación local previa (no recomendado)"),
@@ -1256,21 +1289,6 @@ async def siigo_create_invoice(
         bool,
         Field(description="En la validación previa, verificar que el cliente exista (1 solicitud)"),
     ] = True,
-    idempotency_key: Annotated[
-        str | None,
-        Field(
-            pattern=r"^[A-Za-z0-9]{1,30}$",
-            description=(
-                "Clave de idempotencia (1-30 letras o dígitos). Genera una NUEVA para cada venta "
-                "antes de la primera llamada y reutilízala en cualquier reintento de esa misma "
-                "factura (también tras un tiempo de espera, una cancelación o una interrupción): "
-                "con la misma clave Siigo devuelve la factura ya creada en vez de duplicarla. "
-                "Nunca reutilices la clave de otra venta. Si la omites, el servidor genera una "
-                "aleatoria (o reutiliza la de una llamada idéntica de las últimas 2 horas cuyo "
-                "resultado no se conoció)"
-            ),
-        ),
-    ] = None,
 ) -> dict[str, Any]:
     """Crea una factura de venta (FV) en Siigo.
 
@@ -1285,50 +1303,21 @@ async def siigo_create_invoice(
     comprobante, numeración, centro de costo, vendedor por ítem, fecha, formas de pago,
     impuestos, que el cliente exista y, solo en facturas simples (price sin IVA incluido,
     impuestos IVA o Impoconsumo, sin retenciones, anticipo ni moneda extranjera), que los
-    pagos sumen el total; en los demás casos esa suma la valida Siigo (preflight.warnings lo
-    indica).
-    Devuelve created, replayed, la factura, la idempotency_key usada, dian_send_requested (lo
-    pedido en stamp.send) y dian_status/dian_note (lo que Siigo informa: Draft = no enviada a
-    la DIAN).
-    IDEMPOTENCIA (evita facturas duplicadas): genera tu propia idempotency_key (1-30 letras o
-    dígitos), una NUEVA por cada venta, ANTES de la primera llamada, y reutilízala en
-    CUALQUIER reintento de esa misma factura, también si la llamada expiró, fue
-    cancelada o interrumpida o no devolvió respuesta: con la misma clave Siigo devuelve la
-    factura ya creada en vez de crear otra. Si la omites, el servidor genera una clave
-    aleatoria en cada llamada (dos ventas idénticas dan dos facturas); solo si una llamada
-    idéntica de las últimas 2 horas quedó sin resultado conocido (sin respuesta, cancelada,
-    error 408/5xx) reutiliza la clave de esa llamada. Si el resultado trae created=false y
-    replayed=true, Siigo devolvió una factura que YA EXISTÍA con esa clave y esta llamada NO
-    creó ninguna: no digas que se creó; si era una venta nueva, repite con otra
-    idempotency_key. Si una llamada no devolvió respuesta, o un error dice que la factura
-    pudo haberse creado, verifica primero con siigo_list_invoices antes de repetirla con la
-    MISMA clave.
+    pagos sumen el total; en los demás casos esa suma la valida Siigo (preflight.warnings).
+    IDEMPOTENCIA: idempotency_key es obligatoria, NUEVA y única por cada venta; REUTILIZA LA
+    MISMA en cualquier reintento de esa venta (ver su descripción). Con una clave ya usada
+    Siigo devuelve la factura que creó con ella TAL COMO ESTÁ: cambiar los datos (p. ej.
+    corregir un precio) no la modifica ni crea otra.
+    Devuelve replayed, la factura, idempotency_key, dian_send_requested (lo pedido en
+    stamp.send) y dian_status/dian_note (lo que Siigo informa: Draft = no enviada a la DIAN).
+    replayed=true: Siigo devolvió una factura que ya existía con esa clave; esta llamada no
+    creó ninguna (lee `warning`; `differences` lista los datos que no coinciden con lo
+    pedido). replayed=false: es nueva o la creó un intento anterior de esta venta hace menos
+    de 2 minutos. replayed=null: no se pudo determinar.
     """
     state = _state(ctx)
+    key = idempotency_key
     body = to_body(invoice)
-    memory = state.invoice_keys
-    fingerprint = body_fingerprint(body)
-    earlier = memory.pending(fingerprint)
-    notes: list[str] = []
-    if idempotency_key:
-        key, source = idempotency_key, "caller"
-        if earlier is not None and earlier.key != key:
-            notes.append(
-                f"Una llamada idéntica de hace {_ago(memory.age(earlier))} con "
-                f"Idempotency-Key='{earlier.key}' quedó sin resultado conocido: si era esta "
-                "misma venta, puede haber dos facturas; revísalo con siigo_list_invoices."
-            )
-    elif earlier is not None:
-        key, source = earlier.key, "pending"
-        notes.append(
-            f"Se reutilizó la Idempotency-Key '{key}' de una llamada idéntica de hace "
-            f"{_ago(memory.age(earlier))} cuyo resultado no se conoció (sin respuesta, cancelada "
-            "o error 408/5xx), para que Siigo no cree dos veces la misma factura."
-        )
-    else:
-        key, source = new_idempotency_key(), "generated"
-    # Read before sending: this call's own invoice must not count as "identical earlier one".
-    identical = memory.recently_created(fingerprint) if source == "generated" else None
     preflight: dict[str, Any] = {"skipped": True}
     if not skip_preflight:
         report = await preflight_invoice(
@@ -1344,13 +1333,7 @@ async def siigo_create_invoice(
         preflight = report.as_dict()
     # Logged before sending (whatever SIIGO_LOG_LEVEL is): if the answer never arrives,
     # stderr still has the key.
-    audit_log.info(
-        "siigo_create_invoice: POST /v1/invoices con Idempotency-Key=%s (%s)",
-        key,
-        _KEY_SOURCES[source],
-    )
-    # Until the outcome is known, an identical re-run reuses this key (see idempotency.py).
-    memory.remember(fingerprint, key)
+    audit_log.info("siigo_create_invoice: POST /v1/invoices con Idempotency-Key=%s", key)
     info: dict[str, Any] = {}
     started = utc_now()
     try:
@@ -1358,64 +1341,65 @@ async def siigo_create_invoice(
             "/v1/invoices", body, idempotency_key=key, response_info=info
         )
     except SiigoNetworkError as exc:
-        if not exc.may_have_executed:
-            memory.forget(fingerprint, key)
-        raise ToolError(
-            format_network_error(exc) + f" Para reintentar sin duplicar la factura usa "
-            f"idempotency_key='{key}'."
-        ) from exc
+        note = _invoice_error_note(key, exc.may_have_executed, retryable=True)
+        raise ToolError(format_network_error(exc, execution_note=False) + note) from exc
     except SiigoAPIError as exc:
-        if 200 <= exc.status < 300:  # Siigo answered, but the body could not be read
-            memory.record_answer(key, None)
-        if not exc.may_have_executed:
-            memory.forget(fingerprint, key)
-        message = format_api_error(exc, execution_note=False) + _invoice_retry_note(exc, key)
-        raise ToolError(message) from exc
-    memory.forget(fingerprint, key)
-    answer = created if isinstance(created, dict) else {"response": created}
-    earlier_answer = memory.answered(key)
-    memory.record_answer(key, answer.get("id"))
-    totals = preflight.get("totals") if isinstance(preflight.get("totals"), dict) else {}
-    check = check_replay(
-        answer,
-        key_reusable=source != "generated",
-        earlier_answer=earlier_answer,
-        reference=call_reference(started, info),
-        mismatched=mismatches(
-            answer,
-            customer_identification=invoice.customer.identification,
-            document_id=invoice.document.id,
-            expected_total=totals.get("payments"),
-        ),
-    )
-    if not check.replayed:
-        memory.record_created(
-            fingerprint,
-            CreatedInvoice(key, _text_or_none(answer.get("id")), _text_or_none(answer.get("name"))),
+        # A 2xx from POST /auth is not an answer to the invoice: it was not sent, or Siigo
+        # rejected it (401) before the renewal of the token failed.
+        note = _invoice_error_note(
+            key,
+            exc.may_have_executed,
+            status=0 if exc.during_auth else exc.status,
+            retryable=exc.during_auth or exc.status == 429 or "requests_limit" in exc.codes,
         )
-        if identical is not None:
-            ago, twin = identical
-            notes.append(
-                f"Este servidor ya había creado hace {_ago(ago)} una factura idéntica "
-                f"({twin.name or twin.invoice_id or 'sin nombre'}, Idempotency-Key "
-                f"'{twin.key}'). Si esta llamada era un reintento de aquella porque su respuesta "
-                "no llegó, ahora hay dos facturas: revísalo con siigo_list_invoices (un "
-                "borrador sobrante se puede eliminar con siigo_delete_invoice). Si es otra "
-                "venta, no hay que hacer nada."
-            )
+        raise ToolError(format_api_error(exc, execution_note=False) + note) from exc
+    answer = created if isinstance(created, dict) else {"response": created}
+    totals = preflight.get("totals")
+    expected_total = totals.get("payments") if isinstance(totals, dict) else None
+    mismatched = differences(answer, body, expected_total)
+    replayed, reason = check_replay(
+        answer,
+        earlier_id=state.invoice_answers.get(key),
+        reference=call_reference(started, info),
+    )
+    if mismatched:
+        replayed = True  # a new invoice would carry the requested data
+    state.invoice_answers.add(key, answer.get("id"))
     stamp = answer.get("stamp") if isinstance(answer.get("stamp"), dict) else {}
     status = stamp.get("status")
-    dian_note = _dian_note(invoice.stamp.send, status, stamp.get("cufe"))
-    out: dict[str, Any] = {"created": not check.replayed, "replayed": check.replayed}
-    if check.replayed:
-        out["warning"] = _replay_warning(check.reasons, bool(check.mismatches), key, answer)
-        out["replay_evidence"] = check.evidence()
+    dian_note = _dian_note(invoice.stamp.send, status, stamp.get("cufe"), replayed=replayed)
+    out: dict[str, Any] = {"replayed": replayed}
+    name = answer.get("name") or answer.get("id") or "(sin nombre)"
+    if mismatched:
+        detail = "; ".join(
+            f"{d['field']}: pedido {d['requested']}, devuelto {d['returned']}" for d in mismatched
+        )
+        out["warning"] = (
+            f"ATENCIÓN: esta llamada NO creó ni modificó ninguna factura. Siigo devolvió la "
+            f"factura {name}, creada antes con la idempotency_key '{key}' y con datos DISTINTOS "
+            f"de los pedidos ({detail}): sigue existiendo así. {_OLD_INVOICE_ADVICE}"
+        )
+        out["differences"] = mismatched
+    elif replayed:
+        out["warning"] = (
+            f"ATENCIÓN: esta llamada NO creó una factura nueva. Siigo devolvió la factura {name}, "
+            f"creada antes con la misma idempotency_key '{key}' ({reason}). Si esta llamada "
+            "repetía esta misma venta con los mismos datos, esa es su factura: no hay que hacer "
+            "nada más. Si no corresponde a lo pedido, sigue existiendo tal cual. "
+            + _OLD_INVOICE_ADVICE
+        )
+    else:
+        out["replay_note"] = (
+            "La creó esta llamada o un intento anterior de esta misma venta de hace menos de "
+            f"2 minutos ({reason})."
+            if replayed is False
+            else f"No se pudo determinar si la creó esta llamada o un intento anterior con la "
+            f"misma clave ({reason}); en cualquier caso hay una sola factura para esta clave."
+        )
+    if replayed:
         dian_note = "Factura que ya existía (no la creó esta llamada). " + dian_note
-    if notes:
-        out["notes"] = notes
     out.update(
         idempotency_key=key,
-        idempotency_key_source=source,
         # What was asked for, never presented as what happened: Siigo's stamp.status says that.
         dian_send_requested=invoice.stamp.send,
         dian_status=status,
@@ -1436,43 +1420,18 @@ async def siigo_create_invoice(
     return out
 
 
-_KEY_SOURCES = {
-    "caller": "indicada por el agente",
-    "generated": "aleatoria, nueva",
-    "pending": "reutilizada de una llamada idéntica sin resultado conocido",
-}
+# What to do with an invoice Siigo returned for a reused key that does not match the request.
+_OLD_INVOICE_ADVICE = (
+    "Muéstrasela al usuario. Si es de un intento anterior de esta misma venta (p. ej. "
+    "interrumpido antes de corregir los datos), con su confirmación elimínala con "
+    "siigo_delete_invoice si es borrador (stamp.status=Draft) o, si no, anúlala "
+    "(siigo_annul_invoice) o revísala con una nota crédito; solo después crea la factura "
+    "corregida con una idempotency_key nueva. Si es de otra venta, crea esta con una "
+    "idempotency_key nueva."
+)
 
 
-def _text_or_none(value: Any) -> str | None:
-    return str(value) if value not in (None, "") else None
-
-
-def _ago(seconds: float) -> str:
-    return f"{seconds:.0f} s" if seconds < 120 else f"{seconds / 60:.0f} min"
-
-
-def _replay_warning(reasons: list[str], different: bool, key: str, answer: dict[str, Any]) -> str:
-    """The result's first words when Siigo answered with an invoice it had created before."""
-    name = answer.get("name") or answer.get("id") or "(sin nombre)"
-    why = "; ".join(reasons)
-    if different:
-        return (
-            f"ATENCIÓN: esta llamada NO creó la factura pedida. Siigo devolvió OTRA factura "
-            f"({name}), creada antes con la misma Idempotency-Key '{key}': {why}. Esa clave ya "
-            f"se había usado para otra venta: repite la llamada con una idempotency_key nueva "
-            f"(distinta de '{key}') y no le digas al usuario que la factura se creó."
-        )
-    return (
-        f"ATENCIÓN: esta llamada NO creó una factura nueva. Siigo devolvió una factura creada "
-        f"antes con la misma Idempotency-Key '{key}' ({name}; {why}). Si esta llamada era un "
-        "reintento de esa misma venta (una llamada anterior no devolvió respuesta), esa es su "
-        "factura y no hay que repetir nada. Si es una venta nueva, repite con otra "
-        f"idempotency_key (distinta de '{key}') y no le digas al usuario que se creó una "
-        "factura nueva."
-    )
-
-
-def _dian_note(requested: bool, status: Any, cufe: Any) -> str:
+def _dian_note(requested: bool, status: Any, cufe: Any, *, replayed: bool | None) -> str:
     """Plain statement of the DIAN outcome, based only on what Siigo answered."""
     text = str(status or "").strip()
     low = text.lower()
@@ -1486,11 +1445,16 @@ def _dian_note(requested: bool, status: Any, cufe: Any) -> str:
     if low == "draft" or (not text and not cufe):
         shown = f"stamp.status={text}" if text else "sin stamp.status ni CUFE"
         if requested:
+            why = (
+                "esta llamada no envió nada: la factura ya existía con esta clave"
+                if replayed
+                else "por ejemplo, porque el tipo de comprobante no es electrónico o porque "
+                "Siigo devolvió una factura creada antes con esta clave"
+            )
             return (
                 f"Se pidió stamp.send=true, pero Siigo respondió {shown}: la factura NO consta "
-                "como enviada a la DIAN (por ejemplo, porque el tipo de comprobante no es "
-                "electrónico). No le digas al usuario que se emitió ante la DIAN; verifica con "
-                "siigo_get_invoice."
+                f"como enviada a la DIAN ({why}). No le digas al usuario que se emitió ante la "
+                "DIAN; verifica con siigo_get_invoice."
             )
         return f"Borrador: no se envió a la DIAN (stamp.send=false; {shown})."
     return (
@@ -1500,21 +1464,23 @@ def _dian_note(requested: bool, status: Any, cufe: Any) -> str:
     )
 
 
-def _invoice_retry_note(exc: SiigoAPIError, key: str) -> str:
-    """Give the Idempotency-Key whenever the invoice may exist or the call may be repeated."""
-    retry = f"si la repites usa idempotency_key='{key}' para que Siigo no la duplique."
-    if 200 <= exc.status < 300:
+def _invoice_error_note(
+    key: str, may_have_executed: bool, *, status: int = 0, retryable: bool = False
+) -> str:
+    """The key whenever the invoice may exist or the call may be repeated as it is."""
+    same_key = (
+        f"repite la llamada con la MISMA idempotency_key='{key}': si Siigo ya la creó, "
+        "devolverá esa factura en vez de duplicarla (no uses una clave nueva para esta venta)."
+    )
+    if 200 <= status < 300:
         return (
-            f"\nSiigo respondió {exc.status}: la factura probablemente SÍ se creó. Verifícalo con "
-            f"siigo_list_invoices (por cliente y fecha) antes de repetirla; {retry}"
+            f"\nSiigo respondió {status}: la factura probablemente SÍ se creó. Para verla, "
+            + same_key
         )
-    if exc.may_have_executed:
-        return (
-            "\nLa factura pudo haberse creado: verifícalo con siigo_list_invoices antes de "
-            f"repetirla; {retry}"
-        )
-    if exc.status == 429 or "requests_limit" in exc.codes:
-        return f"\nAl reintentar usa idempotency_key='{key}' para no duplicar la factura."
+    if may_have_executed:
+        return f"\nLa factura pudo haberse creado. Para saberlo sin duplicarla, {same_key}"
+    if retryable:
+        return f"\nLa factura no se creó. Al reintentar usa la misma idempotency_key='{key}'."
     return ""
 
 
@@ -1637,7 +1603,7 @@ def create_server(
                 settings=state_settings,
                 client=client,
                 catalogs=CatalogCache(client, clock=clock),
-                invoice_keys=InvoiceKeyMemory(clock=clock or time.monotonic),
+                invoice_answers=AnsweredKeys(),
             )
 
     return MCPServer(
@@ -1660,7 +1626,12 @@ def _build_tool(spec: ToolSpec) -> Tool:
     the published inputSchema says so (``additionalProperties: false``).
     """
     tool = Tool.from_function(
-        spec.fn, name=spec.name, title=spec.title, annotations=spec.annotations
+        spec.fn,
+        name=spec.name,
+        title=spec.title,
+        # Without the docstring's indentation, whatever the Python version (3.13+ strips it).
+        description=inspect.cleandoc(spec.fn.__doc__ or ""),
+        annotations=spec.annotations,
     )
     loose = tool.fn_metadata.arg_model
     strict = type(

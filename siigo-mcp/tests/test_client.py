@@ -20,7 +20,6 @@ from siigo_mcp.client import (
     Settings,
     SiigoClient,
     active_positions,
-    body_fingerprint,
     compact_row,
     filter_active,
     http_env_vars,
@@ -359,10 +358,21 @@ def test_format_other_errors():
     assert "SIIGO_USERNAME" in text and "siigo_check_connection" in text
     net = SiigoNetworkError("POST /v1/customers: x", timeout=True, may_have_executed=True)
     assert "pudo haberse ejecutado" in format_network_error(net)
+    assert "pudo haberse ejecutado" not in format_network_error(net, execution_note=False)
     net = SiigoNetworkError(
         "GET /v1/customers: ConnectError", timeout=False, may_have_executed=False
     )
     assert "No se pudo conectar" in format_network_error(net)
+
+
+def test_config_error_guidance_works_for_an_already_registered_server():
+    """Regression: the text sent the user to `claude mcp add -e`, which fails with "already
+    exists" for a registered server; Claude Code has no command to change its variables."""
+    text = " ".join(format_config_error(SiigoConfigError(["SIIGO_PARTNER_ID (falta)"])).split())
+    assert "claude mcp add -e" not in text
+    assert text.index("claude mcp remove siigo_mcp") < text.index("de nuevo con claude mcp add")
+    for fragment in ("already exists", "--env-file", "claude_desktop_config.json", "reinicia"):
+        assert fragment in text, fragment
 
 
 # --------------------------------------------------------------------------- limiter
@@ -547,6 +557,57 @@ async def test_failed_auth_is_not_repeated_by_the_next_calls(fake, clock, settin
     await client.authenticate(force=True)  # what siigo_check_connection does
     await client.get("/v1/taxes")
     assert fake.paths() == ["/auth", "/auth", "/v1/taxes"]
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        siigo_error(401, "unauthorized", "Invalid credentials"),
+        siigo_error(429, "requests_limit", "Try again in 30 seconds"),
+        siigo_error(503, "service_unavailable", "down"),
+        httpx.ConnectError("refused"),
+    ],
+)
+async def test_failed_forced_reauth_keeps_the_still_valid_token(fake, clock, settings, failure):
+    """Regression: a failed siigo_check_connection discarded a token that was still valid
+    and every other tool then failed (until the pause ended, or forever after a 4xx)."""
+
+    def failing(request: httpx.Request) -> httpx.Response:
+        if isinstance(failure, Exception):
+            raise httpx.ConnectError("refused", request=request)
+        return failure
+
+    fake.on("POST", "/auth", {"access_token": "still-good", "expires_in": 86400}, failing)
+    fake.on("GET", "/v1/taxes", [])
+    client = make_client(fake, clock, settings)
+    await client.get("/v1/taxes")
+    with pytest.raises((SiigoAPIError, SiigoNetworkError)):
+        await client.authenticate(force=True)  # what siigo_check_connection does
+    await client.get("/v1/taxes")
+    assert fake.paths() == ["/auth", "/v1/taxes", "/auth", "/v1/taxes"]
+    assert fake.calls[-1].headers["authorization"] == "Bearer still-good"
+    assert client.token_expires_in > 80000
+
+
+async def test_token_rejected_after_a_failed_forced_reauth_is_not_reused(fake, clock, settings):
+    """Once Siigo rejects the kept token, calls fail fast with the stored /auth error."""
+    fake.on(
+        "POST",
+        "/auth",
+        {"access_token": "kept", "expires_in": 86400},
+        siigo_error(401, "unauthorized", "Invalid credentials"),
+    )
+    fake.on("GET", "/v1/taxes", [], siigo_error(401, "unauthorized", "expired"))
+    client = make_client(fake, clock, settings)
+    await client.get("/v1/taxes")
+    with pytest.raises(SiigoAPIError):
+        await client.authenticate(force=True)
+    for _ in range(2):
+        with pytest.raises(SiigoAPIError) as info:
+            await client.get("/v1/taxes")
+        assert info.value.during_auth and "no se repitió" in format_api_error(info.value)
+    # One rejected data request; no further POST /auth and no reuse of the rejected token.
+    assert fake.paths() == ["/auth", "/v1/taxes", "/auth", "/v1/taxes"]
 
 
 async def test_rate_limited_auth_is_retried_only_after_the_wait(fake, clock, settings):
@@ -1029,14 +1090,6 @@ async def test_no_idempotency_key_elsewhere(fake, clock, settings, method, path)
     assert "idempotency-key" not in fake.calls[-1].headers
 
 
-def test_body_fingerprint_is_stable():
-    body = {"date": "2026-10-05", "items": [{"code": "A", "price": 1.5}], "seller": 1}
-    fingerprint = body_fingerprint(body)
-    assert re.fullmatch(r"[0-9a-f]{30}", fingerprint)
-    assert body_fingerprint(dict(reversed(body.items()))) == fingerprint  # key order irrelevant
-    assert body_fingerprint(body | {"date": "2026-10-06"}) != fingerprint
-
-
 async def test_explicit_idempotency_key_and_validation(fake, clock, settings):
     fake.on("POST", "/v1/invoices", {"id": "x"})
     client = make_client(fake, clock, settings)
@@ -1159,6 +1212,34 @@ def test_truncate_output():
     assert out["omitted"] == 0 and out["compacted"] > 0
     assert [r["id"] for r in out["results"]] == list(range(100))
     assert all(len(r["blob"]) <= 120 for r in out["results"] if r.get("_compact"))
+
+
+def _advice(**kwargs) -> str:
+    # A catalog page needs summarised rows; a paginated one only when a row cannot fit alone.
+    size = 30_000 if kwargs.get("paginated") else 3_000
+    rows = [{"id": i, "blob": "x" * size} for i in range(40)]
+    out = truncate_output(normalize_list(rows), **kwargs)
+    assert out["compacted"] > 0
+    return out["truncation_message"]
+
+
+def test_truncation_advice_names_only_tools_and_filters_that_exist():
+    """Regression: catalogs, users and accounts payable were told to use siigo_get_* tools
+    (and filters) that do not exist for them."""
+    for paginated in (False, True):
+        bare = _advice(paginated=paginated)
+        assert "siigo_get" not in bare and "filtros más" not in bare
+        assert "ninguna herramienta devuelve el registro completo" in bare
+        named = _advice(paginated=paginated, detail_tool="siigo_get_invoice")
+        assert "usa siigo_get_invoice con su id" in named and "siigo_get_*" not in named
+    many = [{"id": i, "name": "y" * 1400} for i in range(200)]  # some do not fit even compact
+    omitted = truncate_output(normalize_list(many), paginated=False)
+    assert omitted["omitted"] > 0
+    assert "ninguna otra herramienta los devuelve" in omitted["truncation_message"]
+    hinted = truncate_output(
+        normalize_list(many), paginated=False, detail_tool="siigo_get_product", filterable=True
+    )
+    assert "filtros más específicos o siigo_get_product" in hinted["truncation_message"]
 
 
 def test_truncation_is_measured_on_the_delivered_text():

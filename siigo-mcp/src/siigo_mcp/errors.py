@@ -197,7 +197,15 @@ _CREDENTIALS_HINT = (
 _SIIGO_SIDE_HINT = "Falla del lado de Siigo; intenta de nuevo en unos minutos."
 _NOT_FOUND_HINT = (
     "Revisa el ID (GUID); obténlo con la herramienta siigo_list_* correspondiente "
-    "(p. ej. siigo_list_invoices o siigo_list_customers)."
+    "(p. ej. siigo_list_invoices o siigo_list_customers). Las compras no tienen listado: el ID "
+    "de una factura de compra debe darlo el usuario."
+)
+# POST /auth takes no ID: a 404/405, a redirect or a 2xx without a token means the request
+# did not reach Siigo's authentication service.
+_BASE_URL_HINT = (
+    "Revisa SIIGO_BASE_URL: debe ser solo la dirección de la API, sin rutas "
+    "(https://api.siigo.com, sin /v1 ni rutas de otros gateways como /alliances/api); si usas un "
+    "proxy (HTTPS_PROXY, ALL_PROXY), revisa también que no intercepte la conexión."
 )
 
 HINTS: dict[str, str] = {
@@ -278,8 +286,12 @@ def hints_for(err: SiigoAPIError) -> list[str]:
         if text and text not in hints:
             hints.append(text)
 
+    if err.during_auth and (err.status < 400 or err.status in (404, 405)):
+        add(_BASE_URL_HINT)
     missing = [p for e in err.errors if e.code.lower() in _MISSING_CODES for p in e.params]
     for code in dict.fromkeys(e.code.lower() for e in err.errors if e.code):
+        if err.during_auth and code == "not_found":
+            continue
         if code == "requests_limit":
             add(_wait_hint(err))
         elif code in _MISSING_CODES:
@@ -343,7 +355,8 @@ def format_api_error(err: SiigoAPIError, *, execution_note: bool = True) -> str:
     return message
 
 
-def format_network_error(err: SiigoNetworkError) -> str:
+def format_network_error(err: SiigoNetworkError, *, execution_note: bool = True) -> str:
+    """User-facing text. ``execution_note=False`` lets a caller word that warning itself."""
     if err.timeout:
         message = f"Siigo no respondió a tiempo ({err}). "
     else:
@@ -352,10 +365,11 @@ def format_network_error(err: SiigoNetworkError) -> str:
             "firewall y SIIGO_BASE_URL. "
         )
     if err.may_have_executed:
-        message += (
-            "La operación pudo haberse ejecutado en Siigo: verifica con la herramienta "
-            "siigo_list_* o siigo_get_* correspondiente antes de repetirla."
-        )
+        if execution_note:
+            message += (
+                "La operación pudo haberse ejecutado en Siigo: verifica con la herramienta "
+                "siigo_list_* o siigo_get_* correspondiente antes de repetirla."
+            )
     else:
         message += "Intenta de nuevo en unos minutos."
     if err.hint:
@@ -370,8 +384,13 @@ def format_config_error(err: SiigoConfigError) -> str:
     return (
         "La configuración de Siigo está incompleta o es inválida:\n"
         f"{items}\n"
-        "Define estas variables en el bloque env del servidor MCP (claude mcp add -e ... o "
-        "claude_desktop_config.json), reinicia el cliente y prueba siigo_check_connection."
+        "Corrige estas variables en el entorno del servidor MCP, reinicia el cliente y prueba "
+        "siigo_check_connection. Claude Code no permite cambiar las variables de un servidor ya "
+        "registrado (repetir claude mcp add responde 'already exists'): quítalo con "
+        "claude mcp remove siigo_mcp -s <alcance> (claude mcp get siigo_mcp muestra el alcance) "
+        "y regístralo de nuevo con claude mcp add y todas sus -e VARIABLE=valor; si lo "
+        "registraste con --env-file, basta con editar ese archivo .env. En Claude Desktop, "
+        "edita el bloque env de claude_desktop_config.json."
     )
 
 

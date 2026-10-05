@@ -140,8 +140,8 @@ un error que nombra exactamente qué variable corregir. `siigo_check_connection`
 
 ## Herramientas
 
-Los IDs de documentos (facturas, clientes, productos…) son GUID; los de catálogos (tipo de
-comprobante, impuesto, forma de pago, vendedor, centro de costo, bodega) son enteros. Los listados
+Los IDs de documentos (facturas, clientes, productos…) son GUID; los de tipos de comprobante,
+impuestos, formas de pago, vendedores, centros de costo y bodegas son enteros. Los listados
 devuelven `page`, `page_size`, `total_results`, `count`, `has_more`, `next_page` y `results`.
 Las respuestas llegan a Claude como JSON compacto, y la de cada listado tiene **máximo 25.000
 caracteres** (el límite se mide sobre ese mismo texto; las herramientas `siigo_get_*` devuelven el
@@ -152,9 +152,12 @@ Para el resto, llama de nuevo a la misma herramienta con los mismos filtros y es
 de la página); cuando una respuesta ya no traiga `resume`, sigue con `next_page`, el mismo
 `page_size` y `skip=0`. Cada llamada avanza al menos una fila y ninguna fila se salta ni se
 repite: una fila que por sí sola supera el límite llega resumida (`_compact: true`: campos
-simples como `id`, `name`, fecha, cliente, `total`, `balance` y estado, sin ítems ni pagos) y
-`siigo_get_*` con su `id` da el detalle. Los catálogos no se paginan: si no caben completos, las
-últimas filas llegan resumidas (`_compact: true`) y solo se omiten las que ni así caben.
+simples como `id`, `name`, fecha, cliente, `total`, `balance` y estado, sin ítems ni pagos).
+Para verla completa, `truncation_message` nombra la herramienta `siigo_get_*` del listado cuando
+existe (clientes, productos, facturas, notas crédito, recibos de caja y de pago, comprobantes
+contables y cotizaciones); los catálogos, `siigo_list_users` y `siigo_list_accounts_payable` no
+tienen una. Los catálogos no se paginan: si no caben completos, las últimas filas llegan
+resumidas (`_compact: true`) y solo se omiten las que ni así caben.
 Las fechas de filtro usan `yyyy-MM-dd` o `yyyy-MM-ddTHH:mm:ssZ` (UTC). Los argumentos desconocidos o
 mal escritos (p. ej. `identificacion` en vez de `identification`) se rechazan con un error en vez
 de ignorarse, para que un filtro mal escrito no devuelva datos sin filtrar.
@@ -174,27 +177,32 @@ de ignorarse, para que un filtro mal escrito no devuelva datos sin filtrar.
 | `siigo_list_vouchers` / `siigo_get_voucher` | Recibos de caja (cobros) | `/v1/vouchers` |
 | `siigo_list_payment_receipts` / `siigo_get_payment_receipt` | Recibos de pago / egresos | `/v1/payment-receipts` |
 | `siigo_list_journals` / `siigo_get_journal` | Comprobantes contables | `/v1/journals` |
-| `siigo_get_purchase` | Factura de compra | `/v1/purchases/{id}` |
+| `siigo_get_purchase` | Factura de compra (no hay listado de compras: el ID lo da el usuario) | `/v1/purchases/{id}` |
 | `siigo_list_quotations` / `siigo_get_quotation` | Cotizaciones | `/v1/quotations` |
 | `siigo_list_document_types` | Tipos de comprobante (FV, NC, RC, FC, CC, RP, C, DS) | `/v1/document-types` |
 | `siigo_list_payment_types` | Formas de pago (FV, NC, RC) | `/v1/payment-types` |
 | `siigo_list_taxes` | Impuestos y retenciones | `/v1/taxes` |
-| `siigo_list_users` | Usuarios / vendedores | `/v1/users` |
+| `siigo_list_users` | Usuarios / vendedores (paginado, sin caché) | `/v1/users` |
 | `siigo_list_cost_centers`, `siigo_list_warehouses`, `siigo_list_price_lists`, `siigo_list_account_groups`, `siigo_list_fixed_assets` | Centros de costo, bodegas, listas de precios, grupos de inventario, activos fijos | `/v1/...` |
 | `siigo_list_accounts_payable` | Cuentas por pagar a proveedores (`provider_branch_office` solo junto con `provider_identification`, como exige Siigo) | `/v1/accounts-payable` |
 | `siigo_trial_balance_report` | Balance de prueba (enlace a Excel) | `POST /v1/test-balance-report` |
 | `siigo_trial_balance_by_third_party` | Balance de prueba por tercero (enlace a Excel) | `POST /v1/test-balance-report-by-thirdparty` |
 
-Los catálogos se guardan en caché 10 minutos (usa `refresh=true` para forzar la consulta) y por
-defecto omiten los registros inactivos (`include_inactive=true` para verlos). Las herramientas de
-descarga escriben un archivo local, pero no modifican nada en Siigo y nunca devuelven el base64.
+Los catálogos (`siigo_list_document_types`, `siigo_list_payment_types`, `siigo_list_taxes`,
+`siigo_list_cost_centers`, `siigo_list_warehouses`, `siigo_list_price_lists`,
+`siigo_list_account_groups` y `siigo_list_fixed_assets`) no se paginan, se guardan en caché 10
+minutos (usa `refresh=true` para forzar la consulta) y por defecto omiten los registros inactivos
+(`include_inactive=true` para verlos). `siigo_list_users` (vendedores) no es un catálogo: se
+pagina como los demás listados y siempre consulta a Siigo (no tiene caché ni `refresh`); también
+omite por defecto los usuarios inactivos. Las herramientas de descarga escriben un archivo local,
+pero no modifican nada en Siigo y nunca devuelven el base64.
 
 ### Escritura (solo con `SIIGO_ENABLE_WRITE=true`)
 
 | Herramienta | Qué hace | Anotación |
 |---|---|---|
 | `siigo_create_customer` | Crea un tercero; antes lo busca por identificación y no lo duplica | no destructiva |
-| `siigo_create_invoice` | Crea una factura de venta con validación local previa e `Idempotency-Key` | no destructiva |
+| `siigo_create_invoice` | Crea una factura de venta con validación local previa; exige una `idempotency_key` por venta | no destructiva |
 | `siigo_send_invoice_email` | Envía la factura por correo (máx. 5 direcciones) | no destructiva |
 | `siigo_annul_invoice` | Anula una factura | **destructiva** |
 | `siigo_delete_invoice` | Elimina una factura | **destructiva** |
@@ -239,33 +247,53 @@ Después reinicia Claude Code, o cierra y abre Claude Desktop. `siigo_check_conn
   los demás casos (por ejemplo, con ReteIVA, ReteFuente o ReteICA) la valida Siigo, el
   resultado lo advierte en `preflight.warnings` y un `invalid_total_payments` cuenta para la
   regla del 80%.
-- Cada factura se envía con una `Idempotency-Key`: con la misma clave Siigo devuelve la
-  factura ya creada en vez de duplicarla. La herramienta le indica a Claude que genere una
-  `idempotency_key` **nueva para cada venta** antes de la primera llamada y la reutilice en
-  cualquier reintento de esa misma factura, también cuando la llamada expiró, se canceló (Esc)
-  o no devolvió respuesta. Si Claude no envía ninguna, el servidor genera una aleatoria en cada
-  llamada, así que dos ventas idénticas (p. ej. el mismo servicio a consumidor final dos veces
-  el mismo día) dan dos facturas. Si el propio servidor no recibió la respuesta de Siigo
-  (tiempo de espera, cancelación, error 408 o 5xx), recuerda esa clave mientras sigue en
-  ejecución y durante 2 horas: repetir esa llamada idéntica sin clave reutiliza la misma. Si
-  Siigo sí respondió pero la respuesta no llegó a Claude, una llamada idéntica sin clave crea
-  otra factura (si es dentro de esas 2 horas y sin reiniciar el servidor, el resultado lo
-  advierte en `notes`): por eso conviene que Claude envíe siempre su propia clave.
-- Si Siigo responde con una factura que ya existía porque la clave ya se había usado, el
-  resultado trae `created: false`, `replayed: true` y, al inicio, un `warning`: esa llamada
-  **no creó** ninguna factura. Si era una venta nueva, hay que repetirla con otra
-  `idempotency_key`. El servidor lo detecta cuando ya había recibido una respuesta con esa
-  clave, cuando la factura devuelta es de otro cliente, otro tipo de comprobante u otro total, o
-  cuando su `metadata.created` es anterior a la llamada (según el reloj de Siigo, no el de tu
-  equipo).
+- **Idempotencia: `siigo_create_invoice` exige una `idempotency_key`** (1 a 30 letras o dígitos,
+  sin guiones). Claude debe generar una **nueva y única para cada venta** (por ejemplo, fecha +
+  identificación del cliente + algo aleatorio) y **reutilizar la misma** en cualquier reintento
+  de esa venta: tras un error, un tiempo de espera, una cancelación (Esc) o una llamada sin
+  respuesta. Siigo deduplica por clave: si recibe una clave ya usada, devuelve la factura que
+  creó con ella en vez de crear otra. Por eso dos ventas idénticas con claves distintas dan dos
+  facturas, y una clave reutilizada para otra venta devuelve la factura de la venta anterior y
+  no crea la nueva. **Cambiar los datos no cambia una factura ya creada con esa clave:** si un
+  intento interrumpido ya creó la factura con un precio equivocado, repetirlo con el precio
+  corregido y la misma clave devuelve la factura original tal como está (el resultado lo
+  advierte, ver `differences` abajo). El servidor no genera claves para facturas ni recuerda el
+  contenido de llamadas anteriores.
+- **`replayed` en el resultado.** Una respuesta exitosa puede ser una factura que Siigo creó
+  antes con esa misma clave. El servidor lo indica así, sin poder detectarlo siempre:
+  - `replayed: true`, con un `warning` al inicio: este mismo proceso del servidor ya había
+    recibido esa factura con esa clave, su `metadata.created` es más de 2 minutos anterior al
+    inicio de la llamada (según el reloj de Siigo, la cabecera `Date`, no el de tu equipo) o sus
+    datos no coinciden con los pedidos. El servidor compara, cuando Siigo los devuelve, el
+    cliente y su sucursal, el tipo de comprobante, la fecha, los códigos y cantidades de los
+    ítems y, en las facturas simples validadas localmente, el total (un cambio de precio en
+    otras facturas o con `skip_preflight` no se detecta); las diferencias vienen en
+    `differences`. Esa llamada **no creó
+    ni modificó** ninguna factura: si era un reintento de la misma venta con los mismos datos,
+    esa es su factura. Si no corresponde a lo pedido, sigue existiendo tal cual: Claude debe
+    mostrártela y, si era de un intento anterior de esta misma venta, eliminarla (si es
+    borrador) o anularla con tu confirmación antes de crear la corregida con una clave nueva; si
+    era de otra venta, crear esta con una clave nueva.
+  - `replayed: false`: `metadata.created` no es tan antiguo y no hay diferencias. **No
+    garantiza** que la factura la creó esa llamada: un reintento hecho menos de 2 minutos después
+    del intento que sí la creó (por ejemplo, tras perderse la respuesta) también da `false`,
+    igual que una clave reutilizada dentro de esos 2 minutos (desde otra sesión o tras reiniciar
+    el servidor) para otra venta con los mismos datos comparados.
+  - `replayed: null`: Siigo no devolvió un `metadata.created` legible y no hay otra evidencia.
+  - Si Siigo envía `metadata.created` sin zona horaria, se toma como hora de Colombia (la lectura
+    que nunca hace parecer antigua una factura nueva); si en realidad era UTC, una repetición de
+    hace menos de unas 5 horas sale `false`.
 - La clave se escribe en el log (stderr) antes de enviar la factura, sea cual sea
-  `SIIGO_LOG_LEVEL`, y viene en el resultado (`idempotency_key`) y en los errores en los que la
-  factura pudo haberse creado (falla de red, tiempo de espera, error 5xx/408/429, una respuesta
-  2xx ilegible o un fallo al renovar el token durante un reintento): verifica con
-  `siigo_list_invoices` y, si la repites, usa esa misma clave.
+  `SIIGO_LOG_LEVEL`, y viene en el resultado (`idempotency_key`) y en todos los errores en los que
+  la factura pudo haberse creado (falla de red, tiempo de espera, error 5xx/408, una respuesta
+  2xx ilegible o un fallo al renovar el token durante un reintento). Esos errores indican
+  repetir la llamada con la **misma** `idempotency_key`: si Siigo ya creó la factura, devuelve
+  esa en vez de duplicarla. Si la autenticación falla antes de que la factura llegue a Siigo,
+  el error dice que no se creó.
 - El resultado separa lo pedido de lo ocurrido: `dian_send_requested` es el valor de
   `stamp.send`, y `dian_status`/`dian_note` describen lo que respondió Siigo (`Draft` = no se
-  envió a la DIAN, por ejemplo porque el tipo de comprobante no es electrónico).
+  envió a la DIAN, por ejemplo porque el tipo de comprobante no es electrónico o porque Siigo
+  devolvió una factura creada antes con esa clave, que no se vuelve a enviar).
 - Para pruebas usa un tipo de comprobante FV con `electronic_type = NoElectronic`.
 - Siigo no documenta con precisión cuándo anular y cuándo eliminar; una factura ya aceptada por
   la DIAN normalmente se revierte con una nota crédito.
@@ -273,7 +301,7 @@ Después reinicia Claude Code, o cierra y abre Claude Desktop. `siigo_check_conn
 ## Primera prueba recomendada
 
 Con credenciales de la empresa de pruebas y `SIIGO_RATE_LIMIT_PER_MINUTE=10`, pídele a Claude, en
-este orden (unas 8 solicitudes, dentro del límite de 10 por minuto):
+este orden:
 
 1. `siigo_check_connection` — «Verifica la conexión con Siigo».
 2. `siigo_list_document_types` con `type=FV` — «¿Qué tipos de factura de venta tengo?».
@@ -284,27 +312,49 @@ este orden (unas 8 solicitudes, dentro del límite de 10 por minuto):
 7. `siigo_create_customer` (con escritura habilitada: en Claude Code hay que quitar y volver a
    registrar el servidor, ver [Habilitar escritura](#habilitar-escritura)) — crea un cliente de
    prueba.
-8. `siigo_create_invoice` sobre un tipo FV `NoElectronic` y con `stamp.send=false`.
+8. `siigo_create_invoice` sobre un tipo FV `NoElectronic`, con `stamp.send=false` y una
+   `idempotency_key` nueva (Claude la genera).
+
+Solicitudes a Siigo, contando `POST /auth`: los pasos 1 a 6 hacen una cada uno (el paso 1 es el
+`POST /auth`; los demás reutilizan ese token). Si para el paso 7 registraste de nuevo el servidor,
+el proceso nuevo empieza sin token ni caché: el paso 7 hace 3 (`POST /auth`, la búsqueda del
+cliente y su creación) y el paso 8 hasta 5 (tipos de comprobante, formas de pago, impuestos si
+los ítems tienen, la búsqueda del cliente y la factura). En total, hasta 14; si la escritura ya
+estaba habilitada desde el principio y no pasan más de 10 minutos, los catálogos salen de la
+caché y son 10. El servidor espacia las solicitudes (una cada 6 s con un límite de 10 por
+minuto), así que nunca supera el límite, aunque algunos pasos tarden unos segundos más.
 
 ## Solución de problemas
 
 **HTTP 429 / `requests_limit`.** Superaste el límite de Siigo (100 por minuto; 10 en la empresa
-de pruebas). El servidor espera el tiempo que indica Siigo («Try again in N seconds» o la cabecera
-`Retry-After`, también en los errores 500/503/504 que se reintentan) y reintenta las lecturas hasta
-2 veces (máximo 60 s de espera; si Siigo pide más, no reintenta). Las escrituras sin
-`Idempotency-Key` (crear cliente, enviar correo, reportes) **no** se reintentan: espera los
-segundos indicados y vuelve a pedirlo. Con la empresa de pruebas configura
+de pruebas). Con un 429 Siigo rechaza la solicitud sin ejecutarla, así que repetirla es seguro.
+El servidor espera el tiempo que indica Siigo («Try again in N seconds» o la cabecera
+`Retry-After`) y reintenta hasta 2 veces (máximo 60 s de espera en total; si Siigo pide más, no
+reintenta) las lecturas, las eliminaciones (`siigo_delete_invoice`) y la creación de facturas
+(que lleva `Idempotency-Key`). Los demás POST, sin `Idempotency-Key` (crear cliente, enviar
+correo, anular, reportes), no se reintentan automáticamente: espera los segundos indicados y
+vuelve a pedirlo. Los errores 502, 503 y 504 se reintentan igual en las lecturas y en la creación
+de facturas, y el 500 solo en las lecturas. Con la empresa de pruebas configura
 `SIIGO_RATE_LIMIT_PER_MINUTE=10`.
 
 **Usuario API bloqueado (regla del 80%).** Si más del 80% de las solicitudes de un usuario API
 fallan en 7 días, Siigo lo bloquea temporalmente y avisa por correo. Por eso el servidor valida
-fechas, IDs y facturas antes de enviarlas y nunca reintenta errores 4xx. Tampoco repite un
-`POST /auth` fallido: las llamadas que esperaban ese token (aunque Claude lance varias en
-paralelo) y las siguientes reciben el mismo error sin contactar a Siigo, durante 5 s tras una
-falla de red o 5xx, durante el tiempo que pidió Siigo tras un 429 y, si rechazó las
-credenciales o el Partner-Id, hasta que uses `siigo_check_connection` (que siempre lo intenta
-de nuevo). Si te bloquean, corrige la causa (Partner-Id, credenciales, datos) y contacta a
+fechas, IDs y facturas antes de enviarlas y nunca reintenta errores 4xx de datos (400, 404,
+409…): solo reintenta un 429 (hasta 2 veces, ver arriba) y un 401 (una vez, tras renovar el
+token). Tampoco repite un `POST /auth` fallido: las llamadas que esperaban ese token (aunque
+Claude lance varias en paralelo) y las siguientes reciben el mismo error sin contactar a Siigo,
+durante 5 s tras una falla de red o 5xx, durante el tiempo que pidió Siigo tras un 429 y, si
+rechazó las credenciales o el Partner-Id (o la URL es incorrecta), hasta que uses
+`siigo_check_connection` (que siempre lo intenta de nuevo). Si `siigo_check_connection` falla mientras el token anterior sigue vigente, las demás
+herramientas lo siguen usando. Si te bloquean, corrige la causa (Partner-Id, credenciales, datos) y contacta a
 soporte de Siigo.
+
+**`POST /auth` responde 404, 405 o una página que no trae `access_token`.** La solicitud no
+llegó al servicio de autenticación de Siigo: `SIIGO_BASE_URL` debe ser solo la dirección de la
+API (`https://api.siigo.com`), sin `/v1` ni rutas de otros gateways como
+`https://services.siigo.com/alliances/api` (la del SDK oficial). Si usas un proxy, revisa
+también que no intercepte la conexión. Corrige la variable (ver «La configuración de Siigo está
+incompleta», más abajo) y prueba de nuevo con `siigo_check_connection`.
 
 **`invalid_partner_id` o `header_required`.** `SIIGO_PARTNER_ID` debe tener de 3 a 100 letras o
 dígitos, sin espacios, guiones ni tildes (ej. `MiEmpresaMCP`). Si el formato es correcto y el
@@ -317,7 +367,11 @@ comunidad envían el token sin el prefijo `Bearer`; si con credenciales correcta
 esa podría ser la causa (esta alternativa no está implementada; repórtalo).
 
 **Las herramientas responden «La configuración de Siigo está incompleta o es inválida».** Falta
-alguna variable o tiene un formato inválido; el mensaje dice cuál. Corrígela y reinicia el cliente.
+alguna variable o tiene un formato inválido; el mensaje dice cuál. Corrígela y reinicia el
+cliente. En Claude Code no se pueden cambiar las variables de un servidor ya registrado (repetir
+`claude mcp add` responde *already exists*): quítalo con `claude mcp remove` y regístralo de nuevo
+con todas sus variables, como en [Habilitar escritura](#habilitar-escritura); si lo registraste con
+`--env-file`, basta con editar ese `.env`. En Claude Desktop, edita el bloque `env`.
 
 **El servidor no aparece o «failed to start».** Verifica la ruta absoluta de `uv` y del proyecto,
 ejecuta `uv sync` en la carpeta y prueba manualmente
@@ -333,18 +387,19 @@ base = cantidad × precio − descuento; impuesto = base × % / 100; ambos redon
 
 **Tiempo de espera agotado o llamada interrumpida.** Siigo puede tardar al crear documentos, y
 el cliente MCP puede rendirse antes que el servidor (o tú puedes interrumpir con Esc); en ese caso
-no llega ningún error con la clave, pero la factura pudo haberse creado. Verifica primero con
-`siigo_list_invoices`. Si la repites, usa la **misma** `idempotency_key` de la llamada original:
-si Claude envió una, está en los argumentos de esa llamada en la conversación; si no, en el log
-del servidor, en la línea `Idempotency-Key=...` (se escribe siempre, sea cual sea
-`SIIGO_LOG_LEVEL`). Repetir la llamada idéntica **sin** clave solo reutiliza la clave original si
-el servidor tampoco recibió la respuesta de Siigo (tiempo de espera, cancelación, error 408 o
-5xx), no se ha reiniciado, han pasado menos de 2 horas y la factura es exactamente igual (fecha
-incluida); en otro caso se enviaría con una clave nueva y podría duplicarse. Dónde está el
-log: Claude Desktop guarda el stderr de cada servidor en `mcp-server-siigo_mcp.log`
-(habitualmente en `~/Library/Logs/Claude/` en macOS y `%APPDATA%\Claude\logs\` en Windows); en
-Claude Code, inícialo con `claude --debug` para ver los mensajes de los servidores MCP. Para
-otras escrituras, verifica primero en Siigo si la operación se ejecutó (el error lo advierte).
+no llega ningún error, pero la factura pudo haberse creado. Repite la llamada con la **misma**
+`idempotency_key` de la llamada original: si Siigo ya la creó, devuelve esa factura en vez de
+crear otra; si no, la crea. No uses una clave nueva para esa venta. Si al repetirla cambiaste
+datos (por ejemplo, corregiste un precio) y la factura ya existía, Siigo la devuelve sin cambios:
+el resultado lo marca con `replayed: true` y `differences` (ver
+[Habilitar escritura](#habilitar-escritura)). La clave está en los
+argumentos de esa llamada en la conversación y en el log del servidor, en la línea
+`Idempotency-Key=...` (se escribe siempre, sea cual sea `SIIGO_LOG_LEVEL`). Dónde está el log:
+Claude Desktop guarda el stderr de cada servidor en `mcp-server-siigo_mcp.log` (habitualmente en
+`~/Library/Logs/Claude/` en macOS y `%APPDATA%\Claude\logs\` en Windows); en Claude Code,
+inícialo con `claude --debug` para ver los mensajes de los servidores MCP. Las demás escrituras
+(crear cliente, enviar correo, anular, eliminar) no llevan clave: verifica primero en Siigo si la
+operación se ejecutó (el error lo advierte).
 
 **Proxy, VPN o certificados (`ALL_PROXY`, `HTTPS_PROXY`, `HTTP_PROXY`, `SSL_CERT_FILE`,
 `SSL_CERT_DIR`).** El servidor usa el proxy y los certificados de su entorno (Claude Code hereda
@@ -353,8 +408,8 @@ el de tu terminal; en minúsculas, como `https_proxy`, también cuentan). Se adm
 `ftp://` o un `SSL_CERT_FILE` que no existe o no es PEM), el servidor arranca igual y cada
 herramienta responde con un error que nombra la variable; si el proxy no responde, el error de
 conexión también la nombra. Corrígela, o anúlala solo para este servidor definiéndola vacía
-(`-e ALL_PROXY=` en `claude mcp add`, `"ALL_PROXY": ""` en el `env` de Claude Desktop), y reinicia
-el cliente.
+(`-e ALL_PROXY=` al registrarlo con `claude mcp add`; si ya está registrado, quítalo y regístralo
+de nuevo; `"ALL_PROXY": ""` en el `env` de Claude Desktop), y reinicia el cliente.
 
 ## Seguridad
 

@@ -10,8 +10,6 @@ every error text that leaves this module.
 
 from __future__ import annotations
 
-import hashlib
-import json
 import logging
 import os
 import re
@@ -47,7 +45,6 @@ __all__ = [
     "SiigoConfigError",
     "SiigoError",
     "SiigoNetworkError",
-    "body_fingerprint",
     "compact_row",
     "filter_active",
     "http_env_vars",
@@ -341,16 +338,6 @@ def new_idempotency_key() -> str:
     return uuid.uuid4().hex[:30]
 
 
-def body_fingerprint(body: Any) -> str:
-    """Stable fingerprint of a request body (30 hex chars; key order does not matter).
-
-    Never sent as an Idempotency-Key: two separate, identical sales must get different keys
-    (spec A.2). It only identifies an identical re-run of a create whose outcome is unknown.
-    """
-    canonical = json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:30]
-
-
 def backoff_seconds(attempt: int) -> float:
     return float(min(60, 5 * 2**attempt))
 
@@ -506,26 +493,29 @@ class SiigoClient:
     async def authenticate(self, *, force: bool = False, stale: str | None = None) -> str:
         """Return a valid token, calling ``POST /auth`` only when needed.
 
-        ``force`` always renews. ``stale`` renews only if the cached token is still
-        that one (so concurrent 401s share a single re-authentication).
+        ``force`` always renews. ``stale`` is a token Siigo just rejected (401): it is
+        dropped if it is still the cached one, so concurrent 401s share a single renewal.
 
-        Failures are shared too (spec A.4: concurrent calls share one /auth): a caller that
-        was waiting while an attempt failed gets that same error instead of sending another
-        POST /auth, and new calls reuse it for a while (``_auth_pause``) without contacting
-        Siigo, since every failed request counts toward the 80% lockout. ``force``
-        (siigo_check_connection) ignores that pause and always tries again.
+        A still-valid cached token is always used, whatever happened to a later attempt: a
+        failed forced renewal (siigo_check_connection) neither discards it nor blocks calls.
+        Without one, failures are shared (spec A.4: concurrent calls share one /auth): a
+        caller that was waiting while an attempt failed gets that same error instead of
+        sending another POST /auth, and new calls reuse it for a while (``_auth_pause``)
+        without contacting Siigo, since every failed request counts toward the 80% lockout.
+        ``force`` ignores that pause and always tries again.
         """
         self._check_config()
         attempts_seen = self._auth_attempts
         async with self._auth_lock:
+            if stale is not None and self._token == stale:
+                self._token = None
+            if not force and self._token is not None and self._clock() < self._expires_at:
+                return self._token
             failure = self._auth_failure
             if failure is not None:
                 now = self._clock()
                 if self._auth_attempts != attempts_seen or (not force and now < failure.until):
                     raise self._shared_auth_failure(failure, now)
-            valid = self._token is not None and self._clock() < self._expires_at
-            if valid and not force and (stale is None or self._token != stale):
-                return self._token  # type: ignore[return-value]
             # A cancelled attempt records nothing: a waiting caller makes its own.
             try:
                 token = await self._request_token()
@@ -580,7 +570,6 @@ class SiigoClient:
             err.may_have_executed = False
             raise
         if not resp.is_success:
-            self._token = None
             err = parse_error(resp, redact=self.redact)
             err.during_auth = True
             raise err
@@ -756,7 +745,7 @@ class SiigoClient:
         if resp.status_code == 204 or not resp.content:
             return {}
         try:
-            return resp.json()
+            return _without_lone_surrogates(resp.json())
         except ValueError:
             err = SiigoAPIError(
                 resp.status_code,
@@ -789,6 +778,25 @@ class SiigoClient:
 
     async def delete(self, path: str) -> Any:
         return await self.request("DELETE", path)
+
+
+def _without_lone_surrogates(value: Any) -> Any:
+    """Replace lone UTF-16 surrogates (``\\ud83d``: text cut in the middle of an emoji) by U+FFFD.
+
+    ``json`` decodes them, but no UTF-8 text can carry them: the tool's result could never be
+    sent, and a retry of an invoice with the same key would fail the same way every time.
+    """
+    if isinstance(value, str):
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            return value.encode("utf-16", "surrogatepass").decode("utf-16", "replace")
+        return value
+    if isinstance(value, list):
+        return [_without_lone_surrogates(v) for v in value]
+    if isinstance(value, dict):
+        return {_without_lone_surrogates(k): _without_lone_surrogates(v) for k, v in value.items()}
+    return value
 
 
 # --------------------------------------------------------------------------- list helpers
@@ -877,7 +885,8 @@ def compact_row(row: Any) -> dict[str, Any]:
     """Summary of a listing row: simple fields only (strings clipped), never over 1,500 chars.
 
     Used when a page does not fit: the row is still listed (its id, name, date, customer,
-    totals, status...) instead of being dropped, and siigo_get_* gives the full record.
+    totals, status...) instead of being dropped; the listing's siigo_get_* tool, when there
+    is one, gives the full record.
     """
     if not isinstance(row, dict):
         return {"value": _clip(row if _is_scalar(row) else str(row)), "_compact": True}
@@ -907,8 +916,14 @@ def _truncated(
     rows_out: list[Any],
     full: int,
     paginated: bool,
+    detail_tool: str | None,
+    filterable: bool,
 ) -> dict[str, Any]:
-    """``base`` with only ``rows_out`` (its first ``full`` rows complete, the rest compact)."""
+    """``base`` with only ``rows_out`` (its first ``full`` rows complete, the rest compact).
+
+    The advice names only what exists for this listing: its siigo_get_* tool (``detail_tool``)
+    and its filters (``filterable``).
+    """
     total = len(base["results"])
     covered = len(rows_out)
     omitted = total - covered
@@ -924,17 +939,20 @@ def _truncated(
     )
     notes = [_LIMIT_TEXT + "."]
     english = "rows with _compact are summaries" if compacted else "rows were left out"
+    detail = (
+        f"para ver el registro completo usa {detail_tool} con su id."
+        if detail_tool
+        else "ninguna herramienta devuelve el registro completo."
+    )
     if compacted and paginated:
         notes.append(
             "La fila que viene resumida (`_compact: true`: solo campos simples, sin ítems, "
-            "pagos ni contactos) no cabe completa ni sola; para verla usa la herramienta "
-            "siigo_get_* con su id."
+            f"pagos ni contactos) no cabe completa ni sola; {detail}"
         )
     elif compacted:
         notes.append(
             f"Las últimas {compacted} filas vienen resumidas (`_compact: true`: solo campos "
-            "simples, sin ítems, pagos ni contactos); para ver una completa usa la herramienta "
-            "siigo_get_* con su id."
+            f"simples, sin ítems, pagos ni contactos); {detail}"
         )
     if omitted and paginated:
         page = _to_int(base.get("page"), 1) or 1
@@ -950,9 +968,17 @@ def _truncated(
         )
         english += "; call again with the page, page_size and skip of `resume`, not next_page"
     elif omitted:
+        ways = (["filtros más específicos"] if filterable else []) + (
+            [f"{detail_tool} con el id"] if detail_tool else []
+        )
+        how = (
+            "; para llegar a ellos usa " + " o ".join(ways)
+            if ways
+            else "; ninguna otra herramienta los devuelve"
+        )
         notes.append(
-            f"Se omitieron los últimos {omitted} registros (este listado no se pagina en Siigo); "
-            "usa filtros más específicos o la herramienta siigo_get_* correspondiente."
+            f"Se omitieron los últimos {omitted} registros (este listado no se pagina en "
+            f"Siigo){how}."
         )
         english += "; this listing has no pages"
     elif paginated:
@@ -969,6 +995,8 @@ def truncate_output(
     paginated: bool = True,
     positions: list[int] | None = None,
     skip: int = 0,
+    detail_tool: str | None = None,
+    filterable: bool = False,
 ) -> dict[str, Any]:
     """Fit a normalised listing in ``limit`` characters of delivered text without losing rows.
 
@@ -982,6 +1010,7 @@ def truncate_output(
     alone arrives summarised (``compact_row``, at most 1,500 chars), so every answer carries
     at least one row and following ``resume`` always makes progress. A listing without pages
     (catalogs) cannot be resumed: the rows that do not fit complete are summarised instead.
+    ``detail_tool`` and ``filterable`` say what the advice may point to (see ``_truncated``).
     """
     rows = list(result.get("results") or [])
     pos = list(positions) if positions is not None else list(range(len(rows)))
@@ -993,7 +1022,8 @@ def truncate_output(
         base = dict(result, results=rows, count=len(rows), skip=skip)
     if _json_len(base) <= limit:
         return base
-    skeleton = _truncated(base, pos, [], 0, paginated)
+    hints = (detail_tool, filterable)
+    skeleton = _truncated(base, pos, [], 0, paginated, *hints)
     budget = limit - _json_len(skeleton) - 600  # room for the longer message and resume
     full_sizes = [_json_len(row) + 1 for row in rows]  # +1: the comma
     rows_out: list[Any] = []
@@ -1023,7 +1053,7 @@ def truncate_output(
             full += 1
         rows_out = rows[:full] + compacts[full:covered]
     while True:
-        out = _truncated(base, pos, rows_out, full, paginated)
+        out = _truncated(base, pos, rows_out, full, paginated, *hints)
         if _json_len(out) <= limit or not rows_out or (len(rows_out) == 1 and full == 0):
             return out
         if len(rows_out) > 1:

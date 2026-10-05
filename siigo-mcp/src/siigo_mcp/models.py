@@ -34,9 +34,10 @@ def _max_decimals(n: int) -> AfterValidator:
     return AfterValidator(check)
 
 
-Money2 = Annotated[float, Field(ge=0), _max_decimals(2)]
-Qty2 = Annotated[float, Field(gt=0), _max_decimals(2)]
-Price6 = Annotated[float, Field(gt=0), _max_decimals(6)]
+# allow_inf_nan=False: "inf" or 1e309 would pass ge/gt and break the total or the JSON body.
+Money2 = Annotated[float, Field(ge=0, allow_inf_nan=False), _max_decimals(2)]
+Qty2 = Annotated[float, Field(gt=0, allow_inf_nan=False), _max_decimals(2)]
+Price6 = Annotated[float, Field(gt=0, allow_inf_nan=False), _max_decimals(6)]
 Digits10 = Annotated[str, Field(pattern=r"^\d{1,10}$")]
 IdType = Literal[
     "13", "31", "22", "42", "50", "R-00-PN", "91", "41", "47", "11", "43", "21", "12", "89", "48"
@@ -242,7 +243,7 @@ class SendFlag(_M):
 
 class Currency(_M):
     code: str = Field(pattern=r"^[A-Z]{3}$", description="Moneda ISO 4217, ej. USD")
-    exchange_rate: float = Field(gt=0, description="Tasa de cambio")
+    exchange_rate: float = Field(gt=0, allow_inf_nan=False, description="Tasa de cambio")
 
 
 class InvoiceCreate(_M):

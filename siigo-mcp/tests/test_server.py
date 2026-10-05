@@ -149,6 +149,25 @@ async def test_every_parameter_is_described(make_server):
             assert prop.get("description"), f"{tool.name}.{name}"
 
 
+async def test_descriptions_fit_the_clients_length_cap(make_server):
+    """Regression: siigo_create_invoice's description (2,069 chars with the docstring's
+    indentation) was cut by Claude Code's 2,048-char cap for MCP descriptions."""
+    tools = await make_server(enable_write=True).list_tools()
+    for tool in tools:
+        assert len(tool.description) <= 1900, (tool.name, len(tool.description))
+        assert "\n    " not in tool.description, tool.name  # published without indentation
+    assert len(srv.INSTRUCTIONS) <= 1900
+
+
+async def test_purchase_id_does_not_point_to_a_listing_that_does_not_exist(make_server):
+    """Regression: purchase_id said "obténlo con la herramienta siigo_list_*", but no tool
+    lists purchases or returns their GUIDs."""
+    tools = {t.name: t for t in await make_server(enable_write=True).list_tools()}
+    assert not any("purchase" in name for name in tools if name.startswith("siigo_list_"))
+    text = tools["siigo_get_purchase"].input_schema["properties"]["purchase_id"]["description"]
+    assert "siigo_list_" not in text and "no tiene un listado de compras" in text
+
+
 async def test_every_input_schema_forbids_unknown_arguments(make_server):
     for tool in await make_server(enable_write=True).list_tools():
         assert tool.input_schema.get("additionalProperties") is False, tool.name
@@ -241,6 +260,45 @@ async def test_check_connection_forces_auth(make_server, fake):
     assert out["write_enabled"] is True and out["token_expires_in_seconds"] > 80000
     assert fake.paths() == ["/auth", "/auth"]
     assert ACCESS_KEY not in json.dumps(out)
+
+
+async def test_failed_check_connection_does_not_block_the_other_tools(make_server, fake):
+    """Regression: a failed forced re-auth threw away the still-valid token, and every tool
+    then failed with the stored /auth error (for good, after a 4xx) without trying."""
+    fake.on(
+        "POST",
+        "/auth",
+        {"access_token": "valid-token", "expires_in": 86400},
+        siigo_error(401, "unauthorized", "Invalid credentials"),
+    )
+    fake.on("GET", "/v1/taxes", TAXES)
+    async with Client(make_server()) as client:
+        assert not (await client.call_tool("siigo_list_taxes", {})).is_error
+        failed = await client.call_tool("siigo_check_connection", {})
+        assert failed.is_error and "POST /auth" in text_of(failed)
+        again = await client.call_tool("siigo_list_taxes", {"refresh": True})
+    assert not again.is_error, text_of(again)
+    assert fake.paths() == ["/auth", "/v1/taxes", "/auth", "/v1/taxes"]
+    assert fake.calls[-1].headers["authorization"] == "Bearer valid-token"
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [httpx.Response(404, text="404 page not found"),
+     siigo_error(404, "not_found", "Resource not found"),
+     httpx.Response(405, text="Method Not Allowed")],
+)  # fmt: skip
+async def test_auth_404_points_to_the_base_url_not_to_a_guid(make_server, fake, answer):
+    """Regression: SIIGO_BASE_URL with a gateway path (/alliances/api) gave a 404 on POST
+    /auth and the hint "Revisa el ID (GUID)", which nothing could act on."""
+    fake.on("POST", "/auth", answer)
+    async with Client(make_server()) as client:
+        check = text_of(await client.call_tool("siigo_check_connection", {}))
+        stored = text_of(await client.call_tool("siigo_list_taxes", {}))
+    for text in (check, stored):
+        assert "POST /auth" in text and "SIIGO_BASE_URL" in text and "/alliances/api" in text
+        assert "Revisa el ID" not in text and "obténlo con" not in text
+    assert fake.paths() == ["/auth"]
 
 
 async def test_missing_config_does_not_crash_and_is_actionable(fake, clock):
@@ -757,6 +815,51 @@ async def test_users_resume_skip_counts_rows_of_the_siigo_page(make_server, fake
     assert all("skip" not in c.params for c in fake.data_calls())
 
 
+BIG = "x" * 30_000  # a row that does not fit even alone: it arrives summarised
+
+
+@pytest.mark.parametrize(
+    ("tool", "args", "path", "payload", "detail"),
+    [
+        ("siigo_list_users", {}, "/v1/users", envelope([{"id": 1, "b": BIG}]), None),
+        ("siigo_list_accounts_payable", {}, "/v1/accounts-payable",
+         {"value": envelope([{"due": {"balance": 1}, "b": BIG}])}, None),
+        ("siigo_list_taxes", {}, "/v1/taxes",
+         [{"id": i, "active": True, "b": "x" * 3000} for i in range(20)], None),
+        ("siigo_list_document_types", {"type": "FV"}, "/v1/document-types",
+         [{"id": i, "active": True, "b": "x" * 3000} for i in range(20)], None),
+        ("siigo_list_invoices", {}, "/v1/invoices", envelope([{"id": GUID, "b": BIG}]),
+         "siigo_get_invoice"),
+        ("siigo_list_customers", {}, "/v1/customers", envelope([{"id": GUID, "b": BIG}]),
+         "siigo_get_customer"),
+    ],
+)  # fmt: skip
+async def test_truncation_advice_points_only_to_tools_that_exist(
+    make_server, fake, tool, args, path, payload, detail
+):
+    """Regression: catalogs, users and accounts payable were told to use a siigo_get_* tool
+    that does not exist for them."""
+    fake.on("GET", path, payload)
+    server = make_server()
+    out = (await call(server, tool, args)).structured_content
+    message = out["truncation_message"]
+    assert out["truncated"] and out["compacted"] >= 1 and "siigo_get_*" not in message
+    named = set(re.findall(r"siigo_get_\w+", message))
+    assert named == ({detail} if detail else set())
+    assert named <= {t.name for t in await server.list_tools()}
+
+
+def test_detail_tools_exist_and_instructions_do_not_promise_one_for_every_listing():
+    registered = {s.name for s in srv.TOOL_SPECS}
+    assert set(srv.DETAIL_TOOLS.values()) <= registered
+    text = " ".join(srv.INSTRUCTIONS.split())
+    assert "usa siigo_get_* con su id para el detalle" not in text
+    assert "no la tienen" in text
+    # siigo_list_users is not a cached catalog (no refresh, paginated).
+    assert "siigo_list_taxes, siigo_list_users)" not in text
+    assert "vendedores (siigo_list_users)" in text
+
+
 # =========================================================================== reports
 
 
@@ -1173,21 +1276,24 @@ async def test_create_invoice_happy_path(make_server, fake):
         "balance": 1273.03,
         "stamp": {"status": "Draft"},
         "public_url": "https://siigo/x",
+        "metadata": {"created": dt.datetime.now(dt.timezone.utc).isoformat()},
     }
     fake.on("POST", "/v1/invoices", httpx.Response(201, json=created))
     result = await call(
-        make_server(enable_write=True), "siigo_create_invoice", {"invoice": invoice_payload()}
+        make_server(enable_write=True),
+        "siigo_create_invoice",
+        {"invoice": invoice_payload(), "idempotency_key": "Venta1"},
     )
     assert not result.is_error, text_of(result)
     out = result.structured_content
-    assert out["created"] is True and out["dian_send_requested"] is False
+    assert out["replayed"] is False and out["dian_send_requested"] is False
     assert "sent_to_dian" not in out and out["dian_status"] == "Draft"
     assert out["dian_note"].startswith("Borrador: no se envió a la DIAN")
     assert out["summary"]["name"] == "FV-1-11" and out["summary"]["stamp_status"] == "Draft"
     assert out["preflight"]["ok"] is True and "total" in out["preflight"]["checks"]
-    assert re.fullmatch(r"[A-Za-z0-9]{1,30}", out["idempotency_key"])
+    assert out["idempotency_key"] == "Venta1"
     post = fake.data_calls()[-1]
-    assert post.path == "/v1/invoices" and post.headers["idempotency-key"] == out["idempotency_key"]
+    assert post.path == "/v1/invoices" and post.headers["idempotency-key"] == "Venta1"
     assert post.body["stamp"] == {"send": False} and post.body["mail"] == {"send": False}
     assert post.body["date"] == "2099-01-01" and post.body["items"][0]["price"] == 1069.77
     assert "number" not in post.body
@@ -1197,7 +1303,9 @@ async def test_create_invoice_preflight_blocks_without_post(make_server, fake):
     route_catalogs(fake)
     payload = invoice_payload(payments=[{"id": 5636, "value": 1000}], number=7)
     result = await call(
-        make_server(enable_write=True), "siigo_create_invoice", {"invoice": payload}
+        make_server(enable_write=True),
+        "siigo_create_invoice",
+        {"invoice": payload, "idempotency_key": "Pre1"},
     )
     text = text_of(result)
     assert result.is_error and "NO se envió" in text
@@ -1218,7 +1326,7 @@ async def test_create_invoice_skip_preflight_and_custom_key(make_server, fake):
     )
     out = result.structured_content
     assert out["preflight"] == {"skipped": True} and out["dian_send_requested"] is True
-    assert out["idempotency_key"] == "Key42" and out["idempotency_key_source"] == "caller"
+    assert out["idempotency_key"] == "Key42"
     # Siigo's answer shows no stamp at all: nothing says it reached the DIAN.
     assert "sent_to_dian" not in out and "NO consta como enviada" in out["dian_note"]
     assert fake.paths() == ["/auth", "/v1/invoices"]
@@ -1237,7 +1345,11 @@ async def test_create_invoice_never_claims_dian_sending_siigo_did_not_report(
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(stamp={"send": True}), "skip_preflight": skip_preflight},
+        {
+            "invoice": invoice_payload(stamp={"send": True}),
+            "skip_preflight": skip_preflight,
+            "idempotency_key": "Dian1",
+        },
     )
     out = result.structured_content
     assert "sent_to_dian" not in out and out["dian_send_requested"] is True
@@ -1253,7 +1365,11 @@ async def test_create_invoice_reports_dian_acceptance_from_the_answer(make_serve
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(stamp={"send": True}), "skip_preflight": True},
+        {
+            "invoice": invoice_payload(stamp={"send": True}),
+            "skip_preflight": True,
+            "idempotency_key": "Dian2",
+        },
     )
     out = result.structured_content
     assert out["dian_status"] == "Accepted" and "aceptó" in out["dian_note"]
@@ -1268,69 +1384,61 @@ def same_day_sale() -> dict[str, Any]:
     return invoice_payload(customer=CONSUMIDOR_FINAL)
 
 
-async def test_separate_identical_sales_without_key_create_separate_invoices(make_server, fake):
-    """Regression: the key was derived from the body, so a second, genuinely new sale with
-    the same content on the same day (another conversation) got the same Idempotency-Key;
-    Siigo returned the first invoice and the tool still said created=true."""
-    route_catalogs(fake, customers=[CUSTOMER | CONSUMIDOR_FINAL])
-    store = InvoiceStore()
-    fake.on("POST", "/v1/invoices", store)
-    results = []
-    for _ in range(2):  # two conversations: a fresh server process each time
-        server = make_server(enable_write=True)
-        results.append(await call(server, "siigo_create_invoice", {"invoice": same_day_sale()}))
-        store.now += dt.timedelta(hours=3)
-    first, second = (r.structured_content for r in results)
-    assert len(store.invoices) == 2, "the second sale was never invoiced"
-    assert first["idempotency_key"] != second["idempotency_key"]
-    for out in (first, second):
-        assert out["created"] is True and out["replayed"] is False and "warning" not in out
-        assert out["idempotency_key_source"] == "generated"
-        assert re.fullmatch(r"[0-9a-f]{30}", out["idempotency_key"])
-    assert first["summary"]["name"] == "FV-1-1" and second["summary"]["name"] == "FV-1-2"
+@pytest.mark.parametrize("key", [None, ""])
+async def test_create_invoice_requires_an_idempotency_key(make_server, fake, key):
+    """The agent owns the key of each sale: without one nothing is sent (no server key)."""
+    server = make_server(enable_write=True)
+    tool = {t.name: t for t in await server.list_tools()}["siigo_create_invoice"]
+    assert "idempotency_key" in tool.input_schema["required"]
+    args: dict[str, Any] = {"invoice": invoice_payload(), "skip_preflight": True}
+    if key is not None:
+        args["idempotency_key"] = key
+    result = await call(server, "siigo_create_invoice", args)
+    assert result.is_error and "idempotency_key" in text_of(result)
+    assert fake.calls == []
 
 
-async def test_identical_sales_in_one_session_get_a_new_key_each(make_server, fake):
+async def test_separate_sales_with_their_own_keys_create_separate_invoices(make_server, fake):
     store = InvoiceStore()
     fake.on("POST", "/v1/invoices", store)
-    args = {"invoice": same_day_sale(), "skip_preflight": True}
+    outs = []
     async with Client(make_server(enable_write=True)) as client:
-        outs = [(await client.call_tool("siigo_create_invoice", args)).structured_content
-                for _ in range(2)]  # fmt: skip
-        own = (
-            await client.call_tool("siigo_create_invoice", {**args, "idempotency_key": "MiClave1"})
-        ).structured_content
+        for key in ("Venta1", "Venta2"):  # identical content, two sales
+            args = {"invoice": same_day_sale(), "skip_preflight": True, "idempotency_key": key}
+            outs.append((await client.call_tool("siigo_create_invoice", args)).structured_content)
     EXERCISED.add("siigo_create_invoice")
-    assert len(store.invoices) == 3 and len(set(store.keys_sent)) == 3
-    assert all(o["created"] is True and o["replayed"] is False for o in [*outs, own])
-    assert own["idempotency_key"] == "MiClave1" and own["idempotency_key_source"] == "caller"
+    assert store.keys_sent == ["Venta1", "Venta2"] and len(store.invoices) == 2
+    assert [o["replayed"] for o in outs] == [False, False]
+    assert "warning" not in outs[0] and "replay_note" in outs[0]
 
 
-async def test_keyless_identical_invoice_after_a_creation_warns_of_a_possible_duplicate(
-    make_server, fake
+@pytest.mark.parametrize(("later", "replayed"), [(dt.timedelta(seconds=30), False),
+                                                 (dt.timedelta(hours=3), True)])  # fmt: skip
+async def test_same_key_retried_after_a_timeout_returns_the_same_invoice(
+    make_server, fake, later, replayed
 ):
-    """When Siigo answered but the answer never reached the agent, a keyless re-run is a new
-    invoice (the server cannot tell it from a second sale): the result must say so."""
+    """Every answer of the first call is lost after Siigo stored the invoice; the agent
+    retries the same sale with the same key and gets that invoice back, not a second one."""
     store = InvoiceStore()
+    store.lose_answers = 3  # the first call and its two automatic retries
     fake.on("POST", "/v1/invoices", store)
-    args = {"invoice": same_day_sale(), "skip_preflight": True}
-    async with Client(make_server(enable_write=True)) as client:
-        first = (
-            await client.call_tool("siigo_create_invoice", {**args, "idempotency_key": "Orig1"})
-        ).structured_content
-        second = (await client.call_tool("siigo_create_invoice", args)).structured_content
-        third = (
-            await client.call_tool("siigo_create_invoice", {**args, "idempotency_key": "Otra2"})
-        ).structured_content
-    assert "notes" not in first and "notes" not in third  # the agent manages its own keys
-    assert second["created"] is True and len(store.invoices) == 3
-    assert "ya había creado" in second["notes"][0] and "'Orig1'" in second["notes"][0]
-    assert "FV-1-1" in second["notes"][0] and "siigo_list_invoices" in second["notes"][0]
+    args = {"invoice": same_day_sale(), "skip_preflight": True, "idempotency_key": "Venta20261005"}
+    lost = await call(make_server(enable_write=True), "siigo_create_invoice", args)
+    text = text_of(lost)
+    assert lost.is_error and "MISMA idempotency_key='Venta20261005'" in text
+    assert "en vez de duplicarla" in text
+    store.now += later
+    retry = (
+        await call(make_server(enable_write=True), "siigo_create_invoice", args)
+    ).structured_content
+    assert store.keys_sent == ["Venta20261005"] * 4 and len(store.invoices) == 1
+    assert retry["summary"]["id"] == store.invoices[0]["id"]
+    assert retry["replayed"] is replayed and ("warning" in retry) is replayed
 
 
 async def test_reused_key_reports_the_replay_instead_of_a_creation(make_server, fake):
-    """Regression: a key reused for a new sale (here by the agent, in another conversation
-    hours later) made Siigo return the earlier invoice, reported as created=true."""
+    """A key reused hours later (another conversation): Siigo returns the earlier invoice,
+    and the result says so before anything that looks like a fresh invoice."""
     store = InvoiceStore()
     fake.on("POST", "/v1/invoices", store)
     args = {"invoice": same_day_sale(), "skip_preflight": True, "idempotency_key": "VentaCF1"}
@@ -1338,17 +1446,126 @@ async def test_reused_key_reports_the_replay_instead_of_a_creation(make_server, 
     store.now += dt.timedelta(hours=3)
     second = await call(make_server(enable_write=True), "siigo_create_invoice", args)
     assert len(store.invoices) == 1
-    assert first.structured_content["created"] is True
+    assert first.structured_content["replayed"] is False
     out = second.structured_content
-    assert out["created"] is False and out["replayed"] is True
+    assert out["replayed"] is True
     assert out["summary"]["id"] == first.structured_content["summary"]["id"]
     text = text_of(second)
-    # The warning comes first, before the invoice that looks like a fresh one.
     assert text.index('"warning"') < text.index('"summary"') < text.index('"invoice"')
-    assert "NO creó una factura nueva" in out["warning"]
-    assert "misma Idempotency-Key" in out["warning"] and "otra idempotency_key" in out["warning"]
+    assert "NO creó una factura nueva" in out["warning"] and "'VentaCF1'" in out["warning"]
+    assert "idempotency_key nueva" in out["warning"] and "metadata.created" in out["warning"]
     assert out["dian_note"].startswith("Factura que ya existía")
-    assert "metadata.created" in " ".join(out["replay_evidence"]["reasons"])
+
+
+def priced_sale(price: float) -> dict[str, Any]:
+    """invoice_payload() with another price (19% IVA) and payments that match its total."""
+    total = round(price + round(price * 0.19, 2), 2)
+    item = invoice_payload()["items"][0] | {"price": price}
+    return invoice_payload(items=[item], payments=[{"id": 5636, "value": total}])
+
+
+@pytest.mark.parametrize("later", [dt.timedelta(seconds=40), dt.timedelta(minutes=5)])
+@pytest.mark.parametrize("price", [1069.77, 2000])
+async def test_retry_with_corrected_data_reports_the_old_invoice_it_got_back(
+    make_server, fake, later, price
+):
+    """Regression: the user interrupts a call with a wrong price and the agent, as told,
+    retries with the SAME key and the corrected price. Siigo returns the invoice of the
+    interrupted call, unchanged: the result said "created" (< 2 min) or advised a new key,
+    which left the wrong invoice in Siigo next to the corrected one."""
+    route_catalogs(fake)
+    store = InvoiceStore()
+    store.lose_answers = 3  # the first call and its two automatic retries
+    fake.on("POST", "/v1/invoices", store)
+    async with Client(make_server(enable_write=True)) as client:
+        lost = await client.call_tool(
+            "siigo_create_invoice", {"invoice": priced_sale(1069.77), "idempotency_key": "VentaA1"}
+        )
+        assert lost.is_error and "MISMA idempotency_key='VentaA1'" in text_of(lost)
+        store.now += later
+        out = (
+            await client.call_tool(
+                "siigo_create_invoice",
+                {"invoice": priced_sale(price), "idempotency_key": "VentaA1"},
+            )
+        ).structured_content
+    EXERCISED.add("siigo_create_invoice")
+    assert [i["total"] for i in store.invoices] == [1273.03]
+    if price == 1069.77:  # the same data: this sale's own invoice
+        assert "differences" not in out and out["replayed"] is (later > dt.timedelta(minutes=2))
+        return
+    assert out["replayed"] is True and "replay_note" not in out
+    assert out["differences"] == [{"field": "total", "requested": 2380.0, "returned": 1273.03}]
+    warning = out["warning"]
+    assert (
+        "NO creó ni modificó" in warning and "FV-1-1" in warning and "sigue existiendo" in warning
+    )
+    assert "total: pedido 2380.0, devuelto 1273.03" in warning
+    assert "siigo_delete_invoice" in warning and "Draft" in warning
+    assert "anúlala" in warning and "idempotency_key nueva" in warning
+    assert "otra venta: crea esta" not in warning  # a corrected retry is not "another sale"
+    assert out["dian_note"].startswith("Factura que ya existía")
+
+
+async def test_returned_invoice_with_other_customer_items_or_date_is_flagged(make_server, fake):
+    """Without the preflight total, the customer, document, date and items still count."""
+    fresh = dt.datetime.now(dt.timezone.utc).isoformat()
+    other = {"id": GUID, "name": "FV-1-3", "document": {"id": 24447}, "date": "2099-01-02",
+             "customer": {"identification": "900123456", "branch_office": 1},
+             "items": [{"code": "Item-2", "quantity": 3}],
+             "metadata": {"created": fresh}}  # fmt: skip
+    fake.on("POST", "/v1/invoices", httpx.Response(201, json=other))
+    args = {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Otra1"}
+    out = (
+        await call(make_server(enable_write=True), "siigo_create_invoice", args)
+    ).structured_content
+    assert out["replayed"] is True
+    assert {d["field"]: (d["requested"], d["returned"]) for d in out["differences"]} == {
+        "customer.identification": ("13832081", "900123456"),
+        "customer.branch_office": (0, 1),
+        "document.id": (24446, 24447),
+        "date": ("2099-01-01", "2099-01-02"),
+        "items": ("Item-1 x 1", "Item-2 x 3"),
+    }
+
+
+async def test_same_data_in_another_format_is_not_a_difference(make_server, fake):
+    """No false alarm: Siigo may echo numbers as text, codes in another case, a time."""
+    route_catalogs(fake)
+    fresh = dt.datetime.now(dt.timezone.utc).isoformat()
+    echo = {"id": GUID, "name": "FV-1-4", "document": {"id": "24446"},
+            "date": "2099-01-01T00:00:00",
+            "customer": {"id": GUID2, "identification": 13832081, "branch_office": "0"},
+            "items": [{"code": "ITEM-1", "quantity": "1.00"}], "total": 1273.0,
+            "metadata": {"created": fresh}}  # fmt: skip
+    fake.on("POST", "/v1/invoices", httpx.Response(201, json=echo))
+    args = {"invoice": invoice_payload(), "idempotency_key": "Mismo1"}
+    out = (
+        await call(make_server(enable_write=True), "siigo_create_invoice", args)
+    ).structured_content
+    assert out["replayed"] is False and "differences" not in out and "warning" not in out
+
+
+@pytest.mark.parametrize(("later", "replayed"), [(dt.timedelta(seconds=30), False),
+                                                 (dt.timedelta(minutes=5), True)])  # fmt: skip
+async def test_dian_note_of_a_draft_returned_for_a_send_request(make_server, fake, later, replayed):
+    """Regression: stamp.send=true on a retry of a draft got the old draft back, and the note
+    blamed the document type; a replay sends nothing to the DIAN."""
+    store = InvoiceStore()
+    store.lose_answers = 3
+    fake.on("POST", "/v1/invoices", store)
+    base = {"skip_preflight": True, "idempotency_key": "VentaB1"}
+    async with Client(make_server(enable_write=True)) as client:
+        await client.call_tool("siigo_create_invoice", base | {"invoice": invoice_payload()})
+        store.now += later
+        args = base | {"invoice": invoice_payload(stamp={"send": True})}
+        out = (await client.call_tool("siigo_create_invoice", args)).structured_content
+    assert out["replayed"] is replayed and "NO consta como enviada" in out["dian_note"]
+    if replayed:
+        assert "esta llamada no envió nada" in out["dian_note"]
+        assert "no es electrónico" not in out["dian_note"]
+    else:
+        assert "creada antes con esta clave" in out["dian_note"]
 
 
 async def test_key_reused_in_the_same_session_is_a_replay_even_without_timestamps(
@@ -1359,35 +1576,37 @@ async def test_key_reused_in_the_same_session_is_a_replay_even_without_timestamp
     async with Client(make_server(enable_write=True)) as client:
         first = (await client.call_tool("siigo_create_invoice", args)).structured_content
         again = (await client.call_tool("siigo_create_invoice", args)).structured_content
-    assert first["created"] is True and first["replayed"] is False
-    assert again["created"] is False and again["replayed"] is True
-    assert "respuesta exitosa" in again["replay_evidence"]["reasons"][0]
+    assert first["replayed"] is None and "No se pudo determinar" in first["replay_note"]
+    assert again["replayed"] is True and "ya había recibido" in again["warning"]
 
 
-async def test_caller_key_that_returns_another_invoice_is_flagged(make_server, fake):
-    """A key already used for a different invoice: Siigo answers with THAT invoice."""
-    route_catalogs(fake)
-    store = InvoiceStore()
-    store.by_key["Clave7"] = {
-        "id": GUID2, "name": "FV-1-3", "document": {"id": 24446}, "total": 50000.0,
-        "customer": {"identification": "900111222", "branch_office": 0},
-        "metadata": {"created": store.stamp()},  # same minute: only the content tells
-    }  # fmt: skip
-    fake.on("POST", "/v1/invoices", store)
+@pytest.mark.parametrize(
+    "metadata",
+    [None, "x", {"created": None}, {"created": "ayer"}, {"created": "2026-10-05T12:00:00+24:00"},
+     {"created": "2026-10-05T12:00:00+23:99"}, {"created": "9999-12-31T23:59:59-05:00"}],
+)  # fmt: skip
+async def test_unreadable_creation_time_gives_replayed_null_never_an_error(
+    make_server, fake, metadata
+):
+    """Regression: an out-of-range offset in metadata.created raised inside the tool, so an
+    invoice Siigo had just created was reported as an unexpected error without the key."""
+    answer: dict[str, Any] = {"id": GUID, "name": "FV-1-5", "stamp": {"status": "Draft"}}
+    if metadata is not None:
+        answer["metadata"] = metadata
+    fake.on("POST", "/v1/invoices", httpx.Response(201, json=answer))
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(), "idempotency_key": "Clave7"},
+        {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "K1"},
     )
+    assert not result.is_error, text_of(result)
     out = result.structured_content
-    assert out["created"] is False and out["replayed"] is True and store.invoices == []
-    fields = {m["field"] for m in out["replay_evidence"]["mismatches"]}
-    assert fields == {"customer.identification", "total"}
-    assert "NO creó la factura pedida" in out["warning"] and "OTRA factura" in out["warning"]
+    assert out["replayed"] is None and "warning" not in out
+    assert "una sola factura" in out["replay_note"] and out["summary"]["name"] == "FV-1-5"
 
 
 @pytest.mark.parametrize("local_clock_error_hours", [-5, 0, 5])
-async def test_fresh_invoice_with_caller_key_is_created_whatever_the_local_clock(
+async def test_fresh_invoice_is_not_a_replay_whatever_the_local_clock(
     make_server, fake, local_clock_error_hours
 ):
     """Replay detection uses Siigo's Date header, so a wrong clock on the user's computer
@@ -1401,63 +1620,14 @@ async def test_fresh_invoice_with_caller_key_is_created_whatever_the_local_clock
         {"invoice": same_day_sale(), "skip_preflight": True, "idempotency_key": "Nueva1"},
     )
     out = result.structured_content
-    assert out["created"] is True and out["replayed"] is False and len(store.invoices) == 1
+    assert out["replayed"] is False and len(store.invoices) == 1
 
 
-async def test_unknown_outcome_key_is_reused_by_an_identical_rerun_only(make_server, fake, clock):
-    """Keeps the timeout protection without merging separate sales: only after an outcome
-    that leaves the invoice in doubt, and only for 2 hours, does an identical call without a
-    key reuse the earlier key."""
-    store = InvoiceStore()
-    fake.on("POST", "/v1/invoices", siigo_error(503, "service_unavailable", "busy"))
-    args = {"invoice": same_day_sale(), "skip_preflight": True}
-    async with Client(make_server(enable_write=True)) as client:
-        failed = await client.call_tool("siigo_create_invoice", args)
-        key = fake.data_calls()[-1].headers["idempotency-key"]
-        assert failed.is_error and f"idempotency_key='{key}'" in text_of(failed)
-        fake.on("POST", "/v1/invoices", store)
-        rerun = (await client.call_tool("siigo_create_invoice", args)).structured_content
-        assert rerun["idempotency_key"] == key and rerun["idempotency_key_source"] == "pending"
-        assert "Se reutilizó la Idempotency-Key" in rerun["notes"][0]
-        # The outcome is known now: the next identical sale is a new invoice with a new key.
-        nxt = (await client.call_tool("siigo_create_invoice", args)).structured_content
-        assert nxt["idempotency_key"] != key and nxt["idempotency_key_source"] == "generated"
-        # A definite rejection (nothing created) is not remembered either.
-        fake.on("POST", "/v1/invoices", siigo_error(400, "invalid_document", "bad"))
-        await client.call_tool("siigo_create_invoice", args)
-        rejected = fake.data_calls()[-1].headers["idempotency-key"]
-        # An unknown outcome is forgotten after 2 hours.
-        fake.on("POST", "/v1/invoices", siigo_error(503, "service_unavailable", "busy"))
-        await client.call_tool("siigo_create_invoice", args)
-        doubtful = fake.data_calls()[-1].headers["idempotency-key"]
-        clock.now += 2 * 3600 + 1
-        fake.on("POST", "/v1/invoices", store)
-        late = (await client.call_tool("siigo_create_invoice", args)).structured_content
-    assert len({key, nxt["idempotency_key"], rejected, doubtful}) == 4
-    assert late["idempotency_key"] != doubtful and late["idempotency_key_source"] == "generated"
-
-
-async def test_rerun_without_key_after_a_keyed_call_was_lost_does_not_duplicate(make_server, fake):
-    """Regression (README advice "o ninguna"): the original call carried Claude's key, its
-    answer was lost, and the retry without a key used a different key: a second invoice."""
-    store = InvoiceStore()
-    store.lose_answers = 3  # the invoice is stored, every answer of the first call is lost
-    fake.on("POST", "/v1/invoices", store)
-    args = {"invoice": same_day_sale(), "skip_preflight": True}
-    async with Client(make_server(enable_write=True)) as client:
-        lost = await client.call_tool("siigo_create_invoice", {**args, "idempotency_key": "K1x"})
-        assert lost.is_error and "pudo haberse ejecutado" in text_of(lost)
-        retry = (await client.call_tool("siigo_create_invoice", args)).structured_content
-    assert len(store.invoices) == 1, "the retry created a second invoice"
-    assert retry["idempotency_key"] == "K1x" and retry["idempotency_key_source"] == "pending"
-    assert retry["summary"]["id"] == store.invoices[0]["id"]
-
-
-async def test_create_invoice_retry_after_client_timeout_does_not_duplicate(
+async def test_create_invoice_retry_after_client_timeout_sends_the_same_key(
     make_server, fake, caplog
 ):
-    """Regression: the client gave up (timeout/Esc) after the POST reached Siigo; the agent saw
-    no key, re-ran the same call and Siigo got a second POST with a new key."""
+    """The client gave up (timeout/Esc) after the POST reached Siigo; re-running the call with
+    the same key sends that key again, so Siigo can return the invoice instead of a second."""
     from mcp import MCPError
 
     async def slow_then_created(request: httpx.Request) -> httpx.Response:
@@ -1466,7 +1636,7 @@ async def test_create_invoice_retry_after_client_timeout_does_not_duplicate(
         return httpx.Response(201, json={"id": GUID, "stamp": {"status": "Draft"}})
 
     fake.on("POST", "/v1/invoices", slow_then_created)
-    args = {"invoice": invoice_payload(), "skip_preflight": True}
+    args = {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Esc1"}
     caplog.set_level(logging.INFO, logger="siigo_mcp")
     async with Client(make_server(enable_write=True)) as client:
         with pytest.raises(MCPError, match="(?i)timed out"):
@@ -1474,27 +1644,31 @@ async def test_create_invoice_retry_after_client_timeout_does_not_duplicate(
         retry = await client.call_tool("siigo_create_invoice", args)
     EXERCISED.add("siigo_create_invoice")
     keys = [c.headers["idempotency-key"] for c in fake.calls if c.path == "/v1/invoices"]
-    assert len(keys) == 2 and keys[0] == keys[1] == retry.structured_content["idempotency_key"]
-    assert retry.structured_content["idempotency_key_source"] == "pending"
-    assert f"Idempotency-Key={keys[0]}" in caplog.text  # logged before the POST went out
+    assert keys == ["Esc1", "Esc1"] and retry.structured_content["idempotency_key"] == "Esc1"
+    assert "Idempotency-Key=Esc1" in caplog.text  # logged before the POST went out
 
 
-async def test_create_invoice_description_tells_the_agent_to_send_its_own_key(make_server):
+async def test_create_invoice_description_explains_the_required_key(make_server):
     tool = {t.name: t for t in await make_server(enable_write=True).list_tools()}[
         "siigo_create_invoice"
     ]
-    text = tool.description + json.dumps(tool.input_schema, ensure_ascii=False)
+    text = " ".join((tool.description + json.dumps(tool.input_schema, ensure_ascii=False)).split())
     for fragment in (
-        "ANTES de la primera llamada",
-        "una NUEVA por cada venta",
-        "cancelada o interrumpida",
-        "aleatoria",
+        "Obligatoria",
+        "NUEVA y única por cada venta",
+        "REUTILIZA LA MISMA",
+        "falta de respuesta",
+        "Nunca uses la clave de otra venta",
         "replayed=true",
+        "replayed=null",
+        "menos de 2 minutos",
     ):
         assert fragment in text, fragment
-    assert "deriva" not in text  # the key is no longer derived from the content
-    assert "idempotency_key" in srv.INSTRUCTIONS and "interrumpida" in srv.INSTRUCTIONS
-    assert "replayed=true" in srv.INSTRUCTIONS
+    for gone in ("aleatoria", "Si la omites", "2 horas", "idempotency_key_source"):
+        assert gone not in text, gone
+    instructions = " ".join(srv.INSTRUCTIONS.split())
+    assert "exige idempotency_key" in instructions and "REUTILIZA LA MISMA" in instructions
+    assert "replayed=true" in instructions and "interrupción" in instructions
 
 
 async def test_create_invoice_description_qualifies_the_total_check(make_server):
@@ -1514,11 +1688,11 @@ async def test_create_invoice_retries_keep_same_key(make_server, fake):
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(), "skip_preflight": True},
+        {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Same1"},
     )
     assert not result.is_error
-    keys = {c.headers["idempotency-key"] for c in fake.data_calls()}
-    assert len(fake.data_calls()) == 2 and len(keys) == 1
+    keys = [c.headers["idempotency-key"] for c in fake.data_calls()]
+    assert keys == ["Same1", "Same1"]
 
 
 async def test_create_invoice_network_error_mentions_key(make_server, fake):
@@ -1532,7 +1706,9 @@ async def test_create_invoice_network_error_mentions_key(make_server, fake):
         {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Retry1"},
     )
     text = text_of(result)
-    assert result.is_error and "idempotency_key='Retry1'" in text
+    assert result.is_error and "MISMA idempotency_key='Retry1'" in text
+    assert "devolverá esa factura en vez de duplicarla" in text
+    assert "siigo_list_* o siigo_get_*" not in text  # the generic advice is replaced
     assert len(fake.data_calls()) == 3  # keyed POST: retried on transport errors
 
 
@@ -1545,7 +1721,7 @@ async def test_create_invoice_siigo_validation_error(make_server, fake):
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(), "skip_preflight": True},
+        {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Bad1"},
     )
     text = text_of(result)
     assert "invalid_total_payments" in text and "payments[].value" in text
@@ -1580,7 +1756,8 @@ def _read_timeout(request: httpx.Request) -> httpx.Response:
 async def test_create_invoice_uncertain_outcome_always_gives_the_key(
     make_server, fake, responses, fragment, maybe_created
 ):
-    """When the invoice may already exist, the error must carry the key to retry safely."""
+    """Whenever the invoice may already exist, the error gives the key and says to retry with
+    the SAME key (Siigo returns the existing invoice); a 429 created nothing."""
     fake.on("POST", "/v1/invoices", *responses)
     result = await call(
         make_server(enable_write=True),
@@ -1590,7 +1767,9 @@ async def test_create_invoice_uncertain_outcome_always_gives_the_key(
     text = text_of(result)
     assert result.is_error and fragment in text
     assert "idempotency_key='K9'" in text
-    assert ("siigo_list_invoices" in text) is maybe_created
+    assert ("MISMA idempotency_key='K9'" in text) is maybe_created
+    assert ("en vez de duplicarla" in text) is maybe_created
+    assert ("La factura no se creó" in text) is not maybe_created
 
 
 @pytest.mark.parametrize(
@@ -1614,12 +1793,54 @@ async def test_create_invoice_auth_failure_after_uncertain_attempt_keeps_the_key
     result = await call(
         make_server(enable_write=True),
         "siigo_create_invoice",
-        {"invoice": invoice_payload(), "skip_preflight": True},
+        {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "Auth1"},
     )
     text = text_of(result)
-    key = next(c for c in fake.calls if c.path == "/v1/invoices").headers["idempotency-key"]
     assert result.is_error and "POST /auth" in text
-    assert f"idempotency_key='{key}'" in text and "pudo haberse creado" in text
+    assert "MISMA idempotency_key='Auth1'" in text and "pudo haberse creado" in text
+
+
+@pytest.mark.parametrize("skip_preflight", [False, True])
+async def test_create_invoice_auth_2xx_without_token_is_not_a_created_invoice(
+    make_server, fake, skip_preflight
+):
+    """Regression: a 200 from POST /auth without access_token (a proxy's HTML page) was read
+    as Siigo's 2xx to the invoice: "la factura probablemente SÍ se creó"."""
+    route_catalogs(fake)
+    proxy_page = httpx.Response(200, text="<html>Proxy login</html>")
+    if skip_preflight:  # no token yet: the invoice is never sent
+        fake.on("POST", "/auth", proxy_page)
+    else:  # catalogs read with a valid token; then the invoice gets a 401 and renewal fails
+        fake.on("POST", "/auth", {"access_token": "t1", "expires_in": 86400}, proxy_page)
+        fake.on("POST", "/v1/invoices", siigo_error(401, "unauthorized", "expired"))
+    args = {"invoice": invoice_payload(), "idempotency_key": "SaleA1", "check_customer": False}
+    result = await call(make_server(enable_write=True), "siigo_create_invoice",
+                        args | {"skip_preflight": skip_preflight})  # fmt: skip
+    text = text_of(result)
+    assert result.is_error and "POST /auth" in text and "SIIGO_BASE_URL" in text
+    assert "probablemente" not in text and "pudo haberse creado" not in text
+    assert "La factura no se creó" in text and "idempotency_key='SaleA1'" in text
+    invoice_posts = [c for c in fake.calls if c.path == "/v1/invoices"]
+    assert len(invoice_posts) == (0 if skip_preflight else 1)
+
+
+@pytest.mark.parametrize(
+    "content",
+    [b'{"\\ud800": 1, "id": "\\udc00", "name": "FV-1-1 \\ud83d"}',
+     b'{"id": "x", "name": "FV-1-1 \xed\xa0\xbd"}'],  # CESU-8 bytes of a lone surrogate
+)  # fmt: skip
+async def test_answer_with_a_lone_surrogate_is_shown_not_a_crash(make_server, fake, content):
+    """Regression: a 2xx body with half an emoji could not be serialised: the invoice was
+    created but every retry with its key failed with "Error inesperado", without the key."""
+    fake.on("POST", "/v1/invoices", httpx.Response(201, content=content))
+    fake.on("GET", f"/v1/invoices/{GUID}", httpx.Response(200, content=content))
+    server = make_server(enable_write=True)
+    args = {"invoice": invoice_payload(), "skip_preflight": True, "idempotency_key": "K1"}
+    created = await call(server, "siigo_create_invoice", args)
+    assert not created.is_error, text_of(created)
+    assert created.structured_content["summary"]["name"] == "FV-1-1 \ufffd"
+    shown = await call(server, "siigo_get_invoice", {"invoice_id": GUID})
+    assert not shown.is_error and "\ufffd" in text_of(shown)
 
 
 class _BadGzip(httpx.AsyncByteStream):
@@ -1678,8 +1899,9 @@ async def test_create_invoice_non_json_201_says_it_was_probably_created(make_ser
 @pytest.mark.parametrize(
     "args",
     [
-        {"invoice": invoice_payload(items=[])},
-        {"invoice": invoice_payload() | {"extra_field": 1}},
+        {"invoice": invoice_payload(items=[]), "idempotency_key": "K1"},
+        {"invoice": invoice_payload() | {"extra_field": 1}, "idempotency_key": "K1"},
+        {"invoice": invoice_payload()},  # no idempotency_key
         {"invoice": invoice_payload(), "idempotency_key": "has-hyphen"},
         {"invoice": invoice_payload(), "idempotency_key": "x" * 31},
     ],
@@ -1690,6 +1912,25 @@ async def test_create_invoice_input_validation(make_server, fake, args):
 
 
 # =========================================================================== write: other
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("quantity", "Infinity"), ("price", "inf"), ("discount", "inf"), ("taxed_price", "Infinity")],
+)
+async def test_create_invoice_rejects_infinite_amounts_before_sending(
+    make_server, fake, field, value
+):
+    """Regression: "inf" passed the models and failed later as "Error inesperado ... de
+    Siigo" (and the audit log claimed a POST that was never sent)."""
+    item = invoice_payload()["items"][0] | {field: value}
+    if field == "taxed_price":
+        del item["price"]
+    args = {"invoice": invoice_payload(items=[item]), "idempotency_key": "Inf1"}
+    result = await call(make_server(enable_write=True), "siigo_create_invoice", args)
+    text = text_of(result)
+    assert result.is_error and "finite" in text and "inesperado" not in text
+    assert fake.calls == []
 
 
 async def test_send_invoice_email(make_server, fake):

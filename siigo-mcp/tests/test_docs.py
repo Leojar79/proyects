@@ -128,17 +128,14 @@ def troubleshooting_paragraph(start: str) -> str:
 
 
 def test_readme_timeout_advice_keeps_the_original_key():
-    """Regression: the advice offered retrying "o ninguna" (no key) whenever the invoice was
-    identical; when the original call carried Claude's key, that retry used another key and
-    Siigo created a second invoice."""
+    """After a timeout or an interrupted call the same sale is retried with the SAME key;
+    the server no longer reuses keys by itself, so no keyless retry may be suggested."""
     text = troubleshooting_paragraph("Tiempo de espera agotado")
     assert "o ninguna" not in README and "clave derivada" not in README
-    assert "usa la **misma** `idempotency_key` de la llamada original" in text
-    assert "argumentos de esa llamada" in text
-    # A keyless retry is only safe under the conditions the server really implements.
-    assert "**sin** clave solo reutiliza la clave original" in text
-    assert "el servidor tampoco recibió la respuesta de Siigo" in text
-    assert "no se ha reiniciado" in text and "2 horas" in text and "fecha incluida" in text
+    assert "Repite la llamada con la **misma** `idempotency_key` de la llamada original" in text
+    assert "argumentos de esa llamada" in text and "No uses una clave nueva" in text
+    for gone in ("**sin** clave", "2 horas", "fecha incluida", "verifica primero con"):
+        assert gone not in text, gone
 
 
 def test_readme_says_the_key_is_logged_at_any_level_and_where_the_log_is():
@@ -161,13 +158,79 @@ def test_readme_qualifies_the_local_payments_total_check():
         assert fragment in text, fragment
 
 
-def test_readme_explains_new_keys_and_replays():
+def test_readme_explains_required_keys_and_honest_replay_flags():
     text = flat(section("Habilitar escritura"))
-    assert "deriva" not in text and "**nueva para cada venta**" in text
-    assert "dos ventas idénticas" in text and "dan dos facturas" in text
-    assert "`created: false`, `replayed: true`" in text and "**no creó** ninguna factura" in text
+    assert "exige una `idempotency_key`" in text and "**nueva y única para cada venta**" in text
+    assert "**reutilizar la misma**" in text and "El servidor no genera claves" in text
+    assert "dos ventas idénticas con claves distintas dan dos facturas" in text
+    for flag in ("`replayed: true`", "`replayed: false`", "`replayed: null`"):
+        assert flag in text, flag
+    # Regression (finding 8): the README promised more replay detection than exists.
+    assert "**No garantiza**" in text and "menos de 2 minutos" in text
+    assert "cuando la factura devuelta es de otro cliente" not in text
+    for gone in ("aleatoria", "2 horas", "advierte en `notes`", "`created: false`"):
+        assert gone not in README, gone
+
+
+def test_readme_says_which_writes_are_retried_after_a_429():
+    """Regression (finding 10): "writes without Idempotency-Key are never retried", while
+    siigo_delete_invoice is retried after a 429 (safe: Siigo did not execute it)."""
+    text = troubleshooting_paragraph("HTTP 429")
+    assert "sin ejecutarla" in text and "`siigo_delete_invoice`" in text
+    assert "no se reintentan automáticamente" in text and "anular" in text
+    assert "**no** se reintentan" not in text
+
+
+def test_readme_does_not_call_the_users_listing_a_catalog():
+    """Regression (finding 11): siigo_list_users has pages, no cache and no refresh."""
+    text = flat(section("Herramientas"))
+    assert "los de catálogos (tipo de comprobante, impuesto, forma de pago, vendedor" not in text
+    assert "`siigo_list_users` (vendedores) no es un catálogo" in text
+    assert "no tiene caché ni `refresh`" in text
+
+
+def test_readme_truncation_names_get_tools_only_where_they_exist():
+    text = flat(section("Herramientas"))
+    assert "y `siigo_get_*` con su `id` da el detalle" not in text
+    assert "`siigo_list_users` y `siigo_list_accounts_payable` no tienen una" in text
+
+
+def test_readme_first_test_counts_requests_with_auth():
+    """Regression (finding 12): "unas 8 solicitudes" undercounted (POST /auth, the restart
+    to enable writes, the preflight lookups)."""
+    text = flat(section("Primera prueba recomendada"))
+    assert "unas 8 solicitudes" not in text
+    assert "contando `POST /auth`" in text and "hasta 14" in text and "son 10" in text
+
+
+def test_readme_config_error_advice_works_for_a_registered_server():
+    text = troubleshooting_paragraph("La configuración de Siigo está incompleta")
+    assert "already exists" in text and "`claude mcp remove`" in text and "--env-file" in text
 
 
 def test_readme_documents_that_failed_auth_is_not_repeated():
     text = troubleshooting_paragraph("Usuario API bloqueado")
     assert "Tampoco repite un `POST /auth` fallido" in text and "siigo_check_connection" in text
+
+
+def test_readme_and_instructions_say_which_4xx_are_retried():
+    """Regression: "nunca reintenta errores 4xx", while a 429 is retried up to 2 times and a
+    401 once (after renewing the token); the instructions forbade repeating a 429."""
+    from siigo_mcp.server import INSTRUCTIONS
+
+    text = troubleshooting_paragraph("Usuario API bloqueado")
+    assert "nunca reintenta errores 4xx." not in text
+    assert "nunca reintenta errores 4xx de datos" in text
+    assert "un 429 (hasta 2 veces" in text and "un 401 (una vez, tras renovar el token)" in text
+    assert "salvo un 429" in flat(INSTRUCTIONS)
+
+
+def test_readme_says_a_reused_key_never_changes_the_invoice():
+    """Regression: retrying a sale with corrected data and the same key gets the old invoice
+    back unchanged; the README must say so and point to `differences`."""
+    text = flat(section("Habilitar escritura"))
+    assert "Cambiar los datos no cambia una factura ya creada con esa clave" in text
+    assert "`differences`" in text and "no creó ni modificó" in text
+    assert "si no corresponde a la venta, la clave ya se había usado" not in text
+    assert "`differences`" in troubleshooting_paragraph("Tiempo de espera agotado")
+    assert "/alliances/api" in troubleshooting_paragraph("responde 404")

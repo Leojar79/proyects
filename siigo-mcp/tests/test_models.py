@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
+from typing import Any
 
 import pytest
 from pydantic import ValidationError
@@ -149,3 +151,29 @@ def test_invoice_other_rejections():
         invoice(items=[{"code": "A", "quantity": 2.5, "taxed_price": 1190.123456}])
     )
     assert ok.items[0].taxed_price == 1190.123456
+
+
+@pytest.mark.parametrize("value", ["inf", "Infinity", "-inf", "nan", float("inf")])
+@pytest.mark.parametrize(
+    "path",
+    [("items", 0, "quantity"), ("items", 0, "price"), ("items", 0, "discount"),
+     ("payments", 0, "value"), ("advance_payment",), ("currency", "exchange_rate")],
+)  # fmt: skip
+def test_invoice_amounts_must_be_finite(path, value):
+    """Regression: "inf" passed ge/gt (and the decimals check), then broke the preflight
+    total or the JSON body with an error that blamed Siigo."""
+    data = invoice(currency={"code": "USD", "exchange_rate": 4000})
+    target: Any = data
+    for step in path[:-1]:
+        target = target[step]
+    target[path[-1]] = value
+    with pytest.raises(ValidationError, match="finite"):
+        InvoiceCreate.model_validate(data)
+
+
+def test_invoice_amount_overflowing_json_number_is_rejected():
+    """1e309 in raw JSON is parsed as infinity."""
+    body = json.dumps(invoice()).replace('"value": 1273.03', '"value": 1e309')
+    assert "1e309" in body
+    with pytest.raises(ValidationError, match="finite"):
+        InvoiceCreate.model_validate_json(body)
