@@ -1,0 +1,19 @@
+# Entorno virtual y cachés de Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Secretos: NUNCA subir credenciales. Ojo: estas reglas solo cubren archivos dentro de
+# siigo-mcp/; un .mcp.json o .env en la raíz del repositorio NO queda ignorado por este archivo.
+.env
+.mcp.json
+
+# Archivos descargados (PDF/XML de facturas, con datos de clientes)
+downloads/
+# Carpeta de respaldo de SIIGO_DOWNLOAD_DIR cuando no hay carpeta personal (HOME)
+siigo-downloads/
