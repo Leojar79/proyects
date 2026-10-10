@@ -1,0 +1,116 @@
+/* Estilos base. Sin transiciones ni animaciones CSS: todo se dibuja en función de t. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #05060b;
+  color: #f6f2e9;
+  font-family: Inter, 'Liberation Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.modo-render {
+  overflow: hidden;
+}
+
+.vista {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  gap: 14px;
+}
+
+.lienzo-marco {
+  position: relative;
+  box-shadow: 0 0 0 4px #1d2236, 0 18px 50px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.controles {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #11152a;
+  border: 2px solid #262d48;
+  padding: 12px 14px;
+}
+
+.controles-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.controles button,
+.controles select,
+.controles input[type='text'] {
+  font: 600 14px Inter, sans-serif;
+  background: #1b2138;
+  color: #f6f2e9;
+  border: 2px solid #3a4568;
+  padding: 6px 10px;
+}
+
+.controles button {
+  cursor: pointer;
+  min-width: 96px;
+}
+
+.controles button:hover {
+  background: #252d4a;
+}
+
+.reloj-vista {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  min-width: 120px;
+}
+
+.linea-tiempo {
+  position: relative;
+  height: 46px;
+}
+
+.linea-tiempo input[type='range'] {
+  width: 100%;
+  margin: 0;
+}
+
+.marca-escena {
+  position: absolute;
+  top: 24px;
+  font-size: 11px;
+  color: #9aa3bd;
+  border-left: 2px solid #4a5478;
+  padding-left: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aviso-carga {
+  max-width: 760px;
+  margin: 80px auto;
+  padding: 28px 32px;
+  background: #141a2c;
+  border: 3px solid #ffc23d;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.aviso-carga code {
+  background: #05070d;
+  padding: 2px 8px;
+  color: #8ff0b5;
+}

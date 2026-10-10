@@ -1,4 +1,4 @@
-// Formato de números para pantalla y guion (español latinoamericano).
+// Formato de números para pantalla y guion (español latinoamericano, es-419: punto decimal).
 
 const LOCALE = 'es-419'
 
@@ -26,7 +26,7 @@ export function entero(x) {
   return Math.round(x).toLocaleString(LOCALE)
 }
 
-// "x1.234" para factores grandes, "x2,5" para pequeños.
+// "1,234 veces" para factores grandes, "2.5 veces" para pequeños.
 export function factor(x) {
   if (x === null || x === undefined || !Number.isFinite(x)) return '—'
   if (x >= 100) return `${Math.round(x).toLocaleString(LOCALE)} veces`

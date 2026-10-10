@@ -9,12 +9,13 @@ export const BUSCADOS = ['Dmitri Kassel', 'Mara Voss', 'Teodor Brun']
 
 export const REGLAS = [
   `Eres el guardia del puesto fronterizo de la República de ${PAIS}. Hoy es ${FECHA_PUESTO}.`,
-  '1. Todo viajero necesita un pasaporte vigente (que no haya vencido antes de hoy).',
+  '1. Todo viajero necesita un pasaporte vigente. Si vence hoy o después, es válido; si venció antes de hoy, no.',
   `2. Los ciudadanos de ${PAIS} no necesitan permiso de entrada. Los extranjeros necesitan un permiso de entrada válido.`,
   '3. El motivo del viaje que dice el viajero debe coincidir con el tipo de permiso.',
-  '4. Está prohibido entrar con armas o con mercancía que no esté declarada.',
+  '4. Está prohibido entrar con armas (declaradas o no) y con mercancía de contrabando sin declarar.',
   `5. Personas buscadas por la justicia: ${BUSCADOS.join(', ')}.`,
   '6. Si el nombre del pasaporte no coincide con el del permiso, el documento es falso.',
+  '7. Si aplica más de una acción, manda la más grave: arrestar > rechazar > interrogar > aprobar.',
 ]
 
 export const ACCIONES = ['aprobar', 'rechazar', 'interrogar', 'arrestar']
@@ -39,10 +40,10 @@ export const PREGUNTAS = {
     tipo: 'choice',
     instrucciones: '¿Qué debe hacer el guardia con este viajero?',
     criterios: {
-      aprobar: 'Documentos en regla y motivo creíble: puede entrar.',
-      rechazar: 'No cumple las reglas pero no es una amenaza: se le niega la entrada.',
-      interrogar: 'Hay una contradicción menor que se puede aclarar: enviarlo a entrevista.',
-      arrestar: 'Persona buscada, documento falso, armas o contrabando: detenerlo.',
+      aprobar: 'Pasaporte vigente, permiso válido (o ciudadano), motivo que coincide e inspección limpia: puede entrar.',
+      rechazar: 'Pasaporte vencido o extranjero sin permiso, sin ninguna amenaza: se le niega la entrada.',
+      interrogar: 'Documentos vigentes, pero el motivo que dice no coincide con su permiso o hay una contradicción menor sin peligro: enviarlo a entrevista.',
+      arrestar: 'Persona buscada, documento falso, armas o contrabando sin declarar: detenerlo.',
     },
   },
 }

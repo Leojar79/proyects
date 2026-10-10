@@ -1,0 +1,5710 @@
+{
+  "version": 1,
+  "source": "demo",
+  "createdAt": "2026-10-10T08:37:54.656Z",
+  "nota": "Datos simulados para probar el diseño del video. NO son resultados reales.",
+  "viajeros": [
+    "v01",
+    "v02",
+    "v03",
+    "v04",
+    "v05",
+    "v06",
+    "v07",
+    "v08",
+    "v09",
+    "v10",
+    "v11",
+    "v12",
+    "v13",
+    "v14",
+    "v15",
+    "v16",
+    "v17",
+    "v18",
+    "v19",
+    "v20",
+    "v21",
+    "v22",
+    "v23",
+    "v24",
+    "v25",
+    "v26",
+    "v27",
+    "v28",
+    "v29",
+    "v30",
+    "v31",
+    "v32",
+    "v33",
+    "v34",
+    "v35",
+    "v36",
+    "v37",
+    "v38",
+    "v39",
+    "v40",
+    "v41",
+    "v42",
+    "v43",
+    "v44",
+    "v45",
+    "v46",
+    "v47",
+    "v48",
+    "v49",
+    "v50",
+    "v51",
+    "v52",
+    "v53",
+    "v54",
+    "v55",
+    "v56",
+    "v57",
+    "v58",
+    "v59",
+    "v60"
+  ],
+  "proveedores": [
+    {
+      "id": "gpt",
+      "nombre": "GPT Astra",
+      "empresa": "OpenAI",
+      "modelo": "gpt-astra",
+      "color": "#19c37d",
+      "precio": {
+        "entradaPorMTok": 10,
+        "entradaCacheadaPorMTok": 1,
+        "salidaPorMTok": 50,
+        "fuente": "Finout y OpenRouter (no es la página oficial de OpenAI). Verificar en https://openai.com/api/pricing",
+        "verificado": false,
+        "fecha": "2026-10-10"
+      },
+      "opciones": {
+        "reasoningEffort": "low"
+      }
+    },
+    {
+      "id": "opus",
+      "nombre": "Claude Opus 5.5",
+      "empresa": "Anthropic",
+      "modelo": "claude-opus-5-5",
+      "color": "#e07a4f",
+      "precio": {
+        "entradaPorMTok": 4,
+        "entradaCacheadaPorMTok": 0.2,
+        "salidaPorMTok": 20,
+        "fuente": "Tabla de precios de la API de Anthropic (2026-10-06)",
+        "verificado": true,
+        "fecha": "2026-10-06"
+      },
+      "opciones": {
+        "effort": "low"
+      }
+    },
+    {
+      "id": "jev",
+      "nombre": "Jev",
+      "empresa": "TypeSafe",
+      "modelo": "jev-latest",
+      "color": "#4f7cff",
+      "precio": {
+        "entradaPorMTok": 0.042,
+        "entradaCacheadaPorMTok": 0.042,
+        "salidaPorMTok": 0,
+        "fuente": "Agregadores (flaviocopes.com, eesel.ai, OpenRouter); TypeSafe no publica página de precios. Verificar en https://docs.typesafe.ai",
+        "verificado": false,
+        "fecha": "2026-10-10"
+      },
+      "opciones": {}
+    }
+  ],
+  "resultados": {
+    "gpt": [
+      {
+        "viajeroId": "v01",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 234,
+          "razonamiento": 212,
+          "estimado": false
+        },
+        "costoUSD": 0.01708,
+        "latenciaMs": 1707,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "9bc634e2bc84",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v02",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 552,
+          "entradaCacheada": 0,
+          "salida": 333,
+          "razonamiento": 308,
+          "estimado": false
+        },
+        "costoUSD": 0.02217,
+        "latenciaMs": 2008,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "f73a763ca559",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v03",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 548,
+          "entradaCacheada": 0,
+          "salida": 219,
+          "razonamiento": 196,
+          "estimado": false
+        },
+        "costoUSD": 0.01643,
+        "latenciaMs": 2822,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "e8701adafc68",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v04",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 133,
+          "razonamiento": 111,
+          "estimado": false
+        },
+        "costoUSD": 0.012,
+        "latenciaMs": 2538,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "a67d640300e5",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v05",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 274,
+          "razonamiento": 250,
+          "estimado": false
+        },
+        "costoUSD": 0.01908,
+        "latenciaMs": 3886,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "57f1a45125c8",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v06",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 540,
+          "entradaCacheada": 0,
+          "salida": 250,
+          "razonamiento": 228,
+          "estimado": false
+        },
+        "costoUSD": 0.0179,
+        "latenciaMs": 4016,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "8977ff576ef2",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v07",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 155,
+          "razonamiento": 129,
+          "estimado": false
+        },
+        "costoUSD": 0.01318,
+        "latenciaMs": 1658,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "ec088ebe40e9",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v08",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 209,
+          "razonamiento": 187,
+          "estimado": false
+        },
+        "costoUSD": 0.01583,
+        "latenciaMs": 3954,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "b9122f407e68",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v09",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 548,
+          "entradaCacheada": 0,
+          "salida": 152,
+          "razonamiento": 126,
+          "estimado": false
+        },
+        "costoUSD": 0.01308,
+        "latenciaMs": 2093,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "9bbdad67be0e",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v10",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": true,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 527,
+          "entradaCacheada": 0,
+          "salida": 215,
+          "razonamiento": 190,
+          "estimado": false
+        },
+        "costoUSD": 0.01602,
+        "latenciaMs": 2798,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "d9cb9a6294aa",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v11",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 107,
+          "razonamiento": 81,
+          "estimado": false
+        },
+        "costoUSD": 0.0107,
+        "latenciaMs": 3458,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "0277c8198529",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v12",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 284,
+          "razonamiento": 256,
+          "estimado": false
+        },
+        "costoUSD": 0.01959,
+        "latenciaMs": 4142,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "2065d9ccda54",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v13",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 242,
+          "razonamiento": 220,
+          "estimado": false
+        },
+        "costoUSD": 0.01749,
+        "latenciaMs": 3776,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "ab7669c4cd57",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v14",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 205,
+          "razonamiento": 177,
+          "estimado": false
+        },
+        "costoUSD": 0.01562,
+        "latenciaMs": 1675,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "193a0dd82760",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v15",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 175,
+          "razonamiento": 148,
+          "estimado": false
+        },
+        "costoUSD": 0.01418,
+        "latenciaMs": 2772,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "5fcab5736d0e",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v16",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 177,
+          "razonamiento": 155,
+          "estimado": false
+        },
+        "costoUSD": 0.01428,
+        "latenciaMs": 1913,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "e1c7a8994b9a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v17",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 197,
+          "razonamiento": 175,
+          "estimado": false
+        },
+        "costoUSD": 0.01519,
+        "latenciaMs": 3589,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "06773450237c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v18",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 102,
+          "razonamiento": 77,
+          "estimado": false
+        },
+        "costoUSD": 0.01047,
+        "latenciaMs": 1512,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "685c36e0e6ba",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v19",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 523,
+          "entradaCacheada": 0,
+          "salida": 389,
+          "razonamiento": 361,
+          "estimado": false
+        },
+        "costoUSD": 0.02468,
+        "latenciaMs": 1566,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "0a06aca63b98",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v20",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 129,
+          "razonamiento": 107,
+          "estimado": false
+        },
+        "costoUSD": 0.01184,
+        "latenciaMs": 2580,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "27ebba7266b7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v21",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 256,
+          "razonamiento": 234,
+          "estimado": false
+        },
+        "costoUSD": 0.01813,
+        "latenciaMs": 2395,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "235c7c8dd447",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v22",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": true,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 301,
+          "razonamiento": 275,
+          "estimado": false
+        },
+        "costoUSD": 0.02044,
+        "latenciaMs": 1877,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "989fd6fb3154",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v23",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 381,
+          "razonamiento": 357,
+          "estimado": false
+        },
+        "costoUSD": 0.02436,
+        "latenciaMs": 1750,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "93aea35d426f",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v24",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 362,
+          "razonamiento": 334,
+          "estimado": false
+        },
+        "costoUSD": 0.02345,
+        "latenciaMs": 3167,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "d531e70b82a4",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v25",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 84,
+          "razonamiento": 60,
+          "estimado": false
+        },
+        "costoUSD": 0.00956,
+        "latenciaMs": 4097,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "7926b23cb254",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v26",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 547,
+          "entradaCacheada": 0,
+          "salida": 274,
+          "razonamiento": 251,
+          "estimado": false
+        },
+        "costoUSD": 0.01917,
+        "latenciaMs": 1573,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "15d5a4089f7a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v27",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 181,
+          "razonamiento": 158,
+          "estimado": false
+        },
+        "costoUSD": 0.01436,
+        "latenciaMs": 1634,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "40faf9d054c1",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v28",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 171,
+          "razonamiento": 144,
+          "estimado": false
+        },
+        "costoUSD": 0.01392,
+        "latenciaMs": 2017,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "c3ceabc15a87",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v29",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 356,
+          "razonamiento": 334,
+          "estimado": false
+        },
+        "costoUSD": 0.02322,
+        "latenciaMs": 4268,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "8d1f53862487",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v30",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 145,
+          "razonamiento": 121,
+          "estimado": false
+        },
+        "costoUSD": 0.01257,
+        "latenciaMs": 2785,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "c6f2c9b07fe1",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v31",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 409,
+          "razonamiento": 384,
+          "estimado": false
+        },
+        "costoUSD": 0.02588,
+        "latenciaMs": 4142,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "ea010b13facb",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v32",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 273,
+          "razonamiento": 250,
+          "estimado": false
+        },
+        "costoUSD": 0.01898,
+        "latenciaMs": 3076,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "9fd83f677270",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v33",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 541,
+          "entradaCacheada": 0,
+          "salida": 262,
+          "razonamiento": 234,
+          "estimado": false
+        },
+        "costoUSD": 0.01851,
+        "latenciaMs": 3998,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "d487e653906c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v34",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 130,
+          "razonamiento": 108,
+          "estimado": false
+        },
+        "costoUSD": 0.01192,
+        "latenciaMs": 3080,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "c690f42e83fc",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v35",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 127,
+          "razonamiento": 102,
+          "estimado": false
+        },
+        "costoUSD": 0.01172,
+        "latenciaMs": 2006,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "a5421461d514",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v36",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 559,
+          "entradaCacheada": 0,
+          "salida": 348,
+          "razonamiento": 323,
+          "estimado": false
+        },
+        "costoUSD": 0.02299,
+        "latenciaMs": 3033,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "ab373c74214d",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v37",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 402,
+          "razonamiento": 378,
+          "estimado": false
+        },
+        "costoUSD": 0.02546,
+        "latenciaMs": 2951,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "0165ca2dbd39",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v38",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 251,
+          "razonamiento": 224,
+          "estimado": false
+        },
+        "costoUSD": 0.01787,
+        "latenciaMs": 2411,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "069b0fe61114",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v39",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": true,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 549,
+          "entradaCacheada": 0,
+          "salida": 199,
+          "razonamiento": 175,
+          "estimado": false
+        },
+        "costoUSD": 0.01544,
+        "latenciaMs": 2527,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "8fb3c023b7e9",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v40",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 221,
+          "razonamiento": 194,
+          "estimado": false
+        },
+        "costoUSD": 0.01643,
+        "latenciaMs": 3030,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "90d24bcc0ed7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v41",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 170,
+          "razonamiento": 142,
+          "estimado": false
+        },
+        "costoUSD": 0.01384,
+        "latenciaMs": 4093,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "dbc0128cb80b",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v42",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 107,
+          "razonamiento": 79,
+          "estimado": false
+        },
+        "costoUSD": 0.01065,
+        "latenciaMs": 3261,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "f3001453c0b0",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v43",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 251,
+          "razonamiento": 227,
+          "estimado": false
+        },
+        "costoUSD": 0.0179,
+        "latenciaMs": 2537,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "34fc8b4be0c7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v44",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 2,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":2,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 336,
+          "razonamiento": 313,
+          "estimado": false
+        },
+        "costoUSD": 0.02212,
+        "latenciaMs": 3909,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "48e949a2e97a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v45",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 120,
+          "razonamiento": 95,
+          "estimado": false
+        },
+        "costoUSD": 0.01133,
+        "latenciaMs": 3878,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "3ef540f3f192",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v46",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 204,
+          "razonamiento": 177,
+          "estimado": false
+        },
+        "costoUSD": 0.01559,
+        "latenciaMs": 2986,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "0b9a3f798964",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v47",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 304,
+          "razonamiento": 279,
+          "estimado": false
+        },
+        "costoUSD": 0.02056,
+        "latenciaMs": 1816,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "00a7bf3056ec",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v48",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 529,
+          "entradaCacheada": 0,
+          "salida": 310,
+          "razonamiento": 285,
+          "estimado": false
+        },
+        "costoUSD": 0.02079,
+        "latenciaMs": 1577,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "e3d3263f40b4",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v49",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 544,
+          "entradaCacheada": 0,
+          "salida": 232,
+          "razonamiento": 210,
+          "estimado": false
+        },
+        "costoUSD": 0.01704,
+        "latenciaMs": 2436,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "b0a365622a8d",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v50",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 242,
+          "razonamiento": 215,
+          "estimado": false
+        },
+        "costoUSD": 0.01752,
+        "latenciaMs": 4015,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "f230b48e03d2",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v51",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 168,
+          "razonamiento": 145,
+          "estimado": false
+        },
+        "costoUSD": 0.01378,
+        "latenciaMs": 3643,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "624a506504ba",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v52",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 94,
+          "razonamiento": 70,
+          "estimado": false
+        },
+        "costoUSD": 0.01012,
+        "latenciaMs": 3340,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "60f0ee4ac340",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v53",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 140,
+          "razonamiento": 113,
+          "estimado": false
+        },
+        "costoUSD": 0.01234,
+        "latenciaMs": 2430,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "8c3cf9db47fa",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v54",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 335,
+          "razonamiento": 310,
+          "estimado": false
+        },
+        "costoUSD": 0.02214,
+        "latenciaMs": 3215,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "b6f24a72d06c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v55",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 127,
+          "razonamiento": 105,
+          "estimado": false
+        },
+        "costoUSD": 0.01173,
+        "latenciaMs": 2937,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "e0e94f8ccfee",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v56",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 552,
+          "entradaCacheada": 0,
+          "salida": 391,
+          "razonamiento": 365,
+          "estimado": false
+        },
+        "costoUSD": 0.02507,
+        "latenciaMs": 3588,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "17075629e0c5",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v57",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 545,
+          "entradaCacheada": 0,
+          "salida": 186,
+          "razonamiento": 158,
+          "estimado": false
+        },
+        "costoUSD": 0.01475,
+        "latenciaMs": 2694,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "aaa4b9b8d6ff",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v58",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 320,
+          "razonamiento": 294,
+          "estimado": false
+        },
+        "costoUSD": 0.02137,
+        "latenciaMs": 3220,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "a6e70122f1fb",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v59",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 541,
+          "entradaCacheada": 0,
+          "salida": 394,
+          "razonamiento": 369,
+          "estimado": false
+        },
+        "costoUSD": 0.02511,
+        "latenciaMs": 4060,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "81ea99f7b704",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      },
+      {
+        "viajeroId": "v60",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 374,
+          "razonamiento": 350,
+          "estimado": false
+        },
+        "costoUSD": 0.02406,
+        "latenciaMs": 1690,
+        "modeloServido": "gpt-astra",
+        "fallback": false,
+        "huellaEstado": "55b94350960c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "reasoningEffort": "low"
+        }
+      }
+    ],
+    "opus": [
+      {
+        "viajeroId": "v01",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 222,
+          "razonamiento": 197,
+          "estimado": false
+        },
+        "costoUSD": 0.006592,
+        "latenciaMs": 2988,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "9bc634e2bc84",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v02",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 552,
+          "entradaCacheada": 0,
+          "salida": 348,
+          "razonamiento": 321,
+          "estimado": false
+        },
+        "costoUSD": 0.009168,
+        "latenciaMs": 3386,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "f73a763ca559",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v03",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 548,
+          "entradaCacheada": 0,
+          "salida": 222,
+          "razonamiento": 195,
+          "estimado": false
+        },
+        "costoUSD": 0.006632,
+        "latenciaMs": 2201,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "e8701adafc68",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v04",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 1,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 283,
+          "razonamiento": 257,
+          "estimado": false
+        },
+        "costoUSD": 0.0078,
+        "latenciaMs": 2644,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "a67d640300e5",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v05",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 311,
+          "razonamiento": 285,
+          "estimado": false
+        },
+        "costoUSD": 0.008372,
+        "latenciaMs": 2254,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "57f1a45125c8",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v06",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 540,
+          "entradaCacheada": 0,
+          "salida": 335,
+          "razonamiento": 310,
+          "estimado": false
+        },
+        "costoUSD": 0.00886,
+        "latenciaMs": 1918,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "8977ff576ef2",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v07",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 399,
+          "razonamiento": 374,
+          "estimado": false
+        },
+        "costoUSD": 0.010152,
+        "latenciaMs": 1474,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "ec088ebe40e9",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v08",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 90,
+          "razonamiento": 64,
+          "estimado": false
+        },
+        "costoUSD": 0.003952,
+        "latenciaMs": 3399,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "b9122f407e68",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v09",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 548,
+          "entradaCacheada": 0,
+          "salida": 245,
+          "razonamiento": 217,
+          "estimado": false
+        },
+        "costoUSD": 0.007092,
+        "latenciaMs": 2152,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "9bbdad67be0e",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v10",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 527,
+          "entradaCacheada": 0,
+          "salida": 369,
+          "razonamiento": 346,
+          "estimado": false
+        },
+        "costoUSD": 0.009488,
+        "latenciaMs": 3527,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "d9cb9a6294aa",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v11",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 0,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":0,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 89,
+          "razonamiento": 66,
+          "estimado": false
+        },
+        "costoUSD": 0.00392,
+        "latenciaMs": 2273,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "0277c8198529",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v12",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 149,
+          "razonamiento": 127,
+          "estimado": false
+        },
+        "costoUSD": 0.005136,
+        "latenciaMs": 1280,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "2065d9ccda54",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v13",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 423,
+          "razonamiento": 396,
+          "estimado": false
+        },
+        "costoUSD": 0.010616,
+        "latenciaMs": 3157,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "ab7669c4cd57",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v14",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 168,
+          "razonamiento": 143,
+          "estimado": false
+        },
+        "costoUSD": 0.005508,
+        "latenciaMs": 1922,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "193a0dd82760",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v15",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 285,
+          "razonamiento": 262,
+          "estimado": false
+        },
+        "costoUSD": 0.007872,
+        "latenciaMs": 2044,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "5fcab5736d0e",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v16",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 161,
+          "razonamiento": 135,
+          "estimado": false
+        },
+        "costoUSD": 0.005392,
+        "latenciaMs": 3370,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "e1c7a8994b9a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v17",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 180,
+          "razonamiento": 152,
+          "estimado": false
+        },
+        "costoUSD": 0.005736,
+        "latenciaMs": 1934,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "06773450237c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v18",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 103,
+          "razonamiento": 78,
+          "estimado": false
+        },
+        "costoUSD": 0.004208,
+        "latenciaMs": 3149,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "685c36e0e6ba",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v19",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 523,
+          "entradaCacheada": 0,
+          "salida": 252,
+          "razonamiento": 226,
+          "estimado": false
+        },
+        "costoUSD": 0.007132,
+        "latenciaMs": 1517,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "0a06aca63b98",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v20",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 137,
+          "razonamiento": 109,
+          "estimado": false
+        },
+        "costoUSD": 0.004896,
+        "latenciaMs": 3132,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "27ebba7266b7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v21",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 114,
+          "razonamiento": 92,
+          "estimado": false
+        },
+        "costoUSD": 0.004412,
+        "latenciaMs": 1830,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "235c7c8dd447",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v22",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 378,
+          "razonamiento": 351,
+          "estimado": false
+        },
+        "costoUSD": 0.009716,
+        "latenciaMs": 1253,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "989fd6fb3154",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v23",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 207,
+          "razonamiento": 184,
+          "estimado": false
+        },
+        "costoUSD": 0.006264,
+        "latenciaMs": 3234,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "93aea35d426f",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v24",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 317,
+          "razonamiento": 292,
+          "estimado": false
+        },
+        "costoUSD": 0.00848,
+        "latenciaMs": 2616,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "d531e70b82a4",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v25",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 326,
+          "razonamiento": 299,
+          "estimado": false
+        },
+        "costoUSD": 0.008664,
+        "latenciaMs": 2519,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "7926b23cb254",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v26",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 547,
+          "entradaCacheada": 0,
+          "salida": 413,
+          "razonamiento": 387,
+          "estimado": false
+        },
+        "costoUSD": 0.010448,
+        "latenciaMs": 3246,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "15d5a4089f7a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v27",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 341,
+          "razonamiento": 315,
+          "estimado": false
+        },
+        "costoUSD": 0.008944,
+        "latenciaMs": 1244,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "40faf9d054c1",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v28",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 170,
+          "razonamiento": 146,
+          "estimado": false
+        },
+        "costoUSD": 0.005548,
+        "latenciaMs": 2024,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "c3ceabc15a87",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v29",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 162,
+          "razonamiento": 136,
+          "estimado": false
+        },
+        "costoUSD": 0.005408,
+        "latenciaMs": 3092,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "8d1f53862487",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v30",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 0,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":0,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 302,
+          "razonamiento": 279,
+          "estimado": false
+        },
+        "costoUSD": 0.008168,
+        "latenciaMs": 3458,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "c6f2c9b07fe1",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v31",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 217,
+          "razonamiento": 190,
+          "estimado": false
+        },
+        "costoUSD": 0.006512,
+        "latenciaMs": 3251,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "ea010b13facb",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v32",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 1,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 258,
+          "razonamiento": 231,
+          "estimado": false
+        },
+        "costoUSD": 0.007292,
+        "latenciaMs": 1798,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "9fd83f677270",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v33",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 541,
+          "entradaCacheada": 0,
+          "salida": 266,
+          "razonamiento": 243,
+          "estimado": false
+        },
+        "costoUSD": 0.007484,
+        "latenciaMs": 2111,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "d487e653906c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v34",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 147,
+          "razonamiento": 125,
+          "estimado": false
+        },
+        "costoUSD": 0.005108,
+        "latenciaMs": 1210,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "c690f42e83fc",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v35",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 93,
+          "razonamiento": 70,
+          "estimado": false
+        },
+        "costoUSD": 0.004008,
+        "latenciaMs": 3054,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "a5421461d514",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v36",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 559,
+          "entradaCacheada": 0,
+          "salida": 241,
+          "razonamiento": 217,
+          "estimado": false
+        },
+        "costoUSD": 0.007056,
+        "latenciaMs": 1593,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "ab373c74214d",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v37",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 179,
+          "razonamiento": 157,
+          "estimado": false
+        },
+        "costoUSD": 0.005724,
+        "latenciaMs": 3112,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "0165ca2dbd39",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v38",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 329,
+          "razonamiento": 306,
+          "estimado": false
+        },
+        "costoUSD": 0.008708,
+        "latenciaMs": 2991,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "069b0fe61114",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v39",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 549,
+          "entradaCacheada": 0,
+          "salida": 126,
+          "razonamiento": 102,
+          "estimado": false
+        },
+        "costoUSD": 0.004716,
+        "latenciaMs": 3551,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "8fb3c023b7e9",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v40",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 203,
+          "razonamiento": 178,
+          "estimado": false
+        },
+        "costoUSD": 0.006212,
+        "latenciaMs": 2085,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "90d24bcc0ed7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v41",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 146,
+          "razonamiento": 119,
+          "estimado": false
+        },
+        "costoUSD": 0.005056,
+        "latenciaMs": 1854,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "dbc0128cb80b",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v42",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 411,
+          "razonamiento": 385,
+          "estimado": false
+        },
+        "costoUSD": 0.01034,
+        "latenciaMs": 1366,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "f3001453c0b0",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v43",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 135,
+          "razonamiento": 111,
+          "estimado": false
+        },
+        "costoUSD": 0.00484,
+        "latenciaMs": 2028,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "34fc8b4be0c7",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v44",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 200,
+          "razonamiento": 178,
+          "estimado": false
+        },
+        "costoUSD": 0.006128,
+        "latenciaMs": 1692,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "48e949a2e97a",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v45",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 143,
+          "razonamiento": 116,
+          "estimado": false
+        },
+        "costoUSD": 0.004992,
+        "latenciaMs": 2259,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "3ef540f3f192",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v46",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 150,
+          "razonamiento": 126,
+          "estimado": false
+        },
+        "costoUSD": 0.005156,
+        "latenciaMs": 1442,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "0b9a3f798964",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v47",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 419,
+          "razonamiento": 396,
+          "estimado": false
+        },
+        "costoUSD": 0.010524,
+        "latenciaMs": 1916,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "00a7bf3056ec",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v48",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 529,
+          "entradaCacheada": 0,
+          "salida": 151,
+          "razonamiento": 126,
+          "estimado": false
+        },
+        "costoUSD": 0.005136,
+        "latenciaMs": 1285,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "e3d3263f40b4",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v49",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 544,
+          "entradaCacheada": 0,
+          "salida": 367,
+          "razonamiento": 344,
+          "estimado": false
+        },
+        "costoUSD": 0.009516,
+        "latenciaMs": 2785,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "b0a365622a8d",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v50",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 364,
+          "razonamiento": 341,
+          "estimado": false
+        },
+        "costoUSD": 0.009448,
+        "latenciaMs": 2105,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "f230b48e03d2",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v51",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 196,
+          "razonamiento": 173,
+          "estimado": false
+        },
+        "costoUSD": 0.006072,
+        "latenciaMs": 2747,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "624a506504ba",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v52",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 542,
+          "entradaCacheada": 0,
+          "salida": 160,
+          "razonamiento": 133,
+          "estimado": false
+        },
+        "costoUSD": 0.005368,
+        "latenciaMs": 2079,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "60f0ee4ac340",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v53",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 382,
+          "razonamiento": 355,
+          "estimado": false
+        },
+        "costoUSD": 0.009776,
+        "latenciaMs": 2072,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "8c3cf9db47fa",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v54",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 347,
+          "razonamiento": 321,
+          "estimado": false
+        },
+        "costoUSD": 0.009096,
+        "latenciaMs": 2087,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "b6f24a72d06c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v55",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 268,
+          "razonamiento": 242,
+          "estimado": false
+        },
+        "costoUSD": 0.007512,
+        "latenciaMs": 1380,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "e0e94f8ccfee",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v56",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 552,
+          "entradaCacheada": 0,
+          "salida": 260,
+          "razonamiento": 232,
+          "estimado": false
+        },
+        "costoUSD": 0.007408,
+        "latenciaMs": 2089,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "17075629e0c5",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v57",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 1,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 545,
+          "entradaCacheada": 0,
+          "salida": 416,
+          "razonamiento": 394,
+          "estimado": false
+        },
+        "costoUSD": 0.0105,
+        "latenciaMs": 3532,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "aaa4b9b8d6ff",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v58",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 315,
+          "razonamiento": 292,
+          "estimado": false
+        },
+        "costoUSD": 0.008448,
+        "latenciaMs": 2514,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "a6e70122f1fb",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v59",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 541,
+          "entradaCacheada": 0,
+          "salida": 191,
+          "razonamiento": 166,
+          "estimado": false
+        },
+        "costoUSD": 0.005984,
+        "latenciaMs": 1406,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "81ea99f7b704",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      },
+      {
+        "viajeroId": "v60",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": null,
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 410,
+          "razonamiento": 383,
+          "estimado": false
+        },
+        "costoUSD": 0.010344,
+        "latenciaMs": 1551,
+        "modeloServido": "claude-opus-5-5",
+        "fallback": false,
+        "huellaEstado": "55b94350960c",
+        "intentos": 1,
+        "opcionesUsadas": {
+          "effort": "low"
+        }
+      }
+    ],
+    "jev": [
+      {
+        "viajeroId": "v01",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.8,
+          "miente": 0.9,
+          "peligro": 0.83,
+          "accion": 0.89
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 399,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "9bc634e2bc84",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v02",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.59,
+          "miente": 0.53,
+          "peligro": 0.46,
+          "accion": 0.71
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 547,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022974,
+        "latenciaMs": 427,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "f73a763ca559",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v03",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.71,
+          "miente": 0.58,
+          "peligro": 0.52,
+          "accion": 0.7
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022806,
+        "latenciaMs": 597,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "e8701adafc68",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v04",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.94,
+          "miente": 0.87,
+          "peligro": 0.8,
+          "accion": 0.84
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 319,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "a67d640300e5",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v05",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.95,
+          "miente": 0.85,
+          "peligro": 0.77,
+          "accion": 0.97
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 269,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "57f1a45125c8",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v06",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.97,
+          "miente": 0.77,
+          "peligro": 0.77,
+          "accion": 0.77
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002247,
+        "latenciaMs": 246,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "8977ff576ef2",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v07",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.8,
+          "miente": 0.94,
+          "peligro": 0.94,
+          "accion": 0.76
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022554,
+        "latenciaMs": 200,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "ec088ebe40e9",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v08",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.88,
+          "miente": 0.97,
+          "peligro": 0.85,
+          "accion": 0.79
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 490,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "b9122f407e68",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v09",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": true,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.99,
+          "miente": 0.89,
+          "peligro": 0.96,
+          "accion": 0.87
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022806,
+        "latenciaMs": 234,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "9bbdad67be0e",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v10",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.76,
+          "miente": 0.94,
+          "peligro": 0.97,
+          "accion": 0.75
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 522,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000021924,
+        "latenciaMs": 533,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "d9cb9a6294aa",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v11",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.82,
+          "miente": 0.78,
+          "peligro": 0.95,
+          "accion": 0.98
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 590,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "0277c8198529",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v12",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.75,
+          "miente": 0.77,
+          "peligro": 0.84,
+          "accion": 0.9
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022428,
+        "latenciaMs": 340,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "2065d9ccda54",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v13",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.75,
+          "miente": 0.63,
+          "peligro": 0.74,
+          "accion": 0.54
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022386,
+        "latenciaMs": 495,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "ab7669c4cd57",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v14",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.91,
+          "miente": 0.84,
+          "peligro": 0.92,
+          "accion": 0.86
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022302,
+        "latenciaMs": 336,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "193a0dd82760",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v15",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.79,
+          "miente": 0.94,
+          "peligro": 0.85,
+          "accion": 0.94
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022554,
+        "latenciaMs": 561,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "5fcab5736d0e",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v16",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.98,
+          "miente": 0.95,
+          "peligro": 0.81,
+          "accion": 0.93
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022596,
+        "latenciaMs": 567,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "e1c7a8994b9a",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v17",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.9,
+          "miente": 0.98,
+          "peligro": 0.75,
+          "accion": 0.89
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 528,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022176,
+        "latenciaMs": 562,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "06773450237c",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v18",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.99,
+          "miente": 0.83,
+          "peligro": 0.97,
+          "accion": 0.91
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022302,
+        "latenciaMs": 413,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "685c36e0e6ba",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v19",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.91,
+          "miente": 0.89,
+          "peligro": 0.93,
+          "accion": 0.94
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 518,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000021756,
+        "latenciaMs": 573,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "0a06aca63b98",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v20",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.91,
+          "miente": 0.96,
+          "peligro": 0.94,
+          "accion": 0.91
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022428,
+        "latenciaMs": 270,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "27ebba7266b7",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v21",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.79,
+          "miente": 0.8,
+          "peligro": 0.89,
+          "accion": 0.79
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 528,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022176,
+        "latenciaMs": 158,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "235c7c8dd447",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v22",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.57,
+          "miente": 0.66,
+          "peligro": 0.73,
+          "accion": 0.73
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022386,
+        "latenciaMs": 457,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "989fd6fb3154",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v23",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.93,
+          "miente": 0.79,
+          "peligro": 0.9,
+          "accion": 0.8
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 526,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022092,
+        "latenciaMs": 168,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "93aea35d426f",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v24",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.76,
+          "miente": 0.75,
+          "peligro": 0.92,
+          "accion": 0.83
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 180,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "d531e70b82a4",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v25",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.76,
+          "miente": 0.95,
+          "peligro": 0.87,
+          "accion": 0.98
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022302,
+        "latenciaMs": 431,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "7926b23cb254",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v26",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.76,
+          "miente": 0.75,
+          "peligro": 0.83,
+          "accion": 0.92
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 541,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022722,
+        "latenciaMs": 476,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "15d5a4089f7a",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v27",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.93,
+          "miente": 0.97,
+          "peligro": 0.83,
+          "accion": 0.8
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 525,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002205,
+        "latenciaMs": 267,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "40faf9d054c1",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v28",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.85,
+          "miente": 0.75,
+          "peligro": 0.79,
+          "accion": 0.75
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022302,
+        "latenciaMs": 266,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "c3ceabc15a87",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v29",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.84,
+          "miente": 0.78,
+          "peligro": 0.81,
+          "accion": 0.85
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022512,
+        "latenciaMs": 291,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "8d1f53862487",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v30",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": true,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.94,
+          "miente": 0.93,
+          "peligro": 0.87,
+          "accion": 0.92
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 526,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022092,
+        "latenciaMs": 165,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "c6f2c9b07fe1",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v31",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.77,
+          "miente": 0.86,
+          "peligro": 0.88,
+          "accion": 0.89
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 538,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022596,
+        "latenciaMs": 347,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "ea010b13facb",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v32",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.78,
+          "miente": 0.98,
+          "peligro": 0.78,
+          "accion": 0.93
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 527,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022134,
+        "latenciaMs": 163,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "9fd83f677270",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v33",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.91,
+          "miente": 0.88,
+          "peligro": 0.89,
+          "accion": 0.92
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 535,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002247,
+        "latenciaMs": 307,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "d487e653906c",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v34",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.87,
+          "miente": 0.93,
+          "peligro": 0.77,
+          "accion": 0.9
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022554,
+        "latenciaMs": 262,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "c690f42e83fc",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v35",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.85,
+          "miente": 0.86,
+          "peligro": 0.93,
+          "accion": 0.84
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 531,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022302,
+        "latenciaMs": 191,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "a5421461d514",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v36",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.87,
+          "miente": 0.78,
+          "peligro": 0.85,
+          "accion": 0.92
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 553,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000023226,
+        "latenciaMs": 465,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "ab373c74214d",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v37",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.82,
+          "miente": 0.78,
+          "peligro": 0.96,
+          "accion": 0.8
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 526,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "0165ca2dbd39",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v38",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.75,
+          "miente": 0.93,
+          "peligro": 0.88,
+          "accion": 0.91
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 526,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022092,
+        "latenciaMs": 293,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "069b0fe61114",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v39",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.75,
+          "miente": 0.76,
+          "peligro": 0.83,
+          "accion": 0.81
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 543,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022806,
+        "latenciaMs": 174,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "8fb3c023b7e9",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v40",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.88,
+          "miente": 0.8,
+          "peligro": 0.9,
+          "accion": 0.97
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 533,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022386,
+        "latenciaMs": 503,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "90d24bcc0ed7",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v41",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.9,
+          "miente": 0.9,
+          "peligro": 0.84,
+          "accion": 0.79
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 529,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022218,
+        "latenciaMs": 188,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "dbc0128cb80b",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v42",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.97,
+          "miente": 0.83,
+          "peligro": 0.86,
+          "accion": 0.85
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 525,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002205,
+        "latenciaMs": 368,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "f3001453c0b0",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v43",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 1,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.97,
+          "miente": 0.9,
+          "peligro": 0.96,
+          "accion": 0.8
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 529,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022218,
+        "latenciaMs": 327,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "34fc8b4be0c7",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v44",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.77,
+          "miente": 0.77,
+          "peligro": 0.77,
+          "accion": 0.84
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 527,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022134,
+        "latenciaMs": 368,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "48e949a2e97a",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v45",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 1,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.92,
+          "miente": 0.98,
+          "peligro": 0.75,
+          "accion": 0.86
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 528,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022176,
+        "latenciaMs": 300,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "3ef540f3f192",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v46",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.87,
+          "miente": 0.88,
+          "peligro": 0.86,
+          "accion": 0.9
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022428,
+        "latenciaMs": 445,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "0b9a3f798964",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v47",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.8,
+          "miente": 0.8,
+          "peligro": 0.81,
+          "accion": 0.82
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 512,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "00a7bf3056ec",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v48",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.98,
+          "miente": 0.84,
+          "peligro": 0.91,
+          "accion": 0.8
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 524,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022008,
+        "latenciaMs": 398,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "e3d3263f40b4",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v49",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.95,
+          "miente": 0.79,
+          "peligro": 0.85,
+          "accion": 0.96
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 539,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022638,
+        "latenciaMs": 392,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "b0a365622a8d",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v50",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.86,
+          "miente": 0.87,
+          "peligro": 0.81,
+          "accion": 0.89
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022512,
+        "latenciaMs": 381,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "f230b48e03d2",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v51",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.83,
+          "miente": 0.77,
+          "peligro": 0.98,
+          "accion": 0.81
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 305,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "624a506504ba",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v52",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 3,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.88,
+          "miente": 0.88,
+          "peligro": 0.83,
+          "accion": 0.76
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 537,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022554,
+        "latenciaMs": 201,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "60f0ee4ac340",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v53",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "interrogar"
+        },
+        "confianza": {
+          "pasa": 0.89,
+          "miente": 0.78,
+          "peligro": 0.89,
+          "accion": 0.79
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 529,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022218,
+        "latenciaMs": 175,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "8c3cf9db47fa",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v54",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.51,
+          "miente": 0.45,
+          "peligro": 0.68,
+          "accion": 0.54
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 534,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022428,
+        "latenciaMs": 379,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "b6f24a72d06c",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v55",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": false,
+          "peligro": 0,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.88,
+          "miente": 0.84,
+          "peligro": 0.93,
+          "accion": 0.95
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 434,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "e0e94f8ccfee",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v56",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 4,
+          "accion": "arrestar"
+        },
+        "confianza": {
+          "pasa": 0.79,
+          "miente": 0.96,
+          "peligro": 0.87,
+          "accion": 0.81
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 547,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022974,
+        "latenciaMs": 169,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "17075629e0c5",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v57",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.85,
+          "miente": 0.95,
+          "peligro": 0.87,
+          "accion": 0.9
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 540,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002268,
+        "latenciaMs": 164,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "aaa4b9b8d6ff",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v58",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 1,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.77,
+          "miente": 0.86,
+          "peligro": 0.8,
+          "accion": 0.87
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 532,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022344,
+        "latenciaMs": 568,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "a6e70122f1fb",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v59",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": false,
+          "miente": true,
+          "peligro": 2,
+          "accion": "rechazar"
+        },
+        "confianza": {
+          "pasa": 0.63,
+          "miente": 0.69,
+          "peligro": 0.74,
+          "accion": 0.66
+        },
+        "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"rechazar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 536,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.000022512,
+        "latenciaMs": 594,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "81ea99f7b704",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      },
+      {
+        "viajeroId": "v60",
+        "ok": true,
+        "error": null,
+        "decision": {
+          "pasa": true,
+          "miente": false,
+          "peligro": 0,
+          "accion": "aprobar"
+        },
+        "confianza": {
+          "pasa": 0.76,
+          "miente": 0.94,
+          "peligro": 0.76,
+          "accion": 0.81
+        },
+        "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
+        "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
+        "tokens": {
+          "entrada": 530,
+          "entradaCacheada": 0,
+          "salida": 0,
+          "razonamiento": null,
+          "estimado": false
+        },
+        "costoUSD": 0.00002226,
+        "latenciaMs": 417,
+        "modeloServido": "jev-latest",
+        "fallback": false,
+        "huellaEstado": "55b94350960c",
+        "intentos": 1,
+        "opcionesUsadas": {}
+      }
+    ]
+  }
+}

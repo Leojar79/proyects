@@ -162,7 +162,8 @@ export function calcularEstadisticas(run, viajeros, config) {
       gastadoFinal: juego.gastadoFinal,
     }
   })
-  const porCosto = [...proveedores].sort((a, b) => a.costoPromedioUSD - b.costoPromedioUSD)
+  // Un proveedor sin respuestas no compite en costo (su promedio sería 0).
+  const porCosto = proveedores.filter((p) => p.respondidas > 0).sort((a, b) => a.costoPromedioUSD - b.costoPromedioUSD)
   const porDuracion = [...proveedores].sort(
     (a, b) => (b.llegoAlFinal - a.llegoAlFinal) || (b.decisionesEnJuego - a.decisionesEnJuego),
   )

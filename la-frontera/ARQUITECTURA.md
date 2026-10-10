@@ -53,7 +53,7 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
       "semilla": 1234,
       "documento": {
         "nombre": "Ana Kovač",
-        "nacionalidad": "Ostrava",
+        "nacionalidad": "Brenia",
         "vence": "02/11/1986",
         "permiso": "turismo",
         "permisoNombre": "Ana Kovač",
@@ -63,7 +63,8 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
       "dice": "Vengo a conocer la capital, me quedo una semana.",
       "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
       "porque": "Pasaporte vigente, permiso de turismo que coincide con su motivo, inspección limpia.",
-      "dificultad": "facil"
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
     }
   ]
 }
@@ -75,6 +76,7 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
 - `semilla`: entero para generar el retrato pixel art de forma determinista.
 - `verdad.peligro`: 0 a 4 (índice de `NIVELES_PELIGRO`).
 - `dificultad`: `"facil" | "media" | "dificil"`.
+- `claves`: banderas estructuradas que usa `scripts/validar-viajeros.mjs` para recalcular la respuesta correcta. **No** se envían a las IAs.
 
 ## Contrato: corrida (`public/runs/*.json`)
 

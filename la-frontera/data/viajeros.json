@@ -1,0 +1,845 @@
+{
+  "version": 1,
+  "viajeros": [
+    {
+      "id": "v01", "nombre": "Tomás Ilić", "semilla": 4821,
+      "documento": {
+        "nombre": "Tomás Ilić", "nacionalidad": "Brenia", "vence": "22/08/1987",
+        "permiso": "turismo", "permisoNombre": "Tomás Ilić",
+        "equipajeDeclarado": "Ropa y una cámara de fotos",
+        "inspeccion": "Ropa y una cámara de fotos. Nada irregular."
+      },
+      "dice": "¡Buenos días, oficial! Vengo de turismo: una semana probando todos los pasteles de su capital.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente (regla 1), permiso de turismo a su nombre que coincide con su motivo (reglas 2, 3 y 6) e inspección limpia (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v02", "nombre": "Bruno Lenk", "semilla": 1937,
+      "documento": {
+        "nombre": "Bruno Lenk", "nacionalidad": "Galvonia", "vence": "10/05/1985",
+        "permiso": "trabajo", "permisoNombre": "Bruno Lenk",
+        "equipajeDeclarado": "Herramientas de mecánico",
+        "inspeccion": "Herramientas de mecánico y 3 kg de tabaco escondidos en el forro de la maleta, sin declarar."
+      },
+      "dice": "Solo traigo mis herramientas: soy mecánico y me contrató un taller de la capital. Nada más, se lo juro.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "Esconde 3 kg de tabaco sin declarar (regla 4) y jura que solo trae herramientas: es contrabando, se arresta.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v03", "nombre": "Rosa Antunes", "semilla": 7264,
+      "documento": {
+        "nombre": "Rosa Antunes", "nacionalidad": "Marelia", "vence": "02/01/1984",
+        "permiso": "visita familiar", "permisoNombre": "Rosa Antunes",
+        "equipajeDeclarado": "Ropa y una cobija de bebé tejida a mano",
+        "inspeccion": "Ropa y una cobija de bebé tejida a mano. Nada irregular."
+      },
+      "dice": "Por favor, oficial, mi hija da a luz esta semana y quiero estar con ella. Se lo ruego, déjeme pasar.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 02/01/1984, antes de hoy (regla 1): aunque su motivo es sincero y coincide con el permiso, se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v04", "nombre": "Lucía Ferraro", "semilla": 3158,
+      "documento": {
+        "nombre": "Lucía Ferraro", "nacionalidad": "Valdoria", "vence": "30/09/1988",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y recuerdos de viaje",
+        "inspeccion": "Ropa y recuerdos de viaje. Nada irregular."
+      },
+      "dice": "¡Por fin en casa! Tres semanas fuera y extrañé muchísimo el pan de mi barrio.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Ciudadana de Valdoria con pasaporte vigente, no necesita permiso (reglas 1 y 2) y la inspección está limpia (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v05", "nombre": "Kazimir Novak", "semilla": 9042,
+      "documento": {
+        "nombre": "Kazimir Novak", "nacionalidad": "Ludovia", "vence": "11/07/1986",
+        "permiso": "turismo", "permisoNombre": "Kazimir Novak",
+        "equipajeDeclarado": "Ropa y un delantal de cocina",
+        "inspeccion": "Ropa y un delantal de cocina. Nada irregular."
+      },
+      "dice": "Vengo a trabajar de cocinero en el restaurante de mi primo. Empiezo mañana a las seis.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero dice que viene a trabajar con un permiso de turismo (regla 3): contradicción que se aclara en una entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v06", "nombre": "Amara Lindqvist", "semilla": 2675,
+      "documento": {
+        "nombre": "Amara Lindqvist", "nacionalidad": "Esterlia", "vence": "05/12/1989",
+        "permiso": "estudios", "permisoNombre": "Amara Lindqvist",
+        "equipajeDeclarado": "Libros, ropa y una calculadora",
+        "inspeccion": "Libros, ropa y una calculadora. Nada irregular."
+      },
+      "dice": "Vengo a estudiar ingeniería en la Universidad de Valdoria. ¡Primer semestre, qué emoción!",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de estudios a su nombre que coincide con su motivo (reglas 1, 2, 3 y 6), con inspección limpia (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v07", "nombre": "Oskar Dremmel", "semilla": 5519,
+      "documento": {
+        "nombre": "Oskar Dremmel", "nacionalidad": "Orsenia", "vence": "19/04/1987",
+        "permiso": "turismo", "permisoNombre": "Oskar Dremmel",
+        "equipajeDeclarado": "Ropa y una lata de galletas",
+        "inspeccion": "Ropa y una pistola desmontada dentro de la lata de galletas, sin declarar."
+      },
+      "dice": "Vengo de vacaciones y solo traigo ropa y galletas de mantequilla. ¿Quiere una?",
+      "verdad": { "pasa": false, "miente": true, "peligro": 4, "accion": "arrestar" },
+      "porque": "La inspección encontró una pistola sin declarar escondida en la lata (regla 4) y él dice que solo trae galletas: se arresta.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": true, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v08", "nombre": "Pavel Ostrowski", "semilla": 8803,
+      "documento": {
+        "nombre": "Pavel Ostrowski", "nacionalidad": "Brenia", "vence": "23/10/1986",
+        "permiso": "ninguno",
+        "equipajeDeclarado": "Ropa y una bufanda de fútbol",
+        "inspeccion": "Ropa y una bufanda de fútbol. Nada irregular."
+      },
+      "dice": "¿Permiso de entrada? No sabía que hacía falta; solo vengo a ver el partido de fútbol.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Es extranjero y no presenta permiso de entrada (regla 2); no es una amenaza, así que se le niega la entrada.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v09", "nombre": "Giulia Marchetti", "semilla": 1466,
+      "documento": {
+        "nombre": "Giulia Marchetti", "nacionalidad": "Marelia", "vence": "14/02/1988",
+        "permiso": "trabajo", "permisoNombre": "Giulia Marchetti",
+        "equipajeDeclarado": "Ropa y 30 relojes de pulsera para vender",
+        "inspeccion": "Ropa y 30 relojes de pulsera, tal como declaró. Nada irregular."
+      },
+      "dice": "Tengo un puesto de relojes en el mercado central. Los treinta están declarados, puede contarlos.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente, permiso de trabajo a su nombre que coincide con su motivo y mercancía declarada (reglas 1, 3, 4 y 6).",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v10", "nombre": "Henrik Dahlgren", "semilla": 6390,
+      "documento": {
+        "nombre": "Henrik Dahlgren", "nacionalidad": "Esterlia", "vence": "01/06/1985",
+        "permiso": "tránsito", "permisoNombre": "Henrik Dahlgren",
+        "equipajeDeclarado": "Una maleta con ropa",
+        "inspeccion": "Una maleta con ropa. Nada irregular."
+      },
+      "dice": "Solo estoy de paso: mi tren hacia Orsenia sale esta noche.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de tránsito a su nombre que coincide con su motivo (reglas 1, 2, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
+    },
+    {
+      "id": "v11", "nombre": "Wanda Kowalczyk", "semilla": 2281,
+      "documento": {
+        "nombre": "Wanda Kowalczyk", "nacionalidad": "Ludovia", "vence": "09/09/1986",
+        "permiso": "visita familiar", "permisoNombre": "Wanda Kowalczyk",
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa y un libro de poemas sin declarar (objeto personal, sin valor comercial)."
+      },
+      "dice": "Vengo a visitar a mi hermano. Solo traigo ropa, nada más.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
+      "porque": "Papeles en regla y un libro personal no es contrabando (regla 4), pero contradice su «solo traigo ropa»: contradicción menor que se aclara en entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v12", "nombre": "Dmitri Kassel", "semilla": 7749,
+      "documento": {
+        "nombre": "Dmitri Kassel", "nacionalidad": "Galvonia", "vence": "12/12/1986",
+        "permiso": "turismo", "permisoNombre": "Dmitri Kassel",
+        "equipajeDeclarado": "Ropa elegante y una colonia",
+        "inspeccion": "Ropa elegante y una colonia. Nada irregular."
+      },
+      "dice": "Sí, soy Dmitri Kassel. Vengo de turismo y mis papeles están en regla, así que abra la barrera.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 3, "accion": "arrestar" },
+      "porque": "Dmitri Kassel está en la lista de buscados (regla 5): aunque sus papeles estén en regla, se arresta.",
+      "dificultad": "facil",
+      "claves": { "buscado": true, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v13", "nombre": "Noemí Castellanos", "semilla": 3604,
+      "documento": {
+        "nombre": "Noemí Castellanos", "nacionalidad": "Orsenia", "vence": "27/03/1985",
+        "permiso": "estudios", "permisoNombre": "Noemí Castellanos",
+        "equipajeDeclarado": "Ropa, libros y un violín",
+        "inspeccion": "Ropa, libros y un violín. Nada irregular."
+      },
+      "dice": "Perdón, estoy nerviosa, es mi primer viaje sola. Vengo a estudiar violín en el conservatorio.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Los nervios no son una irregularidad: pasaporte vigente y permiso de estudios a su nombre que coincide con su motivo (reglas 1, 3 y 6).",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v14", "nombre": "Matthias Kendler", "semilla": 9517,
+      "documento": {
+        "nombre": "Matthias Kendler", "nacionalidad": "Ludovia", "vence": "14/03/1984",
+        "permiso": "trabajo", "permisoNombre": "Matthias Kendler",
+        "equipajeDeclarado": "Ropa y planos de arquitectura",
+        "inspeccion": "Ropa y planos de arquitectura. Nada irregular."
+      },
+      "dice": "Soy arquitecto y me contrataron para diseñar el nuevo puente. Mañana empiezo.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 14/03/1984, ayer (regla 1): aunque todo lo demás está en regla, se le niega la entrada.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v15", "nombre": "Sofía Navarrete", "semilla": 4132,
+      "documento": {
+        "nombre": "Sofía Navarrete", "nacionalidad": "Brenia", "vence": "18/11/1987",
+        "permiso": "visita familiar", "permisoNombre": "Sofía Navarrete",
+        "equipajeDeclarado": "Ropa y un pastel de cumpleaños",
+        "inspeccion": "Ropa y un pastel de cumpleaños. Nada irregular."
+      },
+      "dice": "Vengo al cumpleaños de mi abuela, que cumple noventa. ¡El pastel es sorpresa, no le diga nada!",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de visita familiar a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v16", "nombre": "Lars Wennberg", "semilla": 6958,
+      "documento": {
+        "nombre": "Lars Wennberg", "nacionalidad": "Esterlia", "vence": "03/03/1986",
+        "permiso": "trabajo", "permisoNombre": "Erik Holm",
+        "equipajeDeclarado": "Ropa y herramientas de carpintería",
+        "inspeccion": "Ropa y herramientas de carpintería. Nada irregular."
+      },
+      "dice": "Vengo a trabajar de carpintero. El permiso es mío, lo tramité yo mismo.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "El permiso está a nombre de Erik Holm y el pasaporte dice Lars Wennberg: documento falso (regla 6), se arresta.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v17", "nombre": "Ramiro Quintana", "semilla": 1873,
+      "documento": {
+        "nombre": "Ramiro Quintana", "nacionalidad": "Marelia", "vence": "25/05/1987",
+        "permiso": "estudios", "permisoNombre": "Ramiro Quintana",
+        "equipajeDeclarado": "Ropa y botas de trabajo",
+        "inspeccion": "Ropa y botas de trabajo. Nada irregular."
+      },
+      "dice": "Me contrataron en la mina del norte; empiezo el lunes y dicen que pagan bien.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero tiene permiso de estudios y dice que viene a trabajar en una mina (regla 3): contradicción que se aclara en una entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v18", "nombre": "Bernardo Salas", "semilla": 5246,
+      "documento": {
+        "nombre": "Bernardo Salas", "nacionalidad": "Valdoria", "vence": "10/10/1989",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y una caña de pescar",
+        "inspeccion": "Ropa y una caña de pescar. Nada irregular."
+      },
+      "dice": "Vuelvo de pescar en el lago de la frontera. No piqué ni un pez, pero qué paisaje.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Ciudadano de Valdoria con pasaporte vigente, no necesita permiso (reglas 1 y 2) y la inspección está limpia (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v19", "nombre": "Levente Dorogi", "semilla": 8361,
+      "documento": {
+        "nombre": "Levente Dorogi", "nacionalidad": "Galvonia", "vence": "08/08/1986",
+        "permiso": "ninguno",
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa. Nada irregular."
+      },
+      "dice": "Soy valdoriano de toda la vida, y los valdorianos no necesitamos permiso.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "rechazar" },
+      "porque": "Su pasaporte es de Galvonia, así que necesita un permiso que no presenta (regla 2); además miente sobre su nacionalidad: se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": null, "otraMentira": "Dice ser valdoriano, pero su pasaporte es de Galvonia." }
+    },
+    {
+      "id": "v20", "nombre": "Augusto Ravelli", "semilla": 2794,
+      "documento": {
+        "nombre": "Augusto Ravelli", "nacionalidad": "Orsenia", "vence": "31/12/1990",
+        "permiso": "trabajo", "permisoNombre": "Augusto Ravelli",
+        "equipajeDeclarado": "Trajes, partituras y una batuta",
+        "inspeccion": "Trajes, partituras y una batuta. Nada irregular."
+      },
+      "dice": "Soy el nuevo director de la Orquesta Nacional. Selle rápido, que me espera el ensayo.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "La arrogancia no es una irregularidad: pasaporte vigente y permiso de trabajo a su nombre que coincide con su motivo (reglas 1, 3 y 6).",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v21", "nombre": "Teodor Brun", "semilla": 6027,
+      "documento": {
+        "nombre": "Teodor Brun", "nacionalidad": "Brenia", "vence": "17/06/1986",
+        "permiso": "trabajo", "permisoNombre": "Teodor Brun",
+        "equipajeDeclarado": "Ropa y muestras de queso",
+        "inspeccion": "Ropa y muestras de queso. Nada irregular."
+      },
+      "dice": "Me llamo Teo Bruner y vendo quesos en la feria de la capital. ¿Gusta probar uno?",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "Dice llamarse Teo Bruner, pero su pasaporte dice Teodor Brun, que está en la lista de buscados (regla 5): se arresta.",
+      "dificultad": "dificil",
+      "claves": { "buscado": true, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": "Dice llamarse Teo Bruner, pero su pasaporte dice Teodor Brun." }
+    },
+    {
+      "id": "v22", "nombre": "Mirela Dragan", "semilla": 3485,
+      "documento": {
+        "nombre": "Mirela Dragan", "nacionalidad": "Ludovia", "vence": "04/04/1986",
+        "permiso": "turismo", "permisoNombre": "Mirela Dragan",
+        "equipajeDeclarado": "Ropa, un mapa y binoculares",
+        "inspeccion": "Ropa, un mapa y binoculares. Nada irregular."
+      },
+      "dice": "Vengo a observar aves en sus montañas. Dicen que aquí vive el búho más grande del continente.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de turismo a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v23", "nombre": "Óscar Villalobos", "semilla": 9179,
+      "documento": {
+        "nombre": "Óscar Villalobos", "nacionalidad": "Marelia", "vence": "13/01/1988",
+        "permiso": "tránsito", "permisoNombre": "Óscar Villalobos",
+        "equipajeDeclarado": "Dos maletas de ropa",
+        "inspeccion": "Dos maletas de ropa. Nada irregular."
+      },
+      "dice": "Voy a pasar todo el mes en casa de mi tía; ella cocina mejor que mi madre.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero con permiso de tránsito dice que se queda un mes en casa de su tía, que es una visita familiar (regla 3): se aclara en entrevista.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v24", "nombre": "Agnieszka Wróbel", "semilla": 1652,
+      "documento": {
+        "nombre": "Agnieszka Wróbel", "nacionalidad": "Brenia", "vence": "21/09/1987",
+        "permiso": "ninguno",
+        "equipajeDeclarado": "Ropa y un paraguas",
+        "inspeccion": "Ropa y un paraguas. Nada irregular."
+      },
+      "dice": "Uy, no tramité el permiso; pensé que bastaba con el pasaporte. ¿No puede hacer una excepción?",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Es extranjera y no presenta permiso de entrada (regla 2); es sincera y no es una amenaza, así que se le niega la entrada.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": null, "otraMentira": null }
+    },
+    {
+      "id": "v25", "nombre": "Felipe Arriaga", "semilla": 7436,
+      "documento": {
+        "nombre": "Felipe Arriaga", "nacionalidad": "Orsenia", "vence": "02/02/1987",
+        "permiso": "estudios", "permisoNombre": "Felipe Arriaga",
+        "equipajeDeclarado": "Ropa y libros de química",
+        "inspeccion": "Ropa y libros de química. Nada irregular."
+      },
+      "dice": "El lunes empiezan mis clases de química; mi beca cubre hasta el último tubo de ensayo.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Sus clases y su beca indican estudios, que coinciden con su permiso (regla 3); pasaporte vigente y permiso a su nombre (reglas 1 y 6).",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v26", "nombre": "Renata Oliveira", "semilla": 4069,
+      "documento": {
+        "nombre": "Renata Oliveira", "nacionalidad": "Valdoria", "vence": "29/07/1985",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y un termo de café",
+        "inspeccion": "Ropa y un termo; dentro, en lugar de café, un puñado de diamantes en bruto sin declarar."
+      },
+      "dice": "Solo vuelvo a casa con mi café de siempre. ¿Desde cuándo revisan los termos?",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "Aunque es ciudadana, esconde diamantes sin declarar en el termo (regla 4) y dice que solo trae café: es contrabando, se arresta.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v27", "nombre": "Hugo Brettschneider", "semilla": 8590,
+      "documento": {
+        "nombre": "Hugo Brettschneider", "nacionalidad": "Galvonia", "vence": "15/08/1988",
+        "permiso": "trabajo", "permisoNombre": "Hugo Brettschneider",
+        "equipajeDeclarado": "Ropa y un estetoscopio",
+        "inspeccion": "Ropa y un estetoscopio. Nada irregular."
+      },
+      "dice": "Soy médico; el hospital de la capital me contrató por dos años.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de trabajo a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v28", "nombre": "Tatiana Vereshkova", "semilla": 2318,
+      "documento": {
+        "nombre": "Tatiana Vereshkova", "nacionalidad": "Ludovia", "vence": "30/11/1983",
+        "permiso": "turismo", "permisoNombre": "Tatiana Vereshkova",
+        "equipajeDeclarado": "Ropa y una guía de viaje",
+        "inspeccion": "Ropa y una guía de viaje. Nada irregular."
+      },
+      "dice": "Mi pasaporte está vigente, lo renové hace poco. Vengo de turismo al festival de luces.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 30/11/1983 (regla 1) y además ella afirma que está vigente: se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": "Dice que su pasaporte está vigente, pero venció el 30/11/1983." }
+    },
+    {
+      "id": "v29", "nombre": "Elías Montenegro", "semilla": 5873,
+      "documento": {
+        "nombre": "Elías Montenegro", "nacionalidad": "Valdoria", "vence": "06/06/1987",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa y un sobre con fotos familiares sin declarar (objeto personal, sin valor comercial)."
+      },
+      "dice": "Vuelvo de visitar a mis tíos. No traigo nada más que ropa, se lo prometo.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
+      "porque": "Ciudadano con pasaporte vigente; unas fotos personales no son contrabando (regla 4), pero contradicen su «solo ropa»: contradicción menor que se aclara en entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v30", "nombre": "Ingrid Sørensen", "semilla": 9724,
+      "documento": {
+        "nombre": "Ingrid Sørensen", "nacionalidad": "Esterlia", "vence": "20/02/1986",
+        "permiso": "tránsito", "permisoNombre": "Ingrid Sørensen",
+        "equipajeDeclarado": "Una mochila con ropa",
+        "inspeccion": "Una mochila con ropa. Nada irregular."
+      },
+      "dice": "Voy de paso hacia Ludovia; mañana temprano sigo en el autobús de las siete.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de tránsito a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
+    },
+    {
+      "id": "v31", "nombre": "Ilse Brandt", "semilla": 1209,
+      "documento": {
+        "nombre": "Ilse Brandt", "nacionalidad": "Orsenia", "vence": "09/05/1987",
+        "permiso": "turismo", "permisoNombre": "Ilse Brant",
+        "equipajeDeclarado": "Ropa y un sombrero de playa",
+        "inspeccion": "Ropa y un sombrero de playa. Nada irregular."
+      },
+      "dice": "Soy Ilse Brandt, ¡qué alegría! Por fin unas vacaciones; el permiso me lo sellaron ayer.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "El permiso dice Ilse Brant y el pasaporte Ilse Brandt: los nombres no coinciden, documento falso (regla 6), se arresta.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v32", "nombre": "Konrad Wiśniewski", "semilla": 6681,
+      "documento": {
+        "nombre": "Konrad Wiśniewski", "nacionalidad": "Brenia", "vence": "16/03/1984",
+        "permiso": "visita familiar", "permisoNombre": "Konrad Wiśniewski",
+        "equipajeDeclarado": "Ropa y un traje de gala",
+        "inspeccion": "Ropa y un traje de gala. Nada irregular."
+      },
+      "dice": "Vengo a la boda de mi hermana, mañana a las doce. ¡Soy el padrino!",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Su pasaporte vence el 16/03/1984, mañana, así que hoy sigue vigente (regla 1); permiso de visita familiar a su nombre que coincide con su motivo (reglas 3 y 6).",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v33", "nombre": "Carmen Albiol", "semilla": 3942,
+      "documento": {
+        "nombre": "Carmen Albiol", "nacionalidad": "Valdoria", "vence": "01/12/1982",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y una caja de chocolates",
+        "inspeccion": "Ropa y una caja de chocolates. Nada irregular."
+      },
+      "dice": "Soy de aquí, de Valdoria. Ya sé que mi pasaporte venció, pero no tuve tiempo de renovarlo.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Aunque es ciudadana, su pasaporte venció el 01/12/1982 y todo viajero necesita uno vigente (regla 1): se le niega la entrada.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v34", "nombre": "Samir Haddad", "semilla": 7105,
+      "documento": {
+        "nombre": "Samir Haddad", "nacionalidad": "Marelia", "vence": "28/02/1989",
+        "permiso": "turismo", "permisoNombre": "Samir Haddad",
+        "equipajeDeclarado": "Ropa, un cuaderno de dibujo y lápices",
+        "inspeccion": "Ropa, un cuaderno de dibujo y lápices. Nada irregular."
+      },
+      "dice": "Vengo de vacaciones a dibujar los puentes de la capital. Me han dicho que son preciosos.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de turismo a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v35", "nombre": "Paulina Grabowska", "semilla": 4457,
+      "documento": {
+        "nombre": "Paulina Grabowska", "nacionalidad": "Ludovia", "vence": "12/08/1987",
+        "permiso": "visita familiar", "permisoNombre": "Paulina Grabowska",
+        "equipajeDeclarado": "Ropa y cuadernos",
+        "inspeccion": "Ropa y cuadernos. Nada irregular."
+      },
+      "dice": "Me aceptaron en la facultad de medicina; las clases empiezan el lunes y no quiero llegar tarde.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero tiene permiso de visita familiar y dice que viene a estudiar medicina (regla 3): contradicción que se aclara en entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v36", "nombre": "Gustav Reinholt", "semilla": 8236,
+      "documento": {
+        "nombre": "Gustav Reinholt", "nacionalidad": "Galvonia", "vence": "05/10/1986",
+        "permiso": "visita familiar", "permisoNombre": "Gustav Reinholt",
+        "equipajeDeclarado": "Ropa y 2 botellas de licor para un brindis",
+        "inspeccion": "Ropa y 24 botellas de licor en el doble fondo de la maleta: 22 más de las declaradas, sin declarar."
+      },
+      "dice": "Vengo al aniversario de mis padres. Solo traigo las dos botellas para el brindis, nada más.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "Declaró 2 botellas, pero esconde 22 más sin declarar (regla 4) y lo niega: es contrabando, se arresta.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v37", "nombre": "Natalia Corbu", "semilla": 1598,
+      "documento": {
+        "nombre": "Natalia Corbu", "nacionalidad": "Orsenia", "vence": "17/09/1986",
+        "permiso": "ninguno",
+        "equipajeDeclarado": "Ropa y una máscara de carnaval",
+        "inspeccion": "Ropa y una máscara de carnaval. Nada irregular."
+      },
+      "dice": "Aquí tiene mi permiso de turismo, todo en orden. Vengo a ver el carnaval.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "rechazar" },
+      "porque": "Dice entregar un permiso, pero no presenta ninguno (regla 2): es extranjera sin permiso y miente, aunque no es una amenaza; se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": "Dice entregar un permiso de turismo, pero no presenta ninguno." }
+    },
+    {
+      "id": "v38", "nombre": "Diego Lozano", "semilla": 5761,
+      "documento": {
+        "nombre": "Diego Lozano", "nacionalidad": "Valdoria", "vence": "03/05/1988",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y una guitarra",
+        "inspeccion": "Ropa y una guitarra. Nada irregular."
+      },
+      "dice": "Regreso de una gira con mi banda: tocamos en seis ciudades y dormí en cinco.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Ciudadano de Valdoria con pasaporte vigente, no necesita permiso (reglas 1 y 2) y la inspección está limpia (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v39", "nombre": "Olga Lisitsyna", "semilla": 3027,
+      "documento": {
+        "nombre": "Olga Lisitsyna", "nacionalidad": "Esterlia", "vence": "22/01/1986",
+        "permiso": "visita familiar", "permisoNombre": "Olga Lisitsyna",
+        "equipajeDeclarado": "Ropa y 10 frascos de mermelada casera",
+        "inspeccion": "Ropa y 10 frascos de mermelada casera, tal como declaró. Nada irregular."
+      },
+      "dice": "Visito a mis nietos. Las diez mermeladas son para ellos; mi yerno no merece ninguna.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente, permiso de visita familiar a su nombre que coincide con su motivo y todo lo que trae está declarado (reglas 1, 3, 4 y 6).",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v40", "nombre": "Rudolf Kubec", "semilla": 9368,
+      "documento": {
+        "nombre": "Rudolf Kubec", "nacionalidad": "Brenia", "vence": "11/11/1985",
+        "permiso": "trabajo", "permisoNombre": "Rudolf Kubec",
+        "equipajeDeclarado": "Ropa y pan casero",
+        "inspeccion": "Ropa y un revólver escondido dentro de una hogaza de pan, sin declarar."
+      },
+      "dice": "Soy panadero y vengo a trabajar en la feria del pan. Solo traigo ropa y pan.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 4, "accion": "arrestar" },
+      "porque": "Esconde un revólver sin declarar dentro del pan (regla 4) y dice que solo trae ropa y pan: se arresta.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": true, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v41", "nombre": "Mateo Ibarra", "semilla": 6512,
+      "documento": {
+        "nombre": "Mateo Ibarra", "nacionalidad": "Marelia", "vence": "30/04/1987",
+        "permiso": "turismo", "permisoNombre": "Mateo Ibarra",
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa y una armónica sin declarar (objeto personal, sin valor comercial)."
+      },
+      "dice": "Vengo a recorrer las playas del sur. Equipaje mínimo: ropa y nada más.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
+      "porque": "Papeles en regla y una armónica personal no es contrabando (regla 4), pero contradice su «ropa y nada más»: contradicción menor que se aclara en entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v42", "nombre": "Hanna Ekdahl", "semilla": 2149,
+      "documento": {
+        "nombre": "Hanna Ekdahl", "nacionalidad": "Esterlia", "vence": "15/03/1983",
+        "permiso": "estudios", "permisoNombre": "Hanna Ekdahl",
+        "equipajeDeclarado": "Libros y ropa",
+        "inspeccion": "Libros y ropa. Nada irregular."
+      },
+      "dice": "Vuelvo a mis clases de historia después de las vacaciones; el semestre empieza mañana.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 15/03/1983, hace exactamente un año (regla 1): aunque su motivo coincide con el permiso, se le niega la entrada.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v43", "nombre": "Jonas Petraitis", "semilla": 7883,
+      "documento": {
+        "nombre": "Jonas Petraitis", "nacionalidad": "Ludovia", "vence": "09/07/1988",
+        "permiso": "trabajo", "permisoNombre": "Jonas Petraitis",
+        "equipajeDeclarado": "Ropa y un casco de obra",
+        "inspeccion": "Ropa y un casco de obra. Nada irregular."
+      },
+      "dice": "Me contrató la constructora del nuevo puente. Soy soldador, el mejor de mi pueblo.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de trabajo a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v44", "nombre": "Mara Voss", "semilla": 4706,
+      "documento": {
+        "nombre": "Mara Voss", "nacionalidad": "Orsenia", "vence": "23/12/1987",
+        "permiso": "visita familiar", "permisoNombre": "Mara Voss",
+        "equipajeDeclarado": "Ropa y una cesta de manzanas",
+        "inspeccion": "Ropa y una cesta de manzanas. Nada irregular."
+      },
+      "dice": "Solo vengo a ver a mi madre; hace diez años que no la abrazo.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 3, "accion": "arrestar" },
+      "porque": "Mara Voss está en la lista de buscados (regla 5): por conmovedor que sea su motivo, se arresta.",
+      "dificultad": "media",
+      "claves": { "buscado": true, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v45", "nombre": "Rafaela Duarte", "semilla": 1321,
+      "documento": {
+        "nombre": "Rafaela Duarte", "nacionalidad": "Brenia", "vence": "14/09/1989",
+        "permiso": "turismo", "permisoNombre": "Rafaela Duarte",
+        "equipajeDeclarado": "Ropa y un traje de baño",
+        "inspeccion": "Ropa y un traje de baño. Nada irregular."
+      },
+      "dice": "¡Vacaciones por fin! Dos semanas de sol en sus playas y helado todos los días.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de turismo a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v46", "nombre": "Emil Korhonen", "semilla": 8654,
+      "documento": {
+        "nombre": "Emil Korhonen", "nacionalidad": "Galvonia", "vence": "26/06/1986",
+        "permiso": "ninguno",
+        "equipajeDeclarado": "Ropa y una bicicleta plegable",
+        "inspeccion": "Ropa y una bicicleta plegable. Nada irregular."
+      },
+      "dice": "Solo voy de paso hacia Marelia; para cruzar sin quedarme no hace falta permiso, ¿verdad?",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Ir de paso también exige un permiso (de tránsito) y él es extranjero sin permiso (regla 2): no es una amenaza, se le niega la entrada.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
+    },
+    {
+      "id": "v47", "nombre": "Anselmo Ruiz", "semilla": 5097,
+      "documento": {
+        "nombre": "Anselmo Ruiz", "nacionalidad": "Orsenia", "vence": "07/03/1988",
+        "permiso": "turismo", "permisoNombre": "Anselmo Ruiz",
+        "equipajeDeclarado": "Ropa y guantes de cuero",
+        "inspeccion": "Ropa y guantes de cuero. Nada irregular."
+      },
+      "dice": "Mi nuevo jefe del aserradero me espera el lunes a primera hora; dicen que es muy puntual.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero con permiso de turismo dice que lo espera su nuevo jefe, o sea que viene a trabajar (regla 3): se aclara en entrevista.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v48", "nombre": "Aurelio Benítez", "semilla": 3779,
+      "documento": {
+        "nombre": "Aurelio Benítez", "nacionalidad": "Valdoria", "vence": "19/01/1985",
+        "permiso": null,
+        "equipajeDeclarado": "Nada",
+        "inspeccion": "Sin equipaje. Nada irregular."
+      },
+      "dice": "Nada que declarar, oficial. Perdí la maleta en el tren y vuelvo a casa con lo puesto.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Ciudadano de Valdoria con pasaporte vigente, no necesita permiso (reglas 1 y 2) y no trae nada que declarar (regla 4).",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v49", "nombre": "Nadia Kerimova", "semilla": 9831,
+      "documento": {
+        "nombre": "Nadia Kerimova", "nacionalidad": "Ludovia", "vence": "11/02/1987",
+        "permiso": "trabajo", "permisoNombre": "Nadia Kurtz",
+        "equipajeDeclarado": "Ropa y un maletín de costura",
+        "inspeccion": "Ropa y un maletín de costura. Nada irregular."
+      },
+      "dice": "Soy costurera y vengo a trabajar en un taller de vestidos. Ese permiso es mío, claro.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "El permiso está a nombre de Nadia Kurtz y el pasaporte dice Nadia Kerimova: documento falso (regla 6), se arresta.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v50", "nombre": "Marek Šimek", "semilla": 6243,
+      "documento": {
+        "nombre": "Marek Šimek", "nacionalidad": "Brenia", "vence": "28/02/1984",
+        "permiso": "trabajo", "permisoNombre": "Marek Šimek",
+        "equipajeDeclarado": "Ropa y herramientas de jardinería",
+        "inspeccion": "Ropa y herramientas de jardinería. Nada irregular."
+      },
+      "dice": "Si no entro hoy, pierdo mi trabajo en los jardines del palacio. Se lo suplico, tengo tres hijos.",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 28/02/1984 (regla 1): la súplica no cambia las reglas, se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
+    },
+    {
+      "id": "v51", "nombre": "Clara Ostheim", "semilla": 2560,
+      "documento": {
+        "nombre": "Clara Ostheim", "nacionalidad": "Marelia", "vence": "16/10/1988",
+        "permiso": "estudios", "permisoNombre": "Clara Ostheim",
+        "equipajeDeclarado": "Ropa, libros y un microscopio",
+        "inspeccion": "Ropa, libros y un microscopio. Nada irregular."
+      },
+      "dice": "Vengo a estudiar biología en la universidad. El microscopio fue regalo de mi abuelo.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de estudios a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "estudios", "otraMentira": null }
+    },
+    {
+      "id": "v52", "nombre": "Arkadi Pelgunov", "semilla": 7012,
+      "documento": {
+        "nombre": "Arkadi Pelgunov", "nacionalidad": "Galvonia", "vence": "04/08/1986",
+        "permiso": "tránsito", "permisoNombre": "Arkadi Pelgunov",
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa en la maleta y 40 cartones de cigarrillos sin declarar en la rueda de repuesto del auto."
+      },
+      "dice": "Solo voy de paso hacia Esterlia y no traigo más que ropa. Tengo prisa, ¿sabe?",
+      "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
+      "porque": "Esconde 40 cartones de cigarrillos sin declarar en la rueda de repuesto (regla 4) y dice que solo trae ropa: es contrabando, se arresta.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
+    },
+    {
+      "id": "v53", "nombre": "Lorena Vidal", "semilla": 4398,
+      "documento": {
+        "nombre": "Lorena Vidal", "nacionalidad": "Esterlia", "vence": "21/05/1987",
+        "permiso": "visita familiar", "permisoNombre": "Lorena Vidal",
+        "equipajeDeclarado": "Ropa",
+        "inspeccion": "Ropa y una muñeca de trapo sin declarar (objeto personal, sin valor comercial)."
+      },
+      "dice": "Vengo a ver a mi sobrina y solo traigo ropa, nada más.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
+      "porque": "Papeles en regla y una muñeca de trapo no es contrabando (regla 4), pero contradice su «solo traigo ropa»: contradicción menor que se aclara en entrevista.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v54", "nombre": "Dmitri Pelinov", "semilla": 1085,
+      "documento": {
+        "nombre": "Dmitri Pelinov", "nacionalidad": "Ludovia", "vence": "25/10/1987",
+        "permiso": "turismo", "permisoNombre": "Dmitri Pelinov",
+        "equipajeDeclarado": "Ropa y una cámara de fotos",
+        "inspeccion": "Ropa y una cámara de fotos. Nada irregular."
+      },
+      "dice": "Me llamo Dmitri, sí, pero no el de los carteles. Solo vengo de turismo a ver el museo de trenes.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Se llama Dmitri Pelinov, no Dmitri Kassel, así que no está en la lista de buscados (regla 5); pasaporte vigente y permiso de turismo a su nombre que coincide con su motivo (reglas 1, 3 y 6).",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v55", "nombre": "Iván Kostadinov", "semilla": 8127,
+      "documento": {
+        "nombre": "Iván Kostadinov", "nacionalidad": "Ludovia", "vence": "10/10/1983",
+        "permiso": "turismo", "permisoNombre": "Iván Kostadinov",
+        "equipajeDeclarado": "Ropa y una cámara de fotos",
+        "inspeccion": "Ropa y una cámara de fotos. Nada irregular."
+      },
+      "dice": "Vengo de turismo a ver la famosa catedral. ¡Ay, ni me fijé en que el pasaporte ya venció!",
+      "verdad": { "pasa": false, "miente": false, "peligro": 0, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 10/10/1983 (regla 1): es sincero y no es una amenaza, pero se le niega la entrada.",
+      "dificultad": "facil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v56", "nombre": "Severino Lago", "semilla": 5634,
+      "documento": {
+        "nombre": "Severino Lago", "nacionalidad": "Valdoria", "vence": "13/09/1988",
+        "permiso": null,
+        "equipajeDeclarado": "Ropa y un estuche de violín",
+        "inspeccion": "Ropa y, dentro del estuche de violín, un rifle desarmado sin declarar. No hay ningún violín."
+      },
+      "dice": "Vuelvo de tocar en un concierto en Brenia. Cuidado con el estuche: el violín es muy delicado.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 4, "accion": "arrestar" },
+      "porque": "Aunque es ciudadano, en el estuche hay un rifle sin declarar y no un violín (regla 4): lleva armas, se arresta.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": true, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
+    },
+    {
+      "id": "v57", "nombre": "Begoña Urrutia", "semilla": 3290,
+      "documento": {
+        "nombre": "Begoña Urrutia", "nacionalidad": "Marelia", "vence": "19/07/1986",
+        "permiso": "visita familiar", "permisoNombre": "Begoña Urrutia",
+        "equipajeDeclarado": "Ropa y un libro de recetas",
+        "inspeccion": "Ropa y un libro de recetas. Nada irregular."
+      },
+      "dice": "Mi cuñada jura que su sopa es mejor que la mía; vengo a pasar una semana con ella para demostrarle lo contrario.",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasar una semana con su cuñada es una visita familiar, que coincide con su permiso (regla 3); pasaporte vigente y permiso a su nombre (reglas 1 y 6).",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
+    },
+    {
+      "id": "v58", "nombre": "Bettina Kraus", "semilla": 9476,
+      "documento": {
+        "nombre": "Bettina Kraus", "nacionalidad": "Marelia", "vence": "05/03/1984",
+        "permiso": "trabajo", "permisoNombre": "Bettina Kraus",
+        "equipajeDeclarado": "Ropa y zapatillas de baile",
+        "inspeccion": "Ropa y zapatillas de baile. Nada irregular."
+      },
+      "dice": "Pasaporte al día y permiso en regla: vengo a dar clases de baile en el teatro municipal.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "rechazar" },
+      "porque": "Su pasaporte venció el 05/03/1984 (regla 1) aunque ella dice que está al día: se le niega la entrada.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": "Dice que su pasaporte está al día, pero venció el 05/03/1984." }
+    },
+    {
+      "id": "v59", "nombre": "Leopold Stanek", "semilla": 6815,
+      "documento": {
+        "nombre": "Leopold Stanek", "nacionalidad": "Galvonia", "vence": "02/11/1986",
+        "permiso": "trabajo", "permisoNombre": "Leopold Stanek",
+        "equipajeDeclarado": "Ropa, un traje de baño y tres novelas",
+        "inspeccion": "Ropa, un traje de baño y tres novelas. Nada irregular."
+      },
+      "dice": "Por fin dos semanas sin jefe ni reuniones: solo hamaca, mar y novelas policiales.",
+      "verdad": { "pasa": false, "miente": true, "peligro": 2, "accion": "interrogar" },
+      "porque": "Documentos en regla, pero con permiso de trabajo describe unas vacaciones (regla 3): contradicción que se aclara en entrevista.",
+      "dificultad": "dificil",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "turismo", "otraMentira": null }
+    },
+    {
+      "id": "v60", "nombre": "Bartolomé Ugarte", "semilla": 2937,
+      "documento": {
+        "nombre": "Bartolomé Ugarte", "nacionalidad": "Orsenia", "vence": "08/01/1986",
+        "permiso": "tránsito", "permisoNombre": "Bartolomé Ugarte",
+        "equipajeDeclarado": "Ropa y un acordeón",
+        "inspeccion": "Ropa y un acordeón. Nada irregular."
+      },
+      "dice": "Voy de paso: esta misma tarde sigo hacia Marelia con mi acordeón. ¿Le toco algo mientras sella?",
+      "verdad": { "pasa": true, "miente": false, "peligro": 0, "accion": "aprobar" },
+      "porque": "Pasaporte vigente y permiso de tránsito a su nombre que coincide con su motivo (reglas 1, 3 y 6), con inspección limpia.",
+      "dificultad": "media",
+      "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
+    }
+  ]
+}
