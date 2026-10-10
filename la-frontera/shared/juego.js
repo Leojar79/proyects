@@ -105,7 +105,8 @@ export function simularJuego(run, viajeros, { presupuestoUSD, vidas }) {
       pasos,
       finIndice,
       motivoFin,
-      llegoAlFinal: motivoFin === null,
+      // Si no respondió ninguna, no "llegó al final": nunca jugó.
+      llegoAlFinal: motivoFin === null && decisiones > 0,
       decisionesEnJuego: decisiones,
       gastadoFinal: gastado,
     }

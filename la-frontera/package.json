@@ -13,7 +13,8 @@
     "benchmark": "node bench/run.mjs",
     "demo": "node bench/demo.mjs",
     "guion": "node render/guion.mjs",
-    "video": "node render/render.mjs"
+    "video": "node render/render.mjs",
+    "test": "node --test bench/*.test.mjs render/*.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

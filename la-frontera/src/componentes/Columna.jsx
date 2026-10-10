@@ -161,10 +161,11 @@ function Chip({ icono, valor, M, w, t, t0, colorIcono }) {
 }
 
 function CuerpoDetalle({ m, p, i, t, M, h, L, info }) {
-  // Mientras entra el siguiente viajero, la columna sigue mostrando el veredicto anterior.
+  // Al entrar el siguiente viajero, el veredicto anterior se desvanece enseguida para que
+  // nunca se vea junto al pasaporte nuevo.
   const lSlot = t - m.tl.inicio[i]
-  if (i > 0 && lSlot < 0.8) {
-    const o = 1 - clamp((lSlot - 0.5) / 0.3)
+  if (i > 0 && lSlot < 0.25) {
+    const o = 1 - clamp(lSlot / 0.25)
     return (
       <div style={{ position: 'relative', flex: 1, display: 'flex', opacity: o }}>
         <CuerpoDetalleViajero m={m} p={p} i={i - 1} t={t} M={M} h={h} L={L} />

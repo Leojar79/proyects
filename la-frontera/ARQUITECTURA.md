@@ -158,4 +158,4 @@ Reglas de dibujo:
 
 `segmentosGuion(estadisticas)` devuelve `[{ inicio, fin, escena, texto, enPantalla }]`, alineados con
 `ESCENAS` de `shared/timeline.js`. El texto se elige según los datos (por ejemplo, solo dice
-"solo una llegó al final" si eso pasó). Ritmo máximo: 2,6 palabras por segundo.
+"solo una llegó al final" si eso pasó). Ritmo máximo: 2,5 palabras por segundo.
