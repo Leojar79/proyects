@@ -17,9 +17,13 @@ export const VIDEO = {
 }
 
 export const PUBLICACION = {
-  // Si TypeSafe te paga o te regala créditos, escríbelo aquí; aparece en el cierre.
-  // Ejemplo: 'Colaboración pagada con TypeSafe'
+  // OBLIGATORIO antes de publicar: tu relación con TypeSafe, en una frase. Aparece al inicio y al
+  // final del video, en la voz y en la primera línea del texto de LinkedIn. Mientras esté vacío,
+  // el video sale con marca de agua "NO PUBLICABLE". Ejemplos:
+  //   'Sin relación comercial con TypeSafe'
+  //   'Colaboración pagada con TypeSafe'
+  //   'TypeSafe me dio créditos gratis para esta prueba'
   divulgacion: '',
-  // Dónde puede la gente revisar el método y el código.
-  enlaceMetodo: 'github.com/Leojar79/proyects',
+  // Dónde puede la gente revisar el método, el código y los datos de la corrida.
+  enlaceMetodo: 'github.com/Leojar79/proyects/tree/main/la-frontera',
 }

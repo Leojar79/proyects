@@ -5,10 +5,11 @@
 export const PROVEEDORES = [
   {
     id: 'gpt',
-    nombre: 'GPT Astra',
+    nombre: 'GPT-6 Astra',
     empresa: 'OpenAI',
+    // Id según fuentes secundarias: confírmalo con `npm run probar-apis`.
     // Se puede cambiar con la variable de entorno OPENAI_MODEL.
-    modelo: 'gpt-astra',
+    modelo: 'gpt-6-astra',
     color: '#19c37d',
     precio: {
       entradaPorMTok: 10,

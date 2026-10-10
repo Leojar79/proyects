@@ -12,6 +12,9 @@ export const ESCENAS = [
   { id: 'cierre', inicio: 67, fin: 75 },
 ]
 
+// Últimos segundos del avance rápido sin viajeros nuevos (antes de la cortina de resultados).
+export const COLA_RAPIDO = 0.6
+
 // Cuántos viajeros se muestran despacio, con todo el detalle.
 export const VIAJEROS_DETALLE = 3
 
@@ -43,7 +46,11 @@ export function viajeroEn(t, totalViajeros) {
   }
   if (t >= rap.inicio && t < rap.fin) {
     const restantes = Math.max(1, totalViajeros - VIAJEROS_DETALLE)
-    const slot = (rap.fin - rap.inicio) / restantes
+    const slot = (rap.fin - COLA_RAPIDO - rap.inicio) / restantes
+    if (t >= rap.fin - COLA_RAPIDO) {
+      // Cola: el último viajero queda quieto para que su sello no caiga bajo la cortina.
+      return { modo: 'rapido', indice: totalViajeros - 1, local: slot, duracionSlot: slot, progreso: 1 }
+    }
     const indice = Math.min(totalViajeros - 1, VIAJEROS_DETALLE + Math.floor((t - rap.inicio) / slot))
     const local = t - rap.inicio - (indice - VIAJEROS_DETALLE) * slot
     return { modo: 'rapido', indice, local, duracionSlot: slot, progreso: local / slot }
@@ -55,6 +62,6 @@ export function viajeroEn(t, totalViajeros) {
 // (útil para el letrero "x20" en pantalla).
 export function velocidadAvanceRapido(latenciaPromedioMs, totalViajeros) {
   const rap = ESCENAS.find((e) => e.id === 'rapido')
-  const slot = (rap.fin - rap.inicio) / Math.max(1, totalViajeros - VIAJEROS_DETALLE)
+  const slot = (rap.fin - COLA_RAPIDO - rap.inicio) / Math.max(1, totalViajeros - VIAJEROS_DETALLE)
   return latenciaPromedioMs > 0 ? latenciaPromedioMs / 1000 / slot : 1
 }
