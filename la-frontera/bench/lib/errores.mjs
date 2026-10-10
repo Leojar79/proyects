@@ -14,7 +14,13 @@ export class ErrorProveedor extends Error {
    * @param {string|null} [extra.modeloServido]
    * @param {boolean} [extra.fallback]
    * @param {Array} [extra.traza] Peticiones y respuestas HTTP de esta llamada (para --probe).
-   * @param {object} [extra.opcionesUsadas]
+   * @param {object} [extra.opcionesUsadas] Opciones tal como salieron en la petición.
+   * @param {string|null} [extra.codigo] Tipo de error: 'http', 'red', 'tiempo_agotado', 'negativa',
+   *   'json_invalido', 'esquema', 'max_tokens', 'incompleta', 'formato' (Jev), 'opcion_no_admitida',
+   *   'configuracion', 'cuota', 'autenticacion', 'fallback', 'api'.
+   * @param {string|null} [extra.idRespuesta] Id que la API dio a la respuesta (cuerpo).
+   * @param {string|null} [extra.requestId] Id de la petición (cabecera request-id / x-request-id).
+   * @param {number|null} [extra.costoReportadoUSD] Costo que informó la propia API, si lo hizo.
    */
   constructor(mensaje, extra = {}) {
     super(mensaje, extra.causa ? { cause: extra.causa } : undefined)
@@ -29,6 +35,10 @@ export class ErrorProveedor extends Error {
     this.fallback = extra.fallback ?? false
     this.traza = extra.traza ?? []
     this.opcionesUsadas = extra.opcionesUsadas ?? null
+    this.codigo = extra.codigo ?? null
+    this.idRespuesta = extra.idRespuesta ?? null
+    this.requestId = extra.requestId ?? null
+    this.costoReportadoUSD = extra.costoReportadoUSD ?? null
   }
 }
 
@@ -50,6 +60,17 @@ export function recortar(texto, max = 4000) {
 // Reintentar en 429 (límite de uso), 5xx y 529 (sobrecarga de Anthropic).
 export function statusReintentable(status) {
   return status === 429 || (status >= 500 && status <= 599)
+}
+
+// Un 429 por cuota o saldo agotado no se arregla esperando: no se reintenta.
+export function esCuotaAgotada(cuerpo) {
+  const e = cuerpo?.error
+  return [e?.code, e?.type].includes('insufficient_quota')
+}
+
+// Id de la petición que da el proveedor en las cabeceras (sirve para reclamarle o auditar).
+export function idDePeticion(cabeceras) {
+  return cabeceras?.get?.('x-request-id') ?? cabeceras?.get?.('request-id') ?? null
 }
 
 // Cabecera retry-after: segundos o fecha HTTP. Devuelve milisegundos o null.

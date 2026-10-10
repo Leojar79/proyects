@@ -9,7 +9,11 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { NIVELES_PELIGRO } from '../shared/preguntas.js'
+import { JUEGO } from '../shared/config.js'
+import { costoReal } from '../shared/juego.js'
 import { problemasCorrida } from './lib/contrato.mjs'
+import { huellaPrompt } from './lib/datos.mjs'
 
 const RUN = fileURLToPath(new URL('./run.mjs', import.meta.url))
 
@@ -42,7 +46,7 @@ describe('bench/run.mjs de punta a punta', () => {
   let base
   let dir
   let rutaViajeros
-  const llamadas = { jev: 0, opus: 0, chat: 0, responses: 0 }
+  const llamadas = { jev: 0, opus: 0, chat: 0, responses: 0, sinReasoning: 0 }
   const vistos529 = new Set()
 
   before(async () => {
@@ -61,13 +65,17 @@ describe('bench/run.mjs de punta a punta', () => {
         if (req.url === '/v1/systemone') {
           llamadas.jev++
           const v = verdadDe(cuerpo.state)
+          // El peligro va como etiqueta ("Alto"): un número exigiría TYPESAFE_SCORE_BASE.
+          const respuestas = { ...v.verdad, peligro: NIVELES_PELIGRO[v.verdad.peligro] }
           return responder(200, {
+            id: `jev-${v.id}`,
             model: 'jev-2026-10-01',
-            answers: Object.fromEntries(Object.entries(v.verdad).map(([k, x]) => [k, { value: x, probability: 0.9 }])),
+            answers: Object.fromEntries(Object.entries(respuestas).map(([k, x]) => [k, { value: x, probability: 0.9 }])),
+            // Sin tokens de salida: deben quedar como null ("no informado"), no como 0.
             usage: { input_tokens: 500 },
           })
         }
-        if (req.url.startsWith('/v1/messages')) {
+        if (req.url.includes('/v1/messages')) {
           llamadas.opus++
           const v = verdadDe(cuerpo.messages[0].content)
           // v01: la primera vez (en la prueba de la corrida completa) responde 529 (sobrecarga).
@@ -75,12 +83,24 @@ describe('bench/run.mjs de punta a punta', () => {
             vistos529.add(v.id)
             return responder(529, { type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } })
           }
-          const fallback = v.id === 'v03'
+          // Con el prefijo /rechazo, Opus se niega con v03 (y la API cobra los tokens).
+          if (req.url.startsWith('/rechazo/') && v.id === 'v03') {
+            return responder(200, {
+              id: 'msg_rechazo', type: 'message', role: 'assistant', model: 'claude-opus-5-5', content: [], stop_reason: 'refusal',
+              stop_details: { type: 'refusal', category: 'cyber', explanation: null },
+              usage: { input_tokens: 900, output_tokens: 15 },
+            })
+          }
           return responder(200, {
-            id: 'msg', type: 'message', role: 'assistant', model: fallback ? 'claude-sustituto' : 'claude-opus-5-5',
-            content: [{ type: 'text', text: JSON.stringify(v.verdad) }], stop_reason: 'end_turn', stop_details: null,
-            usage: { input_tokens: 900, output_tokens: 200, iterations: fallback ? [{ type: 'message' }, { type: 'fallback_message' }] : null },
+            id: `msg_${v.id}`, type: 'message', role: 'assistant', model: 'claude-opus-5-5',
+            content: [{ type: 'thinking', thinking: '', signature: 'f'.repeat(6000) }, { type: 'text', text: JSON.stringify(v.verdad) }],
+            stop_reason: 'end_turn', stop_details: null,
+            usage: { input_tokens: 900, output_tokens: 200 },
           })
+        }
+        if (req.url === '/sin-reasoning/v1/chat/completions') {
+          llamadas.sinReasoning++
+          return responder(400, { error: { message: "Unsupported value: 'reasoning_effort' does not support 'low' with this model.", type: 'invalid_request_error', param: 'reasoning_effort', code: 'unsupported_value' } })
         }
         if (req.url === '/oa/v1/chat/completions') {
           llamadas.chat++
@@ -175,21 +195,28 @@ describe('bench/run.mjs de punta a punta', () => {
     const run = leer(join(carpeta, archivos[0]))
     assert.deepEqual(problemasCorrida(run, VIAJEROS), [])
     assert.equal(run.source, 'live')
+    assert.equal(run.parcial, true, '--limit y subconjunto de proveedores: corrida parcial')
+    assert.equal(run.probe, false)
     assert.deepEqual(run.viajeros, ['v01', 'v02', 'v03'])
     assert.deepEqual(run.proveedores.map((p) => p.id), ['jev'])
     assert.equal(run.resultados.jev.length, 3)
     for (const res of run.resultados.jev) {
       assert.equal(res.ok, true)
       assert.equal(res.tokens.entrada, 500)
+      assert.equal(res.tokens.salida, null, 'la API no informó la salida: null, no 0')
       assert.equal(res.costoUSD, (500 * 0.042) / 1e6)
       assert.equal(res.modeloServido, 'jev-2026-10-01')
+      assert.equal(res.idRespuesta, `jev-${res.viajeroId}`)
+      assert.deepEqual(res.opcionesUsadas, {})
       assert.deepEqual(res.confianza, { pasa: 0.9, miente: 0.9, peligro: 0.9, accion: 0.9 })
     }
     assert.match(r.stdout, /RESUMEN/)
     assert.match(r.stdout, /Aciertos \(acción\)\s+100 %/)
+    assert.match(r.stdout, /sin tokens de salida informados/)
+    assert.match(r.stdout, /Corrida parcial/)
   })
 
-  test('corrida completa con los 3 proveedores: reintentos, fallback, cambio a responses y latest.json', async () => {
+  test('corrida completa con los 3 proveedores: reintentos, cambio a responses, registro previo y latest.json', async () => {
     const carpeta = nuevaCarpeta('completa')
     const r = await correr(['--concurrencia', '3'], { carpeta })
     assert.equal(r.codigo, 0, r.stderr)
@@ -199,14 +226,29 @@ describe('bench/run.mjs de punta a punta', () => {
     assert.deepEqual(problemasCorrida(run, VIAJEROS, { exigirCompleta: true }), [])
     assert.deepEqual(leer(join(carpeta, 'latest.json')), run)
     assert.match(r.stdout, /Copiada a .*latest\.json/)
+    // Lo que falta para publicar se arregla después (precios, divulgación): se avisa.
+    assert.match(r.stdout, /npm run recalcular/)
+
+    // Registrado ANTES de correr: reglas del juego, commit, huella del prompt.
+    assert.deepEqual(run.juego, { presupuestoUSD: JUEGO.presupuestoUSD, vidas: JUEGO.vidas })
+    assert.match(run.commit, /^[0-9a-f]{40}$/)
+    assert.equal(typeof run.cambiosSinCommit, 'boolean')
+    assert.equal(run.huellaPrompt, huellaPrompt())
+    assert.equal(run.parcial, false)
+    assert.equal(run.probe, false)
 
     const opusV01 = run.resultados.opus.find((x) => x.viajeroId === 'v01')
     assert.equal(opusV01.ok, true)
     assert.equal(opusV01.intentos, 2, 'el 529 se reintentó')
-    const opusV03 = run.resultados.opus.find((x) => x.viajeroId === 'v03')
-    assert.equal(opusV03.fallback, true)
-    assert.equal(opusV03.modeloServido, 'claude-sustituto')
-    assert.match(r.stdout, /fallback/i)
+    assert.equal(opusV01.erroresPrevios.length, 1, 'el intento fallido queda declarado')
+    assert.match(opusV01.erroresPrevios[0], /529/)
+    for (const res of run.resultados.opus) {
+      assert.equal(res.fallback, false)
+      assert.deepEqual(res.opcionesUsadas, { effort: 'low' })
+      assert.equal(res.idRespuesta, `msg_${res.viajeroId}`)
+      assert.ok(!res.crudo.includes('ffffffffff'), 'la firma del thinking no llena el crudo')
+      assert.ok(res.crudo.includes('accion') && res.crudo.length < 4000, 'el crudo conserva la respuesta')
+    }
 
     for (const res of run.resultados.gpt) {
       assert.deepEqual(res.opcionesUsadas, { estiloApi: 'responses', reasoningEffort: 'low' })
@@ -216,6 +258,67 @@ describe('bench/run.mjs de punta a punta', () => {
     assert.equal(run.resultados.gpt.find((x) => x.viajeroId === 'v04').decision.accion, 'rechazar')
     assert.match(r.stdout, /Aciertos \(acción\)\s+75 % \(3\/4\)\s+100 % \(4\/4\)\s+100 % \(4\/4\)/)
     assert.match(r.stdout, /precio NO verificado/)
+  })
+
+  test('negativa de Opus: queda como error con lo facturado; --reintentar-errores conserva el error en reemplazaA', async () => {
+    const carpeta = nuevaCarpeta('rechazo')
+    const r1 = await correr(['--concurrencia', '1'], { carpeta, extraEnv: { ANTHROPIC_BASE_URL: `${base}/rechazo` } })
+    assert.equal(r1.codigo, 0, r1.stderr)
+    const archivo = readdirSync(carpeta).find((f) => /^\d{4}-.*\.json$/.test(f))
+    const run1 = leer(join(carpeta, archivo))
+    assert.deepEqual(problemasCorrida(run1, VIAJEROS, { exigirCompleta: true }), [])
+    const v03 = run1.resultados.opus.find((x) => x.viajeroId === 'v03')
+    assert.equal(v03.ok, false)
+    assert.equal(v03.codigoError, 'negativa')
+    assert.equal(v03.intentos, 1, 'una negativa no se reintenta')
+    assert.equal(v03.idRespuesta, 'msg_rechazo')
+    assert.equal(v03.tokens.salida, 15)
+    assert.equal(v03.costoFacturadoUSD, (900 * 4 + 15 * 20) / 1e6)
+    assert.equal(v03.costoUSD, 0)
+    assert.match(r1.stdout, /se facturaron/)
+    assert.match(r1.stdout, /No se tocó latest\.json/)
+    assert.ok(!readdirSync(carpeta).includes('latest.json'), '1 error en 4 viajeros (25 %): no se publica')
+
+    const r2 = await correr(['--continuar', join(carpeta, archivo), '--reintentar-errores'], { carpeta })
+    assert.equal(r2.codigo, 0, r2.stderr)
+    const run2 = leer(join(carpeta, archivo))
+    const nuevo = run2.resultados.opus.find((x) => x.viajeroId === 'v03')
+    assert.equal(nuevo.ok, true)
+    assert.equal(nuevo.reemplazaA.length, 1)
+    assert.equal(nuevo.reemplazaA[0].codigoError, 'negativa')
+    assert.equal(nuevo.reemplazaA[0].costoFacturadoUSD, v03.costoFacturadoUSD)
+    // Lo cobrado por la negativa reemplazada sigue contando (juego y costo total): repetir no abarata.
+    assert.ok(Math.abs(costoReal(nuevo) - (nuevo.costoUSD + v03.costoFacturadoUSD)) < 1e-12)
+    assert.deepEqual(problemasCorrida(run2, VIAJEROS, { exigirCompleta: true }), [])
+    assert.match(r2.stdout, /reemplazaA/)
+    assert.deepEqual(leer(join(carpeta, 'latest.json')), run2)
+  })
+
+  test('GPT rechaza reasoning_effort: error claro y la corrida se detiene (no lo quita en silencio)', async () => {
+    const carpeta = nuevaCarpeta('sin-reasoning')
+    const antes = llamadas.sinReasoning
+    const r = await correr(['--proveedores', 'gpt', '--concurrencia', '1'], { carpeta, extraEnv: { OPENAI_BASE_URL: `${base}/sin-reasoning/v1` } })
+    assert.equal(r.codigo, 1)
+    assert.match(r.stderr, /detenida/)
+    assert.match(r.stderr, /no lo quito en silencio/)
+    assert.equal(llamadas.sinReasoning - antes, 1, 'una sola llamada: no se repite con cada viajero ni sin el parámetro')
+    const run = leer(join(carpeta, readdirSync(carpeta).find((f) => f.endsWith('.json'))))
+    assert.equal(run.resultados.gpt[0].codigoError, 'opcion_no_admitida')
+    assert.deepEqual(run.resultados.gpt[0].opcionesUsadas, { reasoningEffort: 'low', estiloApi: 'chat' })
+  })
+
+  test('--continuar se niega si cambió el prompt (huella distinta)', async () => {
+    const carpeta = nuevaCarpeta('huella')
+    const r1 = await correr(['--proveedores', 'jev', '--limit', '1'], { carpeta })
+    assert.equal(r1.codigo, 0, r1.stderr)
+    const archivo = join(carpeta, readdirSync(carpeta)[0])
+    const run = leer(archivo)
+    writeFileSync(archivo, JSON.stringify({ ...run, huellaPrompt: '000000000000' }))
+    const jevAntes = llamadas.jev
+    const r2 = await correr(['--continuar', archivo], { carpeta })
+    assert.equal(r2.codigo, 1)
+    assert.match(r2.stderr, /cambiaron desde que empezó/)
+    assert.equal(llamadas.jev, jevAntes, 'no se hizo ninguna llamada')
   })
 
   test('--continuar retoma una corrida parcial sin repetir lo hecho', async () => {
@@ -231,6 +334,9 @@ describe('bench/run.mjs de punta a punta', () => {
     const despues = leer(join(carpeta, archivo))
     assert.deepEqual(despues.viajeros, ['v01', 'v02', 'v03', 'v04'])
     assert.equal(despues.createdAt, antes.createdAt)
+    assert.equal(antes.parcial, true)
+    assert.equal(despues.parcial, false, 'al completarse deja de ser parcial')
+    assert.deepEqual(despues.juego, antes.juego, 'las reglas registradas al empezar no cambian')
     assert.deepEqual(despues.resultados.jev[0], antes.resultados.jev[0], 'los resultados previos no cambian')
     assert.deepEqual(problemasCorrida(despues, VIAJEROS, { exigirCompleta: true }), [])
     assert.deepEqual(leer(join(carpeta, 'latest.json')), despues, 'completa: se publica en latest.json')
@@ -250,8 +356,31 @@ describe('bench/run.mjs de punta a punta', () => {
     const run = leer(join(carpeta, archivos[0]))
     assert.deepEqual(run.viajeros, ['v02'])
     assert.equal(run.probe, true)
+    assert.equal(run.parcial, true)
+    assert.ok(run.juego && run.huellaPrompt)
+    for (const texto of ['id de respuesta:', 'request-id:', 'opciones usadas:', 'TYPESAFE_SCORE_BASE']) assert.ok(r.stdout.includes(texto), `falta "${texto}"`)
     assert.ok(run.trazas.jev.length >= 1)
     assert.ok(!JSON.stringify(run).includes('ts-falsa'), 'las claves no se guardan')
+  })
+
+  test('tiempo agotado en Opus: a lo sumo 1 reintento (la llamada perdida pudo cobrarse)', async () => {
+    const carpeta = nuevaCarpeta('timeout-opus')
+    const mudo = createServer(() => {})
+    await new Promise((r) => mudo.listen(0, '127.0.0.1', r))
+    const r = await correr(['--proveedores', 'opus', '--limit', '1'], {
+      carpeta,
+      extraEnv: { ANTHROPIC_BASE_URL: `http://127.0.0.1:${mudo.address().port}`, FRONTERA_TIMEOUT_MS: '200' },
+    })
+    mudo.closeAllConnections()
+    mudo.close()
+    assert.equal(r.codigo, 0, r.stderr)
+    const res = leer(join(carpeta, readdirSync(carpeta)[0])).resultados.opus[0]
+    assert.equal(res.ok, false)
+    assert.equal(res.intentos, 2)
+    assert.equal(res.codigoError, 'tiempo_agotado')
+    assert.equal(res.costoFacturadoUSD, null, 'no se sabe si se cobró: null, no 0')
+    assert.deepEqual(res.opcionesUsadas, { effort: 'low' })
+    assert.match(r.stdout, /No \(sin respuestas\)/)
   })
 
   test('tiempo agotado: reintenta y termina en error registrado (costo 0)', async () => {

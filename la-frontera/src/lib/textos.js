@@ -73,3 +73,22 @@ export function tono(hex, k) {
   }
   return `#${f(m[1])}${f(m[2])}${f(m[3])}`
 }
+
+// "A", "A y B", "A, B y C".
+export function lista(xs) {
+  const v = xs.filter(Boolean)
+  if (v.length <= 1) return v[0] ?? ''
+  return `${v.slice(0, -1).join(', ')} y ${v[v.length - 1]}`
+}
+
+// Precio por millón de tokens sin ceros de más: 10, 0.2, 0.042.
+export function numeroPrecio(x) {
+  if (x === null || x === undefined || !Number.isFinite(x)) return '?'
+  return x.toLocaleString('es-419', { maximumFractionDigits: 4, useGrouping: false })
+}
+
+// "GPT-6 Astra 10/50": precio de entrada / salida en US$ por millón de tokens, tal como se usó
+// para calcular el costo de la corrida (el que viene copiado dentro de la corrida).
+export function precioCorto(p) {
+  return `${p.nombre} ${numeroPrecio(p.precio?.entradaPorMTok)}/${numeroPrecio(p.precio?.salidaPorMTok)}`
+}

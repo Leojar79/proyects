@@ -16,6 +16,7 @@ export const REGLAS = [
   `5. Personas buscadas por la justicia: ${BUSCADOS.join(', ')}.`,
   '6. Si el nombre del pasaporte no coincide con el del permiso, el documento es falso.',
   '7. Si aplica más de una acción, manda la más grave: arrestar > rechazar > interrogar > aprobar.',
+  '8. Contrabando es mercancía con valor comercial escondida o sin declarar. Si no hay otra falta, pero la inspección encuentra un objeto personal sin valor comercial que el viajero no declaró, o lo que dice contradice sus documentos, se le interroga.',
 ]
 
 export const ACCIONES = ['aprobar', 'rechazar', 'interrogar', 'arrestar']
@@ -78,22 +79,16 @@ export function textoEstado(viajero) {
 }
 
 // Esquema JSON que deben cumplir GPT y Opus (salida estructurada, sin texto extra).
+// Solo tipos y valores permitidos: las instrucciones ya van en el prompt de sistema
+// (promptSistemaLLM) y repetirlas aquí encarecería la entrada de GPT y Opus.
 export function esquemaJSON() {
   return {
     type: 'object',
     properties: {
-      pasa: { type: 'boolean', description: PREGUNTAS.pasa.instrucciones },
-      miente: { type: 'boolean', description: PREGUNTAS.miente.instrucciones },
-      peligro: {
-        type: 'integer',
-        description: `${PREGUNTAS.peligro.instrucciones} 0=${NIVELES_PELIGRO.map((n, i) => `${i} ${n}`).join(', ')}`,
-        enum: [0, 1, 2, 3, 4],
-      },
-      accion: {
-        type: 'string',
-        description: PREGUNTAS.accion.instrucciones,
-        enum: ACCIONES,
-      },
+      pasa: { type: 'boolean' },
+      miente: { type: 'boolean' },
+      peligro: { type: 'integer', enum: NIVELES_PELIGRO.map((_, i) => i) },
+      accion: { type: 'string', enum: ACCIONES },
     },
     required: ['pasa', 'miente', 'peligro', 'accion'],
     additionalProperties: false,

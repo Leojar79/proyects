@@ -39,11 +39,14 @@ export function evaluarDecision(decision, verdad) {
   }
 }
 
-// Lo que realmente costó una llamada: si falló pero la API la cobró (p. ej. JSON inválido),
-// el benchmark guarda `costoFacturadoUSD`.
+// Lo que realmente costó atender a un viajero: si la llamada falló pero la API la cobró (p. ej.
+// JSON inválido), el benchmark guarda `costoFacturadoUSD`. Los intentos anteriores que se
+// repitieron con --reintentar-errores (`reemplazaA`) también cuentan si se cobraron: repetir un
+// error no puede abaratar a nadie.
 export function costoReal(r) {
   if (!r) return 0
-  return r.ok ? (r.costoUSD ?? 0) : (r.costoFacturadoUSD ?? 0)
+  const propio = r.ok ? (r.costoUSD ?? 0) : (r.costoFacturadoUSD ?? 0)
+  return (r.reemplazaA ?? []).reduce((a, x) => a + (x.costoFacturadoUSD ?? 0), propio)
 }
 
 function promedio(xs) {
@@ -257,8 +260,8 @@ export function calcularEstadisticas(run, viajeros, configActual) {
     proveedores,
     ganadores,
     // La conclusión "Jev, para decidir" solo se sostiene si Jev empata o gana en aciertos
-    // y además es el más barato.
-    jevRecomendable: Boolean(jev) && ganadores.aciertos.includes('jev') && ganadores.costo.includes('jev'),
+    // y además es el más barato SIN empate (si empata en costo con otro, no tiene ventaja real).
+    jevRecomendable: Boolean(jev) && ganadores.aciertos.includes('jev') && ganadores.costo.length === 1 && ganadores.costo[0] === 'jev',
     factoresJev,
     masBarato: porCosto[0],
     masCaro: porCosto[porCosto.length - 1],

@@ -25,7 +25,7 @@
       },
       "dice": "Solo traigo mis herramientas: soy mecánico y me contrató un taller de la capital. Nada más, se lo juro.",
       "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
-      "porque": "Esconde 3 kg de tabaco sin declarar (regla 4) y jura que solo trae herramientas: es contrabando, se arresta.",
+      "porque": "Esconde 3 kg de tabaco sin declarar, mercancía con valor comercial (reglas 4 y 8), y jura que solo trae herramientas: es contrabando, se arresta.",
       "dificultad": "facil",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "trabajo", "otraMentira": null }
     },
@@ -151,7 +151,7 @@
       },
       "dice": "Vengo a visitar a mi hermano. Solo traigo ropa, nada más.",
       "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
-      "porque": "Papeles en regla y un libro personal no es contrabando (regla 4), pero contradice su «solo traigo ropa»: contradicción menor que se aclara en entrevista.",
+      "porque": "Papeles en regla y un libro personal sin valor comercial no es contrabando, pero no lo declaró y contradice su «solo traigo ropa»: se interroga (regla 8).",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "visita familiar", "otraMentira": null }
     },
@@ -361,7 +361,7 @@
       },
       "dice": "Solo vuelvo a casa con mi café de siempre. ¿Desde cuándo revisan los termos?",
       "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
-      "porque": "Aunque es ciudadana, esconde diamantes sin declarar en el termo (regla 4) y dice que solo trae café: es contrabando, se arresta.",
+      "porque": "Aunque es ciudadana, esconde diamantes sin declarar en el termo, mercancía con valor comercial (reglas 4 y 8), y dice que solo trae café: es contrabando, se arresta.",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "regreso", "otraMentira": null }
     },
@@ -403,7 +403,7 @@
       },
       "dice": "Vuelvo de visitar a mis tíos. No traigo nada más que ropa, se lo prometo.",
       "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
-      "porque": "Ciudadano con pasaporte vigente; unas fotos personales no son contrabando (regla 4), pero contradicen su «solo ropa»: contradicción menor que se aclara en entrevista.",
+      "porque": "Ciudadano con pasaporte vigente; unas fotos personales sin valor comercial no son contrabando, pero no las declaró y contradicen su «solo ropa»: se interroga (regla 8).",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "regreso", "otraMentira": null }
     },
@@ -501,7 +501,7 @@
       },
       "dice": "Vengo al aniversario de mis padres. Solo traigo las dos botellas para el brindis, nada más.",
       "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
-      "porque": "Declaró 2 botellas, pero esconde 22 más sin declarar (regla 4) y lo niega: es contrabando, se arresta.",
+      "porque": "Declaró 2 botellas, pero esconde 22 más sin declarar, mercancía con valor comercial (reglas 4 y 8), y lo niega: es contrabando, se arresta.",
       "dificultad": "dificil",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "visita familiar", "otraMentira": null }
     },
@@ -571,7 +571,7 @@
       },
       "dice": "Vengo a recorrer las playas del sur. Equipaje mínimo: ropa y nada más.",
       "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
-      "porque": "Papeles en regla y una armónica personal no es contrabando (regla 4), pero contradice su «ropa y nada más»: contradicción menor que se aclara en entrevista.",
+      "porque": "Papeles en regla y una armónica personal sin valor comercial no es contrabando, pero no la declaró y contradice su «ropa y nada más»: se interroga (regla 8).",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "turismo", "otraMentira": null }
     },
@@ -725,7 +725,7 @@
       },
       "dice": "Solo voy de paso hacia Esterlia y no traigo más que ropa. Tengo prisa, ¿sabe?",
       "verdad": { "pasa": false, "miente": true, "peligro": 3, "accion": "arrestar" },
-      "porque": "Esconde 40 cartones de cigarrillos sin declarar en la rueda de repuesto (regla 4) y dice que solo trae ropa: es contrabando, se arresta.",
+      "porque": "Esconde 40 cartones de cigarrillos sin declarar en la rueda de repuesto, mercancía con valor comercial (reglas 4 y 8), y dice que solo trae ropa: es contrabando, se arresta.",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": true, "contradiccionMenor": false, "motivoDicho": "tránsito", "otraMentira": null }
     },
@@ -739,7 +739,7 @@
       },
       "dice": "Vengo a ver a mi sobrina y solo traigo ropa, nada más.",
       "verdad": { "pasa": false, "miente": true, "peligro": 1, "accion": "interrogar" },
-      "porque": "Papeles en regla y una muñeca de trapo no es contrabando (regla 4), pero contradice su «solo traigo ropa»: contradicción menor que se aclara en entrevista.",
+      "porque": "Papeles en regla y una muñeca de trapo sin valor comercial no es contrabando, pero no la declaró y contradice su «solo traigo ropa»: se interroga (regla 8).",
       "dificultad": "media",
       "claves": { "buscado": false, "armas": false, "contrabandoNoDeclarado": false, "contradiccionMenor": true, "motivoDicho": "visita familiar", "otraMentira": null }
     },

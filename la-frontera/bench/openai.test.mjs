@@ -15,6 +15,7 @@ const viajero = {
   dice: 'Solo traigo herramientas.',
 }
 const proveedor = { id: 'gpt', modelo: 'gpt-astra', opciones: { reasoningEffort: 'low' } }
+let cabecerasRespuesta = {}
 
 const respuestaChat = (contenido = JSON.stringify(DECISION), extra = {}) => ({
   id: 'chatcmpl-1',
@@ -49,7 +50,7 @@ describe('GPT: adaptador con fetch', () => {
         const p = { url: req.url, cabeceras: req.headers, cuerpo: JSON.parse(datos) }
         peticiones.push(p)
         const { status, cuerpo } = manejar(p)
-        res.writeHead(status, { 'content-type': 'application/json' })
+        res.writeHead(status, { 'content-type': 'application/json', ...cabecerasRespuesta })
         res.end(JSON.stringify(cuerpo))
       })
     })
@@ -68,6 +69,7 @@ describe('GPT: adaptador con fetch', () => {
   })
   beforeEach(() => {
     peticiones = []
+    cabecerasRespuesta = {}
     olvidarConfiguracion()
     delete process.env.OPENAI_API_STYLE
     delete process.env.OPENAI_MODEL
@@ -75,6 +77,7 @@ describe('GPT: adaptador con fetch', () => {
 
   test('chat/completions: cuerpo exacto y tokens', async () => {
     manejar = () => ({ status: 200, cuerpo: respuestaChat() })
+    cabecerasRespuesta = { 'x-request-id': 'req_abc' }
     const r = await decidir(viajero, proveedor, {})
     assert.equal(peticiones.length, 1)
     const p = peticiones[0]
@@ -94,7 +97,17 @@ describe('GPT: adaptador con fetch', () => {
     assert.equal(r.modeloServido, 'gpt-astra-2026-09-03')
     assert.equal(r.confianza, null)
     assert.equal(r.latenciaMs, undefined, 'sin reintento interno, la latencia la mide el runner')
-    assert.deepEqual(r.opcionesUsadas, { estiloApi: 'chat', reasoningEffort: 'low' })
+    assert.deepEqual(r.opcionesUsadas, { reasoningEffort: 'low', estiloApi: 'chat' })
+    assert.equal(r.idRespuesta, 'chatcmpl-1')
+    assert.equal(r.requestId, 'req_abc')
+  })
+
+  test('el esquema JSON solo lleva tipos y valores (las instrucciones van en el prompt)', async () => {
+    manejar = () => ({ status: 200, cuerpo: respuestaChat() })
+    await decidir(viajero, proveedor, {})
+    const esquema = peticiones[0].cuerpo.response_format.json_schema.schema
+    assert.ok(!JSON.stringify(esquema).includes('description'))
+    assert.deepEqual(esquema.properties.peligro, { type: 'integer', enum: [0, 1, 2, 3, 4] })
   })
 
   test('OPENAI_MODEL y estilo responses', async () => {
@@ -112,6 +125,7 @@ describe('GPT: adaptador con fetch', () => {
       reasoning: { effort: 'low' },
     })
     assert.deepEqual(r.tokens, { entrada: 690, entradaCacheada: 0, salida: 210, razonamiento: 190, estimado: false })
+    assert.deepEqual(r.opcionesUsadas, { reasoningEffort: 'low', estiloApi: 'responses' })
   })
 
   test('modelo no admitido en chat -> reintenta UNA vez con responses y lo recuerda', async () => {
@@ -130,27 +144,56 @@ describe('GPT: adaptador con fetch', () => {
     assert.deepEqual(peticiones.map((p) => p.url), ['/v1/responses'], 'la segunda llamada va directo a responses')
   })
 
-  test('reasoning_effort no admitido -> reintenta sin ese parámetro y lo registra', async () => {
+  test('reasoning_effort no admitido -> error claro, NO se quita el parámetro en silencio', async () => {
     manejar = (p) =>
       'reasoning_effort' in p.cuerpo
         ? { status: 400, cuerpo: { error: { message: "Unsupported parameter: 'reasoning_effort' is not supported with this model.", type: 'invalid_request_error', param: 'reasoning_effort', code: 'unsupported_parameter' } } }
         : { status: 200, cuerpo: respuestaChat() }
+    await assert.rejects(decidir(viajero, proveedor, {}), (e) => {
+      assert.ok(e instanceof ErrorProveedor)
+      assert.equal(e.codigo, 'opcion_no_admitida')
+      assert.equal(e.reintentable, false)
+      assert.match(e.message, /no lo quito en silencio/)
+      assert.match(e.message, /shared\/modelos\.js/)
+      assert.deepEqual(e.opcionesUsadas, { reasoningEffort: 'low', estiloApi: 'chat' })
+      return true
+    })
+    assert.equal(peticiones.length, 1, 'no hay un segundo intento sin el parámetro')
+  })
+
+  test('falta reasoningEffort o hay opciones que no se envían -> error de configuración (sin llamar)', async () => {
+    manejar = () => ({ status: 200, cuerpo: respuestaChat() })
+    await assert.rejects(decidir(viajero, { ...proveedor, opciones: {} }, {}), (e) => e.codigo === 'configuracion')
+    await assert.rejects(decidir(viajero, { ...proveedor, opciones: { reasoningEffort: 'low', verbosity: 'low' } }, {}), (e) => e.codigo === 'configuracion' && /verbosity/.test(e.message))
+    assert.equal(peticiones.length, 0)
+  })
+
+  test('sin usage.completion_tokens: la salida queda null (no 0)', async () => {
+    manejar = () => ({ status: 200, cuerpo: respuestaChat(undefined, { usage: { prompt_tokens: 700 } }) })
     const r = await decidir(viajero, proveedor, {})
-    assert.equal(peticiones.length, 2)
-    assert.ok(!('reasoning_effort' in peticiones[1].cuerpo))
-    assert.equal(peticiones[1].url, '/v1/chat/completions', 'no cambia de estilo por un error de reasoning_effort')
-    assert.deepEqual(r.opcionesUsadas, { estiloApi: 'chat', reasoningEffort: null })
+    assert.equal(r.tokens.salida, null)
+    assert.equal(r.tokens.entrada, 700)
+  })
+
+  test('429 por cuota agotada (insufficient_quota) -> NO reintentable', async () => {
+    manejar = () => ({ status: 429, cuerpo: { error: { message: 'You exceeded your current quota', type: 'insufficient_quota', code: 'insufficient_quota' } } })
+    await assert.rejects(decidir(viajero, proveedor, {}), (e) => e.status === 429 && e.reintentable === false && e.codigo === 'cuota')
+  })
+
+  test('JSON inválido -> error con tokens facturados e id de respuesta', async () => {
+    manejar = () => ({ status: 200, cuerpo: respuestaChat('{"pasa": tr') })
+    await assert.rejects(decidir(viajero, proveedor, {}), (e) => e.codigo === 'json_invalido' && e.tokens?.salida === 180 && e.idRespuesta === 'chatcmpl-1')
   })
 
   test('negativa (refusal) -> error con tokens facturados', async () => {
     manejar = () => ({ status: 200, cuerpo: respuestaChat(null, { choices: [{ message: { content: null, refusal: 'No puedo ayudar con eso.' }, finish_reason: 'stop' }] }) })
-    await assert.rejects(decidir(viajero, proveedor, {}), (e) => e instanceof ErrorProveedor && /se negó/.test(e.message) && e.tokens?.salida === 180 && !e.reintentable)
+    await assert.rejects(decidir(viajero, proveedor, {}), (e) => e instanceof ErrorProveedor && /se negó/.test(e.message) && e.tokens?.salida === 180 && !e.reintentable && e.codigo === 'negativa')
   })
 
   test('429 y 500 -> reintentables; 401 -> no', async () => {
     for (const [status, reintentable] of [[429, true], [500, true], [401, false]]) {
       manejar = () => ({ status, cuerpo: { error: { message: `error ${status}` } } })
-      await assert.rejects(decidir(viajero, proveedor, {}), (e) => e.status === status && e.reintentable === reintentable && new RegExp(`HTTP ${status}`).test(e.message))
+      await assert.rejects(decidir(viajero, proveedor, {}), (e) => e.status === status && e.reintentable === reintentable && new RegExp(`HTTP ${status}`).test(e.message) && e.codigo === (status === 401 ? 'autenticacion' : 'http'))
     }
   })
 

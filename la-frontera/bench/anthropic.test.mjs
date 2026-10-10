@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { esquemaJSON, promptSistemaLLM, textoEstado } from '../shared/preguntas.js'
 import { ErrorProveedor } from './lib/errores.mjs'
-import { decidir, interpretarMensaje, tokensDeUso } from './providers/anthropic.mjs'
+import { construirParametros, crudoSinFirmas, decidir, interpretarMensaje, tokensDeUso } from './providers/anthropic.mjs'
 
 const DECISION = { pasa: false, miente: true, peligro: 3, accion: 'arrestar' }
 const viajero = {
@@ -49,33 +49,64 @@ describe('Opus: interpretación', () => {
     )
   })
 
-  test('fallback: se marca y se toma el texto del modelo que sirvió', () => {
-    const r = interpretarMensaje(
-      mensaje({
-        model: 'claude-sustituto',
-        content: [
-          { type: 'text', text: '{"pasa": tr' },
-          { type: 'fallback', from: { model: 'claude-opus-5-5' }, to: { model: 'claude-sustituto' }, trigger: { type: 'refusal', category: null } },
-          { type: 'text', text: JSON.stringify(DECISION) },
-        ],
-        usage: { input_tokens: 900, output_tokens: 260, iterations: [{ type: 'message' }, { type: 'fallback_message' }] },
-      }),
-    )
-    assert.equal(r.fallback, true)
-    assert.equal(r.modeloServido, 'claude-sustituto')
-    assert.deepEqual(r.decision, DECISION)
+  test('no se piden respaldos: ni beta ni "fallbacks" en los parámetros', () => {
+    const params = construirParametros(viajero, proveedor)
+    assert.ok(!('betas' in params))
+    assert.ok(!('fallbacks' in params))
+    assert.deepEqual(params.output_config.effort, 'low')
   })
 
-  test('refusal -> error con stop_details y tokens', () => {
+  test('si igual respondiera otro modelo (fallback), NO cuenta como respuesta de Opus', () => {
+    assert.throws(
+      () =>
+        interpretarMensaje(
+          mensaje({
+            model: 'claude-sustituto',
+            content: [
+              { type: 'fallback', from: { model: 'claude-opus-5-5' }, to: { model: 'claude-sustituto' }, trigger: { type: 'refusal', category: null } },
+              { type: 'text', text: JSON.stringify(DECISION) },
+            ],
+            usage: { input_tokens: 900, output_tokens: 260, iterations: [{ type: 'message' }, { type: 'fallback_message' }] },
+          }),
+        ),
+      (e) => e instanceof ErrorProveedor && e.codigo === 'fallback' && e.fallback === true && e.tokens.salida === 260,
+    )
+  })
+
+  test('refusal -> error con stop_details y los tokens facturados (es conducta de Opus)', () => {
     assert.throws(
       () => interpretarMensaje(mensaje({ stop_reason: 'refusal', stop_details: { category: 'general_harms', explanation: 'motivo' }, content: [] })),
-      (e) => e instanceof ErrorProveedor && /refusal/.test(e.message) && /general_harms/.test(e.message) && e.tokens.salida === 240 && !e.reintentable,
+      (e) =>
+        e instanceof ErrorProveedor &&
+        /refusal/.test(e.message) &&
+        /general_harms/.test(e.message) &&
+        e.tokens.salida === 240 &&
+        !e.reintentable &&
+        e.codigo === 'negativa' &&
+        e.idRespuesta === 'msg_1',
     )
+  })
+
+  test('crudo: las firmas de thinking se reemplazan por su largo (la respuesta no se pierde al recortar)', () => {
+    const firma = 'x'.repeat(5000)
+    const m = mensaje({ content: [{ type: 'thinking', thinking: '', signature: firma }, { type: 'text', text: JSON.stringify(DECISION) }] })
+    const crudo = crudoSinFirmas(m)
+    assert.ok(!crudo.includes(firma))
+    assert.match(crudo, /firma omitida: 5000 caracteres/)
+    assert.ok(crudo.length < 4000 && crudo.includes('arrestar'))
+    assert.equal(interpretarMensaje(m).crudo, crudo)
+  })
+
+  test('tokens: sin output_tokens la salida queda null (no 0)', () => {
+    assert.equal(tokensDeUso({ input_tokens: 10 }).salida, null)
   })
 
   test('max_tokens y JSON inválido -> error', () => {
     assert.throws(() => interpretarMensaje(mensaje({ stop_reason: 'max_tokens' })), /max_tokens/)
-    assert.throws(() => interpretarMensaje(mensaje({ content: [{ type: 'text', text: 'no es json' }] })), /no es JSON válido/)
+    assert.throws(
+      () => interpretarMensaje(mensaje({ content: [{ type: 'text', text: 'no es json' }] })),
+      (e) => /no es JSON válido/.test(e.message) && e.codigo === 'json_invalido' && e.tokens.salida === 240,
+    )
   })
 })
 
@@ -91,7 +122,7 @@ describe('Opus: llamada del SDK contra un servidor local', () => {
       req.on('data', (c) => (datos += c))
       req.on('end', () => {
         ultima = { url: req.url, cabeceras: req.headers, cuerpo: JSON.parse(datos) }
-        res.writeHead(respuesta.status, { 'content-type': 'application/json', ...(respuesta.cabeceras ?? {}) })
+        res.writeHead(respuesta.status, { 'content-type': 'application/json', 'request-id': 'req_ant_1', ...(respuesta.cabeceras ?? {}) })
         res.end(JSON.stringify(respuesta.cuerpo))
       })
     })
@@ -107,16 +138,15 @@ describe('Opus: llamada del SDK contra un servidor local', () => {
     }
   })
 
-  test('petición exacta: beta de fallback, effort low, salida estructurada, sin thinking', async () => {
+  test('petición exacta: sin beta ni fallbacks, effort low, salida estructurada, sin thinking', async () => {
     respuesta = { status: 200, cuerpo: mensaje() }
     const r = await decidir(viajero, proveedor, {})
-    assert.equal(ultima.url, '/v1/messages?beta=true')
-    assert.equal(ultima.cabeceras['anthropic-beta'], 'server-side-fallback-2026-07-01')
+    assert.equal(ultima.url, '/v1/messages')
+    assert.equal(ultima.cabeceras['anthropic-beta'], undefined)
     assert.equal(ultima.cabeceras['x-api-key'], 'sk-ant-falsa')
     assert.deepEqual(ultima.cuerpo, {
       model: 'claude-opus-5-5',
       max_tokens: 8000,
-      fallbacks: 'default',
       output_config: { effort: 'low', format: { type: 'json_schema', schema: esquemaJSON() } },
       system: promptSistemaLLM(),
       messages: [{ role: 'user', content: textoEstado(viajero) }],
@@ -125,6 +155,21 @@ describe('Opus: llamada del SDK contra un servidor local', () => {
     assert.deepEqual(r.decision, DECISION)
     assert.equal(r.traza[0].status, 200)
     assert.equal(r.traza[0].peticion.cabeceras['x-api-key'], '(oculta)')
+    assert.deepEqual(r.opcionesUsadas, { effort: 'low' })
+    assert.equal(r.idRespuesta, 'msg_1')
+    assert.equal(r.requestId, 'req_ant_1')
+  })
+
+  test('negativa por la API: error no reintentable, con tokens, opciones e ids', async () => {
+    respuesta = { status: 200, cuerpo: mensaje({ stop_reason: 'refusal', stop_details: { type: 'refusal', category: 'cyber', explanation: null }, content: [], usage: { input_tokens: 900, output_tokens: 12 } }) }
+    await assert.rejects(decidir(viajero, proveedor, {}), (e) => {
+      assert.equal(e.codigo, 'negativa')
+      assert.equal(e.reintentable, false)
+      assert.deepEqual(e.tokens, { entrada: 900, entradaCacheada: 0, salida: 12, razonamiento: null, estimado: false })
+      assert.deepEqual(e.opcionesUsadas, { effort: 'low' })
+      assert.equal(e.requestId, 'req_ant_1')
+      return true
+    })
   })
 
   test('429 y 529 -> reintentables (clases tipadas del SDK); 400 -> no', async () => {
@@ -136,6 +181,8 @@ describe('Opus: llamada del SDK contra un servidor local', () => {
         assert.equal(e.reintentable, reintentable)
         assert.match(e.message, new RegExp(`HTTP ${status}.*mensaje ${status}`))
         if (status === 429) assert.equal(e.retryAfterMs, 3000)
+        assert.equal(e.requestId, 'req_ant_1')
+        assert.deepEqual(e.opcionesUsadas, { effort: 'low' })
         return true
       })
     }

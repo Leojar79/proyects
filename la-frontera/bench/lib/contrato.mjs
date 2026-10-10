@@ -10,6 +10,20 @@ export const NOTA_DEMO = 'Datos simulados para probar el diseño del video. NO s
 
 const esNumero = (x) => typeof x === 'number' && Number.isFinite(x)
 const esObjeto = (x) => x !== null && typeof x === 'object' && !Array.isArray(x)
+const textoONull = (x) => x === null || (typeof x === 'string' && x.length > 0)
+
+// Tokens: entrada y cacheados, números >= 0; salida, número >= 0 o null (la API no la informó).
+function problemasTokens(t, qr) {
+  const p = []
+  if (!esObjeto(t)) return [`${qr}: faltan tokens`]
+  for (const campo of ['entrada', 'entradaCacheada']) {
+    if (!esNumero(t[campo]) || t[campo] < 0) p.push(`${qr}: tokens.${campo} debe ser un número >= 0`)
+  }
+  if (t.salida !== null && !(esNumero(t.salida) && t.salida >= 0)) p.push(`${qr}: tokens.salida debe ser un número >= 0 o null (no informada)`)
+  if (t.razonamiento !== null && !(esNumero(t.razonamiento) && t.razonamiento >= 0)) p.push(`${qr}: tokens.razonamiento debe ser número o null`)
+  if (typeof t.estimado !== 'boolean') p.push(`${qr}: tokens.estimado debe ser booleano`)
+  return p
+}
 
 export function problemasCorrida(run, viajerosDataset, { exigirCompleta = false } = {}) {
   const p = []
@@ -21,6 +35,26 @@ export function problemasCorrida(run, viajerosDataset, { exigirCompleta = false 
   }
   if (run.source === 'demo' && run.nota !== NOTA_DEMO) p.push(`una corrida demo debe llevar la nota "${NOTA_DEMO}"`)
   if (run.nota !== undefined && typeof run.nota !== 'string') p.push('nota debe ser texto')
+
+  // Reglas del juego registradas ANTES de correr (obligatorias en corridas reales).
+  if (run.juego !== undefined || run.source === 'live') {
+    const j = run.juego
+    if (!esObjeto(j)) p.push('juego debe ser { presupuestoUSD, vidas } (registrado antes de correr)')
+    else {
+      if (!esNumero(j.presupuestoUSD) || j.presupuestoUSD <= 0) p.push('juego.presupuestoUSD debe ser un número > 0')
+      if (!Number.isInteger(j.vidas) || j.vidas < 1) p.push('juego.vidas debe ser un entero >= 1')
+    }
+  }
+  if (run.source === 'live' && typeof run.huellaPrompt !== 'string') p.push('huellaPrompt debe ser texto en una corrida real')
+  if (run.huellaPrompt !== undefined && typeof run.huellaPrompt !== 'string') p.push('huellaPrompt debe ser texto')
+  if (run.commit !== undefined && !textoONull(run.commit)) p.push('commit debe ser texto o null')
+  if (run.cambiosSinCommit !== undefined && run.cambiosSinCommit !== null && typeof run.cambiosSinCommit !== 'boolean') {
+    p.push('cambiosSinCommit debe ser booleano o null')
+  }
+  for (const campo of ['parcial', 'probe']) {
+    if (run[campo] !== undefined && typeof run[campo] !== 'boolean') p.push(`${campo} debe ser booleano`)
+  }
+  if (run.basePeligroJev !== undefined && ![null, 0, 1].includes(run.basePeligroJev)) p.push('basePeligroJev debe ser 0, 1 o null')
 
   const idsDataset = new Set(viajerosDataset.map((v) => v.id))
   if (!Array.isArray(run.viajeros) || run.viajeros.length === 0) {
@@ -83,18 +117,11 @@ export function problemasCorrida(run, viajerosDataset, { exigirCompleta = false 
       if (r.ok) {
         if (r.error !== null) p.push(`${qr}: error debe ser null si ok`)
         for (const x of problemasDecision(r.decision)) p.push(`${qr}: ${x}`)
-        const t = r.tokens
-        if (!esObjeto(t)) p.push(`${qr}: faltan tokens`)
-        else {
-          for (const campo of ['entrada', 'entradaCacheada', 'salida']) {
-            if (!esNumero(t[campo]) || t[campo] < 0) p.push(`${qr}: tokens.${campo} debe ser un número >= 0`)
-          }
-          if (t.razonamiento !== null && !(esNumero(t.razonamiento) && t.razonamiento >= 0)) p.push(`${qr}: tokens.razonamiento debe ser número o null`)
-          if (typeof t.estimado !== 'boolean') p.push(`${qr}: tokens.estimado debe ser booleano`)
-          if (esObjeto(prov.precio) && esNumero(r.costoUSD)) {
-            const esperado = calcularCosto(prov.precio, t)
-            if (Math.abs(esperado - r.costoUSD) > 1e-9) p.push(`${qr}: costoUSD ${r.costoUSD} no coincide con calcularCosto (${esperado})`)
-          }
+        const pt = problemasTokens(r.tokens, qr)
+        p.push(...pt)
+        if (!pt.length && esObjeto(prov.precio) && esNumero(r.costoUSD)) {
+          const esperado = calcularCosto(prov.precio, r.tokens)
+          if (Math.abs(esperado - r.costoUSD) > 1e-9) p.push(`${qr}: costoUSD ${r.costoUSD} no coincide con calcularCosto (${esperado})`)
         }
         if (!esNumero(r.costoUSD) || r.costoUSD < 0) p.push(`${qr}: costoUSD debe ser un número >= 0`)
         if (!esNumero(r.latenciaMs) || r.latenciaMs <= 0) p.push(`${qr}: latenciaMs debe ser un número > 0`)
@@ -103,6 +130,43 @@ export function problemasCorrida(run, viajerosDataset, { exigirCompleta = false 
         if (r.decision !== null) p.push(`${qr}: decision debe ser null si hubo error`)
         if (typeof r.error !== 'string' || !r.error) p.push(`${qr}: error debe ser un mensaje`)
         if (r.costoUSD !== 0) p.push(`${qr}: costoUSD debe ser 0 si hubo error`)
+        if (r.codigoError !== undefined && !textoONull(r.codigoError)) p.push(`${qr}: codigoError debe ser texto o null`)
+        // Lo que la API cobró aunque la respuesta no sirviera: debe salir de los tokens guardados.
+        if (r.tokens !== null && r.tokens !== undefined) {
+          const pt = problemasTokens(r.tokens, qr)
+          p.push(...pt)
+          if (!pt.length && esObjeto(prov.precio)) {
+            const esperado = calcularCosto(prov.precio, r.tokens)
+            if (!esNumero(r.costoFacturadoUSD) || Math.abs(esperado - r.costoFacturadoUSD) > 1e-9) {
+              p.push(`${qr}: costoFacturadoUSD ${r.costoFacturadoUSD} no coincide con calcularCosto de los tokens (${esperado})`)
+            }
+          }
+        } else if (r.costoFacturadoUSD !== undefined && r.costoFacturadoUSD !== null) {
+          p.push(`${qr}: costoFacturadoUSD sin tokens que lo respalden`)
+        }
+      }
+      if (r.costoReportadoUSD !== undefined && r.costoReportadoUSD !== null && !(esNumero(r.costoReportadoUSD) && r.costoReportadoUSD >= 0)) {
+        p.push(`${qr}: costoReportadoUSD debe ser un número >= 0 o null`)
+      }
+      for (const campo of ['idRespuesta', 'requestId', 'registradoAt']) {
+        if (r[campo] !== undefined && !textoONull(r[campo])) p.push(`${qr}: ${campo} debe ser texto o null`)
+      }
+      if (r.intentos !== undefined && !(Number.isInteger(r.intentos) && r.intentos >= 1)) p.push(`${qr}: intentos debe ser un entero >= 1`)
+      if (r.erroresPrevios !== undefined && !(Array.isArray(r.erroresPrevios) && r.erroresPrevios.every((x) => typeof x === 'string'))) {
+        p.push(`${qr}: erroresPrevios debe ser una lista de mensajes`)
+      }
+      if (r.reemplazaA !== undefined && !(Array.isArray(r.reemplazaA) && r.reemplazaA.every((x) => esObjeto(x) && x.ok === false))) {
+        p.push(`${qr}: reemplazaA debe ser una lista de resultados fallidos anteriores`)
+      }
+      // opcionesUsadas: lo que realmente salió en la petición. Debe incluir TODAS las opciones
+      // declaradas del proveedor (si una no se usó, el valor es null y la corrida no es publicable).
+      if (r.opcionesUsadas !== undefined || run.source === 'live') {
+        if (!esObjeto(r.opcionesUsadas)) p.push(`${qr}: opcionesUsadas debe ser un objeto`)
+        else if (esObjeto(prov.opciones)) {
+          for (const k of Object.keys(prov.opciones)) {
+            if (!(k in r.opcionesUsadas)) p.push(`${qr}: opcionesUsadas no registra la opción declarada "${k}"`)
+          }
+        }
       }
       if (r.confianza !== null) {
         if (!esObjeto(r.confianza)) p.push(`${qr}: confianza debe ser objeto o null`)

@@ -44,10 +44,15 @@ export function motivosNoPublicable(run, viajeros, { juego, publicacion, proveed
       a('errores', `${p.nombre}: ${errores} ${errores === 1 ? 'error' : 'errores'} de API`)
     }
     // Cada llamada debe haber usado la configuración declarada (p. ej. reasoning_effort "low").
-    const distintas = res.filter((r) => r.ok && r.opcionesUsadas && !coincideConfiguracion(p.opciones, r.opcionesUsadas))
+    // Una respuesta que no registró sus opciones tampoco demuestra que usó las declaradas.
+    const distintas = res.filter((r) => r.ok && !coincideConfiguracion(p.opciones, r.opcionesUsadas ?? {}))
     if (distintas.length) b('config', `${p.nombre} no usó la configuración declarada en ${distintas.length} llamadas`)
     if (p.precio?.verificado === false) b('precio', `Precio de ${p.nombre} sin verificar en la página oficial`)
     if (res.some((r) => r.ok && r.tokens?.estimado)) a('tokens', `Tokens de ${p.nombre} estimados: la API no los informó`)
+    const okRes = res.filter((r) => r.ok)
+    if (okRes.length && okRes.every((r) => !(r.costoUSD > 0))) {
+      a('costo_cero', `${p.nombre}: costo 0 en todas sus respuestas (la API informó 0 tokens o el precio es 0)`)
+    }
     if (res.some((r) => r.ok && r.fallback)) b('fallback', `${p.nombre}: respondió otro modelo (fallback)`)
     // Precios de la corrida distintos de los actuales: hay que recalcular (npm run recalcular).
     const actual = proveedores?.find((x) => x.id === p.id)
@@ -84,10 +89,10 @@ function sinMeta(precio) {
   return { entradaPorMTok, entradaCacheadaPorMTok, salidaPorMTok }
 }
 
-// Las opciones usadas deben incluir cada opción declarada con el mismo valor.
+// Las opciones usadas deben incluir cada opción declarada con el mismo valor (si falta, no coincide).
 function coincideConfiguracion(declaradas, usadas) {
   for (const [k, v] of Object.entries(declaradas ?? {})) {
-    if (k in usadas && !iguales(usadas[k], v)) return false
+    if (!(k in usadas) || !iguales(usadas[k], v)) return false
   }
   return true
 }

@@ -21,7 +21,12 @@
 //   --trabajos N   Navegadores por formato (por defecto: 3 con un solo formato o con --en-serie;
 //                  1 con "todos" en paralelo). Cada uno hace un trozo de cuadros y se unen sin recomprimir.
 //
-// Salida: out/la-frontera-<formato>[-subs][-demo].mp4
+// Salida: out/la-frontera-<formato>[-subs][-demo|-NO-PUBLICAR].mp4
+//
+// ¿Se puede publicar? Lo decide shared/publicable.js (la app lo expone en window.__frontera.publicable).
+// Con cualquier bloqueo, el video y los fotogramas llevan marca de agua, su nombre termina en -demo
+// (datos simulados) o -NO-PUBLICAR (cualquier otro motivo), la consola lista los motivos y el
+// proceso termina con código 1. El archivo se genera igual, para revisarlo.
 
 import { spawn, spawnSync } from 'node:child_process'
 import { once } from 'node:events'
@@ -32,7 +37,7 @@ import { join } from 'node:path'
 
 import { VIDEO } from '../shared/config.js'
 import { DURACION } from '../shared/timeline.js'
-import { CARPETA_OUT, CARPETA_RUNS, cargarCorrida, parsearArgs, RAIZ, rel, salirConError } from './comun.mjs'
+import { CARPETA_OUT, CARPETA_RUNS, cargarCorrida, comoResolver, parsearArgs, RAIZ, rel, salirConError, sufijoPublicable } from './comun.mjs'
 
 const FORMATOS = Object.keys(VIDEO.formatos)
 const CHROMIUM_RESPALDO = '/opt/pw-browsers/chromium'
@@ -249,10 +254,26 @@ async function abrirApp(navegador, url, formato, opciones) {
   const info = await page.evaluate(async () => {
     await document.fonts.ready
     const f = window.__frontera
-    return { listo: f.listo, error: f.error, esDemo: f.esDemo, corrida: f.corrida, duracion: f.duracion, fps: f.fps }
+    return {
+      listo: f.listo,
+      error: f.error,
+      esDemo: f.esDemo,
+      publicable: f.publicable,
+      corrida: f.corrida,
+      archivo: f.archivo,
+      sha256: f.sha256,
+      duracion: f.duracion,
+      fps: f.fps,
+    }
   })
   if (info.error || !info.listo) {
     throw new Error(`[${formato}] La app no pudo cargar la corrida "${opciones.run}": ${info.error ?? 'error desconocido'}`)
+  }
+  if (!info.publicable || !Array.isArray(info.publicable.bloqueos)) {
+    throw new Error(
+      `[${formato}] La app no informó si la corrida se puede publicar (window.__frontera.publicable). ` +
+        'Reconstruye la app (quita --sin-build).',
+    )
   }
   if (Math.abs(info.duracion - DURACION) > 1e-9) {
     throw new Error(`[${formato}] La app dura ${info.duracion} s y shared/timeline.js dice ${DURACION} s: reconstruye la app (sin --sin-build).`)
@@ -404,10 +425,10 @@ function crearProgreso(trabajos) {
 // ---------------------------------------------------------------------------
 // Trabajos
 
-function nombreSalida(formato, opciones, esDemo) {
+function nombreSalida(formato, opciones, info) {
   let n = `la-frontera-${formato}`
   if (opciones.subs) n += '-subs'
-  if (esDemo) n += '-demo'
+  n += sufijoPublicable(info.publicable)
   if (opciones.esTramo) n += `-tramo-${numeroArchivo(opciones.desde)}-${numeroArchivo(opciones.hasta)}`
   return join(CARPETA_OUT, `${n}.mp4`)
 }
@@ -470,10 +491,11 @@ async function renderVideo(formato, contexto, opciones, progreso, limpieza) {
     ),
   )
   const info = res[0].info
-  if (res.some((r) => r.info.esDemo !== info.esDemo || r.info.corrida !== info.corrida)) {
+  const firma = (x) => JSON.stringify([x.corrida, x.sha256, x.publicable])
+  if (res.some((r) => firma(r.info) !== firma(info))) {
     throw new Error(`[${formato}] Los navegadores cargaron corridas distintas; vuelve a intentar.`)
   }
-  const salida = nombreSalida(formato, opciones, info.esDemo)
+  const salida = nombreSalida(formato, opciones, info)
   if (n === 1) renameSync(trozos[0].ruta, salida)
   else {
     const parcial = `${base}.parcial.mp4`
@@ -495,7 +517,7 @@ async function renderFotogramas(formato, contexto, opciones, limpieza) {
   const rutas = []
   for (const t of opciones.fotogramas) {
     await fijarTiempo(page, t)
-    const ruta = join(carpeta, `${formato}-${numeroArchivo(t)}${opciones.subs ? '-subs' : ''}.png`)
+    const ruta = join(carpeta, `${formato}-${numeroArchivo(t)}${opciones.subs ? '-subs' : ''}${sufijoPublicable(info.publicable)}.png`)
     await page.screenshot({ path: ruta, type: 'png' })
     rutas.push(ruta)
   }
@@ -503,16 +525,44 @@ async function renderFotogramas(formato, contexto, opciones, limpieza) {
   return { formato, rutas, info, errores }
 }
 
-function avisoDemo(frase = 'Este video NO se debe publicar: lleva la marca de agua "DEMO" y sus números no son reales.') {
+// Aviso grande en consola con TODOS los bloqueos (y avisos) de shared/publicable.js.
+// Devuelve true si hay bloqueos (el proceso debe terminar con código 1).
+function avisoNoPublicable(infos, corrida, queSalio) {
+  const publicable = infos[0]?.publicable ?? { bloqueos: [], avisos: [] }
+  const { bloqueos, avisos } = publicable
+  if (!bloqueos.length) {
+    console.log('\nSin bloqueos según shared/publicable.js: se puede publicar (revisa igual el checklist de GUION.md).')
+    if (avisos.length) {
+      console.log('Avisos (no bloquean; la pantalla y el texto de LinkedIn los dicen):')
+      for (const a of avisos) console.log(`  - ${a.texto}`)
+    }
+    return false
+  }
+  const sufijo = sufijoPublicable(publicable)
   const lineas = [
-    'AVISO: se renderizaron DATOS DEMO (simulados).',
-    frase,
-    'Corre el benchmark real (npm run benchmark) y vuelve a renderizar.',
+    `NO PUBLICAR: ${bloqueos.length} ${bloqueos.length === 1 ? 'bloqueo' : 'bloqueos'} (shared/publicable.js).`,
+    `${queSalio} marca de agua y el sufijo "${sufijo}" en el nombre. Se generaron igual, solo para revisar.`,
+    '',
+    ...bloqueos.flatMap((b, i) => [`${i + 1}. ${b.texto}`, `   Cómo resolverlo: ${comoResolver(b, corrida.run)}`]),
   ]
-  const ancho = Math.max(...lineas.map((l) => l.length)) + 4
-  console.log(`\n${'!'.repeat(ancho + 2)}`)
-  for (const l of lineas) console.log(`! ${l.padEnd(ancho - 2)} !`)
-  console.log(`${'!'.repeat(ancho + 2)}\n`)
+  if (avisos.length) lineas.push('', 'Avisos (no bloquean):', ...avisos.map((a) => `  - ${a.texto}`))
+  const ancho = Math.min(110, Math.max(...lineas.map((l) => l.length)) + 2)
+  const partir = (l) => {
+    const out = []
+    let resto = l
+    while (resto.length > ancho - 2) {
+      let k = resto.lastIndexOf(' ', ancho - 2)
+      if (k <= 0) k = ancho - 2
+      out.push(resto.slice(0, k))
+      resto = '      ' + resto.slice(k).trimStart()
+    }
+    out.push(resto)
+    return out
+  }
+  console.log(`\n${'!'.repeat(ancho + 4)}`)
+  for (const l of lineas.flatMap(partir)) console.log(`!! ${l.padEnd(ancho - 2)} !!`)
+  console.log(`${'!'.repeat(ancho + 4)}\n`)
+  return true
 }
 
 // ---------------------------------------------------------------------------
@@ -552,11 +602,12 @@ async function main() {
     if (opciones.fotogramas) {
       const resultados = await Promise.all(opciones.formatos.map((f) => renderFotogramas(f, contexto, opciones, limpieza)))
       for (const r of resultados) {
-        console.log(`[${r.formato}] ${r.rutas.length} fotogramas (corrida ${r.info.corrida}${r.info.esDemo ? ', DEMO' : ''}):`)
+        const sufijo = sufijoPublicable(r.info.publicable)
+        console.log(`[${r.formato}] ${r.rutas.length} fotogramas (corrida ${r.info.corrida}${sufijo ? `, ${sufijo.slice(1)}` : ''}):`)
         for (const ruta of r.rutas) console.log(`  ${rel(ruta)}`)
         for (const e of r.errores) console.warn(`  Aviso: ${e}`)
       }
-      if (resultados.some((r) => r.info.esDemo)) avisoDemo('Estas imágenes NO se deben publicar: llevan la marca de agua "DEMO" y sus números no son reales.')
+      if (avisoNoPublicable(resultados.map((r) => r.info), corrida, 'Estos fotogramas llevan')) process.exitCode = 1
       return
     }
 
@@ -607,12 +658,8 @@ async function main() {
       for (const e of r.errores.slice(0, 5)) console.warn(`  Aviso de la app: ${e}`)
     }
     console.log(`\nTiempo total: ${duracionTexto((ahora() - t0) / 1000)}`)
-    if (resultados.some((r) => r.info.esDemo)) avisoDemo(
-        resultados.length > 1
-          ? 'Estos videos NO se deben publicar: llevan la marca de agua "DEMO" y sus números no son reales.'
-          : undefined,
-      )
-    if (!todoBien) process.exitCode = 1
+    const bloqueado = avisoNoPublicable(resultados.map((r) => r.info), corrida, resultados.length > 1 ? 'Estos videos llevan' : 'Este video lleva')
+    if (!todoBien || bloqueado) process.exitCode = 1
   } catch (e) {
     if (contexto.cancelado) {
       console.error('\nRender cancelado; se borraron los archivos parciales.')

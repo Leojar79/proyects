@@ -2,6 +2,9 @@
 // Revisa que un archivo de corrida cumpla el contrato de ARQUITECTURA.md.
 // Uso: node bench/chequear-corrida.mjs public/runs/demo.json [--completa]
 
+import { JUEGO, PUBLICACION } from '../shared/config.js'
+import { PROVEEDORES } from '../shared/modelos.js'
+import { motivosNoPublicable } from '../shared/publicable.js'
 import { problemasCorrida } from './lib/contrato.mjs'
 import { cargarViajeros, leerJSON } from './lib/datos.mjs'
 
@@ -30,6 +33,9 @@ for (const archivo of archivos) {
   } else {
     const n = Object.values(run.resultados).reduce((a, l) => a + l.length, 0)
     console.log(`${archivo}: OK (source "${run.source}", ${run.viajeros.length} viajeros, ${run.proveedores.length} proveedores, ${n} resultados)`)
+    // Informativo (no falla): lo que impediría publicar un video con esta corrida.
+    const { bloqueos } = motivosNoPublicable(run, viajeros, { juego: JUEGO, publicacion: PUBLICACION, proveedores: PROVEEDORES })
+    if (bloqueos.length) console.log(`  No publicable todavía: ${bloqueos.map((b) => b.texto).join(' · ')}`)
   }
 }
 process.exit(fallas ? 1 : 0)

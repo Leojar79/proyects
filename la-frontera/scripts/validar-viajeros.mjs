@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Valida data/viajeros.json: esquema, fechas, coherencia de textos y, sobre todo, que la
-// respuesta correcta (verdad) se deduzca SIN AMBIGÜEDAD de las 6 reglas.
+// respuesta correcta (verdad) se deduzca SIN AMBIGÜEDAD de las 8 reglas (shared/preguntas.js).
 //
 // La verdad se recalcula con una implementación independiente de la tabla de decisión, a
 // partir de campos estructurados (nunca interpretando lenguaje natural):
@@ -8,9 +8,11 @@
 //   - del campo "claves" de cada viajero (solo para validar; las IAs NO lo reciben):
 //       buscado                 su nombre (pasaporte o lo que dice) está en la lista de buscados
 //       armas                   la inspección encontró armas sin declarar
-//       contrabandoNoDeclarado  la inspección encontró mercancía sin declarar
+//       contrabandoNoDeclarado  la inspección encontró mercancía con valor comercial escondida o
+//                               sin declarar (contrabando según la regla 8)
 //       contradiccionMenor      la inspección encontró un objeto personal sin declarar y sin
 //                               valor comercial, y el viajero había dicho que no traía nada más
+//                               (regla 8: se interroga)
 //       motivoDicho             motivo que expresa el viajero: un tipo de permiso, "regreso"
 //                               (ciudadano que vuelve) o null (no dice motivo)
 //       otraMentira             null, o la mentira que dice además de las anteriores
@@ -19,8 +21,9 @@
 //   a) arrestar   (peligro 4 si hay armas, si no 3): buscado, permiso a nombre distinto (falso),
 //                 armas o contrabando sin declarar.
 //   b) rechazar   (peligro 1 si miente, si no 0): pasaporte vencido, extranjero sin permiso.
-//   c) interrogar (peligro 2 si el motivo no coincide con el permiso, si no 1): motivo distinto
-//                 al permiso (regla 3) o contradicción menor.
+//   c) interrogar (peligro 2 si el motivo no coincide con el permiso, si no 1), solo si no hay
+//                 otra falta (regla 8): motivo distinto al permiso (reglas 3 y 8), objeto personal
+//                 sin valor comercial no declarado, u otra cosa que dice y contradice sus documentos.
 //   d) aprobar    (peligro 0): todo en regla.
 // miente = lo que dice contradice documentos o inspección: armas, contrabando o contradicción
 //          menor (el viajero siempre lo niega), permiso falso (afirma que es suyo), motivo
@@ -129,11 +132,13 @@ function decidir(v) {
   if (c.buscado) causas.arrestar.push('buscado (r5)')
   if (permisoFalso) causas.arrestar.push('permiso falso (r6)')
   if (c.armas) causas.arrestar.push('armas (r4)')
-  if (c.contrabandoNoDeclarado) causas.arrestar.push('contrabando (r4)')
+  if (c.contrabandoNoDeclarado) causas.arrestar.push('contrabando (r4, r8)')
   if (vencido) causas.rechazar.push('vencido (r1)')
   if (sinPermiso) causas.rechazar.push('sin permiso (r2)')
   if (motivoNoCoincide) causas.interrogar.push(`motivo ${c.motivoDicho} ≠ permiso (r3)`)
-  if (c.contradiccionMenor) causas.interrogar.push('contradicción menor')
+  if (c.contradiccionMenor) causas.interrogar.push('objeto personal no declarado (r8)')
+  // Regla 8: "si no hay otra falta, ... lo que dice contradice sus documentos, se le interroga".
+  if (c.otraMentira && !causas.arrestar.length && !causas.rechazar.length) causas.interrogar.push('dice algo que contradice sus documentos (r8)')
 
   const accion = causas.arrestar.length
     ? 'arrestar'
@@ -323,6 +328,20 @@ viajeros.forEach((v, i) => {
   }
   if (c.contradiccionMenor && !RE_SIN_VALOR.test(d.inspeccion)) {
     error(id, 'contradicción menor: la inspección debe aclarar "sin valor comercial"')
+  }
+  // Regla 8: cualquier objeto que la inspección encuentre y no esté declarado es contrabando o
+  // contradicción menor. Una inspección "limpia" debe coincidir con lo declarado; si no, habría
+  // un objeto no declarado que nadie marcó y el caso sería ambiguo.
+  if (!hallazgo && RE_LIMPIA.test(d.inspeccion)) {
+    const encontrado = d.inspeccion.replace(RE_LIMPIA, '').trim().replace(/\.$/, '')
+    const comoDeclaro = /,\s*tal como declaró$/i.test(encontrado)
+    const sinEquipaje = /^nada$/i.test(d.equipajeDeclarado) && /^sin equipaje$/i.test(encontrado)
+    if (!comoDeclaro && !sinEquipaje && encontrado.toLowerCase() !== d.equipajeDeclarado.toLowerCase()) {
+      error(id, `inspección limpia ("${encontrado}") distinta de lo declarado ("${d.equipajeDeclarado}"): con la regla 8 sería un objeto no declarado`)
+    }
+  }
+  if (c.contradiccionMenor && !/objeto personal/i.test(d.inspeccion)) {
+    error(id, 'contradicción menor: la inspección debe decir que es un "objeto personal" (regla 8)')
   }
   if ((c.contrabandoNoDeclarado || c.armas) && RE_SIN_VALOR.test(d.inspeccion)) {
     error(id, 'contrabando/armas con "sin valor comercial" en la inspección: contradictorio')

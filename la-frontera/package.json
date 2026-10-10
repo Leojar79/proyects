@@ -12,6 +12,7 @@
     "probar-apis": "node bench/run.mjs --probe",
     "benchmark": "node bench/run.mjs",
     "demo": "node bench/demo.mjs",
+    "recalcular": "node bench/recalcular.mjs",
     "guion": "node render/guion.mjs",
     "video": "node render/render.mjs",
     "test": "node --test bench/*.test.mjs render/*.test.mjs"

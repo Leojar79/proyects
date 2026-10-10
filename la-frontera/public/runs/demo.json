@@ -1,8 +1,18 @@
 {
   "version": 1,
   "source": "demo",
-  "createdAt": "2026-10-10T08:37:54.656Z",
+  "createdAt": "2026-10-10T14:09:53.302Z",
   "nota": "Datos simulados para probar el diseño del video. NO son resultados reales.",
+  "juego": {
+    "presupuestoUSD": 0.25,
+    "vidas": 3
+  },
+  "commit": null,
+  "cambiosSinCommit": null,
+  "huellaPrompt": "8b6d3d473be1",
+  "basePeligroJev": null,
+  "parcial": false,
+  "probe": false,
   "viajeros": [
     "v01",
     "v02",
@@ -68,9 +78,9 @@
   "proveedores": [
     {
       "id": "gpt",
-      "nombre": "GPT Astra",
+      "nombre": "GPT-6 Astra",
       "empresa": "OpenAI",
-      "modelo": "gpt-astra",
+      "modelo": "gpt-6-astra",
       "color": "#19c37d",
       "precio": {
         "entradaPorMTok": 10,
@@ -135,20 +145,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 234,
           "razonamiento": 212,
           "estimado": false
         },
-        "costoUSD": 0.01708,
+        "costoUSD": 0.0177,
+        "costoReportadoUSD": null,
         "latenciaMs": 1707,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "9bc634e2bc84",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "f65f5ce69b24",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -165,20 +180,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 552,
+          "entrada": 614,
           "entradaCacheada": 0,
           "salida": 333,
           "razonamiento": 308,
           "estimado": false
         },
-        "costoUSD": 0.02217,
+        "costoUSD": 0.02279,
+        "costoReportadoUSD": null,
         "latenciaMs": 2008,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "f73a763ca559",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "71ba939523d8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -195,20 +215,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 548,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 219,
           "razonamiento": 196,
           "estimado": false
         },
-        "costoUSD": 0.01643,
+        "costoUSD": 0.01706,
+        "costoReportadoUSD": null,
         "latenciaMs": 2822,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "e8701adafc68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "da5a4bb8c8f8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -225,20 +250,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 133,
           "razonamiento": 111,
           "estimado": false
         },
-        "costoUSD": 0.012,
+        "costoUSD": 0.01263,
+        "costoReportadoUSD": null,
         "latenciaMs": 2538,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "a67d640300e5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "596f4f629593",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -255,20 +285,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 274,
           "razonamiento": 250,
           "estimado": false
         },
-        "costoUSD": 0.01908,
+        "costoUSD": 0.0197,
+        "costoReportadoUSD": null,
         "latenciaMs": 3886,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "57f1a45125c8",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d068addc07b7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -285,20 +320,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 540,
+          "entrada": 603,
           "entradaCacheada": 0,
           "salida": 250,
           "razonamiento": 228,
           "estimado": false
         },
-        "costoUSD": 0.0179,
+        "costoUSD": 0.01853,
+        "costoReportadoUSD": null,
         "latenciaMs": 4016,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "8977ff576ef2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "710f10961966",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -315,20 +355,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 155,
           "razonamiento": 129,
           "estimado": false
         },
-        "costoUSD": 0.01318,
+        "costoUSD": 0.0138,
+        "costoReportadoUSD": null,
         "latenciaMs": 1658,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "ec088ebe40e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "086f2883aec2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -345,20 +390,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 209,
           "razonamiento": 187,
           "estimado": false
         },
-        "costoUSD": 0.01583,
+        "costoUSD": 0.01645,
+        "costoReportadoUSD": null,
         "latenciaMs": 3954,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "b9122f407e68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2270021559ac",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -375,20 +425,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 548,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 152,
           "razonamiento": 126,
           "estimado": false
         },
-        "costoUSD": 0.01308,
+        "costoUSD": 0.01371,
+        "costoReportadoUSD": null,
         "latenciaMs": 2093,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "9bbdad67be0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b07dd612eacc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -405,20 +460,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 527,
+          "entrada": 589,
           "entradaCacheada": 0,
           "salida": 215,
           "razonamiento": 190,
           "estimado": false
         },
-        "costoUSD": 0.01602,
+        "costoUSD": 0.01664,
+        "costoReportadoUSD": null,
         "latenciaMs": 2798,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "d9cb9a6294aa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b5550d453aa2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -435,20 +495,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 107,
           "razonamiento": 81,
           "estimado": false
         },
-        "costoUSD": 0.0107,
+        "costoUSD": 0.01132,
+        "costoReportadoUSD": null,
         "latenciaMs": 3458,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "0277c8198529",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "13338b5b4ac7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -465,20 +530,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 284,
           "razonamiento": 256,
           "estimado": false
         },
-        "costoUSD": 0.01959,
+        "costoUSD": 0.02022,
+        "costoReportadoUSD": null,
         "latenciaMs": 4142,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "2065d9ccda54",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "43f26deb1aea",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -495,20 +565,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 242,
           "razonamiento": 220,
           "estimado": false
         },
-        "costoUSD": 0.01749,
+        "costoUSD": 0.01811,
+        "costoReportadoUSD": null,
         "latenciaMs": 3776,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "ab7669c4cd57",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e7162d1eb4d3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -525,20 +600,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 205,
           "razonamiento": 177,
           "estimado": false
         },
-        "costoUSD": 0.01562,
+        "costoUSD": 0.01624,
+        "costoReportadoUSD": null,
         "latenciaMs": 1675,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "193a0dd82760",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "426736d22894",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -555,20 +635,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 175,
           "razonamiento": 148,
           "estimado": false
         },
-        "costoUSD": 0.01418,
+        "costoUSD": 0.0148,
+        "costoReportadoUSD": null,
         "latenciaMs": 2772,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "5fcab5736d0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "efe8756a2179",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -585,20 +670,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 177,
           "razonamiento": 155,
           "estimado": false
         },
-        "costoUSD": 0.01428,
+        "costoUSD": 0.0149,
+        "costoReportadoUSD": null,
         "latenciaMs": 1913,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "e1c7a8994b9a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "14d7c2270f9c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -615,20 +705,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 197,
           "razonamiento": 175,
           "estimado": false
         },
-        "costoUSD": 0.01519,
+        "costoUSD": 0.01581,
+        "costoReportadoUSD": null,
         "latenciaMs": 3589,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "06773450237c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "84fae1f1f19e",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -645,20 +740,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 102,
           "razonamiento": 77,
           "estimado": false
         },
-        "costoUSD": 0.01047,
+        "costoUSD": 0.01109,
+        "costoReportadoUSD": null,
         "latenciaMs": 1512,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "685c36e0e6ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "333a4bdd425c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -675,20 +775,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 523,
+          "entrada": 585,
           "entradaCacheada": 0,
           "salida": 389,
           "razonamiento": 361,
           "estimado": false
         },
-        "costoUSD": 0.02468,
+        "costoUSD": 0.0253,
+        "costoReportadoUSD": null,
         "latenciaMs": 1566,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "0a06aca63b98",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "afa07e441bbd",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -705,20 +810,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 129,
           "razonamiento": 107,
           "estimado": false
         },
-        "costoUSD": 0.01184,
+        "costoUSD": 0.01247,
+        "costoReportadoUSD": null,
         "latenciaMs": 2580,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "27ebba7266b7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9d41f4f13976",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -735,20 +845,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 256,
           "razonamiento": 234,
           "estimado": false
         },
-        "costoUSD": 0.01813,
+        "costoUSD": 0.01876,
+        "costoReportadoUSD": null,
         "latenciaMs": 2395,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "235c7c8dd447",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "8a1dc58ada1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -765,20 +880,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 301,
           "razonamiento": 275,
           "estimado": false
         },
-        "costoUSD": 0.02044,
+        "costoUSD": 0.02106,
+        "costoReportadoUSD": null,
         "latenciaMs": 1877,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "989fd6fb3154",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a83ec3e14eaa",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -795,20 +915,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 381,
           "razonamiento": 357,
           "estimado": false
         },
-        "costoUSD": 0.02436,
+        "costoUSD": 0.02498,
+        "costoReportadoUSD": null,
         "latenciaMs": 1750,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "93aea35d426f",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "0bd3b7b06d41",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -825,20 +950,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 362,
           "razonamiento": 334,
           "estimado": false
         },
-        "costoUSD": 0.02345,
+        "costoUSD": 0.02407,
+        "costoReportadoUSD": null,
         "latenciaMs": 3167,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "d531e70b82a4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "6b13b57ea197",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -855,20 +985,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 84,
           "razonamiento": 60,
           "estimado": false
         },
-        "costoUSD": 0.00956,
+        "costoUSD": 0.01018,
+        "costoReportadoUSD": null,
         "latenciaMs": 4097,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "7926b23cb254",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a82124ddf085",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -885,20 +1020,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 547,
+          "entrada": 609,
           "entradaCacheada": 0,
           "salida": 274,
           "razonamiento": 251,
           "estimado": false
         },
-        "costoUSD": 0.01917,
+        "costoUSD": 0.01979,
+        "costoReportadoUSD": null,
         "latenciaMs": 1573,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "15d5a4089f7a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d6e8ef215f5f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -915,20 +1055,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 181,
           "razonamiento": 158,
           "estimado": false
         },
-        "costoUSD": 0.01436,
+        "costoUSD": 0.01498,
+        "costoReportadoUSD": null,
         "latenciaMs": 1634,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "40faf9d054c1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a97cc521d768",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -945,20 +1090,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 171,
           "razonamiento": 144,
           "estimado": false
         },
-        "costoUSD": 0.01392,
+        "costoUSD": 0.01454,
+        "costoReportadoUSD": null,
         "latenciaMs": 2017,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "c3ceabc15a87",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "53bd6633a9be",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -975,20 +1125,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 356,
           "razonamiento": 334,
           "estimado": false
         },
-        "costoUSD": 0.02322,
+        "costoUSD": 0.02384,
+        "costoReportadoUSD": null,
         "latenciaMs": 4268,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "8d1f53862487",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cde27a5bf81c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1005,20 +1160,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 145,
           "razonamiento": 121,
           "estimado": false
         },
-        "costoUSD": 0.01257,
+        "costoUSD": 0.01319,
+        "costoReportadoUSD": null,
         "latenciaMs": 2785,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "c6f2c9b07fe1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "bf497cf042da",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1035,20 +1195,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 409,
           "razonamiento": 384,
           "estimado": false
         },
-        "costoUSD": 0.02588,
+        "costoUSD": 0.0265,
+        "costoReportadoUSD": null,
         "latenciaMs": 4142,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "ea010b13facb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "4aa28a4685b3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1065,20 +1230,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 273,
           "razonamiento": 250,
           "estimado": false
         },
-        "costoUSD": 0.01898,
+        "costoUSD": 0.0196,
+        "costoReportadoUSD": null,
         "latenciaMs": 3076,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "9fd83f677270",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3f65037d53c2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1095,20 +1265,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 541,
+          "entrada": 603,
           "entradaCacheada": 0,
           "salida": 262,
           "razonamiento": 234,
           "estimado": false
         },
-        "costoUSD": 0.01851,
+        "costoUSD": 0.01913,
+        "costoReportadoUSD": null,
         "latenciaMs": 3998,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "d487e653906c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c38c4ac31649",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1125,20 +1300,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 130,
           "razonamiento": 108,
           "estimado": false
         },
-        "costoUSD": 0.01192,
+        "costoUSD": 0.01255,
+        "costoReportadoUSD": null,
         "latenciaMs": 3080,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "c690f42e83fc",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cea10bd4d422",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1155,20 +1335,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 127,
           "razonamiento": 102,
           "estimado": false
         },
-        "costoUSD": 0.01172,
+        "costoUSD": 0.01234,
+        "costoReportadoUSD": null,
         "latenciaMs": 2006,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "a5421461d514",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b6d05f99fd59",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1185,20 +1370,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 559,
+          "entrada": 621,
           "entradaCacheada": 0,
           "salida": 348,
           "razonamiento": 323,
           "estimado": false
         },
-        "costoUSD": 0.02299,
+        "costoUSD": 0.02361,
+        "costoReportadoUSD": null,
         "latenciaMs": 3033,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "ab373c74214d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "23a2bf7ba711",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1215,20 +1405,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 402,
           "razonamiento": 378,
           "estimado": false
         },
-        "costoUSD": 0.02546,
+        "costoUSD": 0.02608,
+        "costoReportadoUSD": null,
         "latenciaMs": 2951,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "0165ca2dbd39",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "03d0d4ba0442",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1245,20 +1440,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 251,
           "razonamiento": 224,
           "estimado": false
         },
-        "costoUSD": 0.01787,
+        "costoUSD": 0.01849,
+        "costoReportadoUSD": null,
         "latenciaMs": 2411,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "069b0fe61114",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2cccb1481c3f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1275,20 +1475,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 549,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 199,
           "razonamiento": 175,
           "estimado": false
         },
-        "costoUSD": 0.01544,
+        "costoUSD": 0.01606,
+        "costoReportadoUSD": null,
         "latenciaMs": 2527,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "8fb3c023b7e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c190f127f30a",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1305,20 +1510,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 221,
           "razonamiento": 194,
           "estimado": false
         },
-        "costoUSD": 0.01643,
+        "costoUSD": 0.01706,
+        "costoReportadoUSD": null,
         "latenciaMs": 3030,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "90d24bcc0ed7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "67b065865219",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1335,20 +1545,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 170,
           "razonamiento": 142,
           "estimado": false
         },
-        "costoUSD": 0.01384,
+        "costoUSD": 0.01446,
+        "costoReportadoUSD": null,
         "latenciaMs": 4093,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "dbc0128cb80b",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2029b07095cc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1365,20 +1580,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 107,
           "razonamiento": 79,
           "estimado": false
         },
-        "costoUSD": 0.01065,
+        "costoUSD": 0.01128,
+        "costoReportadoUSD": null,
         "latenciaMs": 3261,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "f3001453c0b0",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3b2f671a53e3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1395,20 +1615,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 251,
           "razonamiento": 227,
           "estimado": false
         },
-        "costoUSD": 0.0179,
+        "costoUSD": 0.01852,
+        "costoReportadoUSD": null,
         "latenciaMs": 2537,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "34fc8b4be0c7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9ffae85a94fb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1425,20 +1650,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":2,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 336,
           "razonamiento": 313,
           "estimado": false
         },
-        "costoUSD": 0.02212,
+        "costoUSD": 0.02275,
+        "costoReportadoUSD": null,
         "latenciaMs": 3909,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "48e949a2e97a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc87ad55187",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1455,20 +1685,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 120,
           "razonamiento": 95,
           "estimado": false
         },
-        "costoUSD": 0.01133,
+        "costoUSD": 0.01195,
+        "costoReportadoUSD": null,
         "latenciaMs": 3878,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "3ef540f3f192",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "318d76ccdf1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1485,20 +1720,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 204,
           "razonamiento": 177,
           "estimado": false
         },
-        "costoUSD": 0.01559,
+        "costoUSD": 0.01621,
+        "costoReportadoUSD": null,
         "latenciaMs": 2986,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "0b9a3f798964",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e18cf11cfb7d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1515,20 +1755,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 304,
           "razonamiento": 279,
           "estimado": false
         },
-        "costoUSD": 0.02056,
+        "costoUSD": 0.02118,
+        "costoReportadoUSD": null,
         "latenciaMs": 1816,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "00a7bf3056ec",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e43235c03186",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1545,20 +1790,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 529,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 310,
           "razonamiento": 285,
           "estimado": false
         },
-        "costoUSD": 0.02079,
+        "costoUSD": 0.02142,
+        "costoReportadoUSD": null,
         "latenciaMs": 1577,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "e3d3263f40b4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "80392af77f1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1575,20 +1825,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 544,
+          "entrada": 606,
           "entradaCacheada": 0,
           "salida": 232,
           "razonamiento": 210,
           "estimado": false
         },
-        "costoUSD": 0.01704,
+        "costoUSD": 0.01766,
+        "costoReportadoUSD": null,
         "latenciaMs": 2436,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "b0a365622a8d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc58535326f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1605,20 +1860,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 242,
           "razonamiento": 215,
           "estimado": false
         },
-        "costoUSD": 0.01752,
+        "costoUSD": 0.01814,
+        "costoReportadoUSD": null,
         "latenciaMs": 4015,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "f230b48e03d2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3e1946144a06",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1635,20 +1895,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 168,
           "razonamiento": 145,
           "estimado": false
         },
-        "costoUSD": 0.01378,
+        "costoUSD": 0.0144,
+        "costoReportadoUSD": null,
         "latenciaMs": 3643,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "624a506504ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "5fcbe7db7f9d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1665,20 +1930,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 94,
           "razonamiento": 70,
           "estimado": false
         },
-        "costoUSD": 0.01012,
+        "costoUSD": 0.01075,
+        "costoReportadoUSD": null,
         "latenciaMs": 3340,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "60f0ee4ac340",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b8280b3ada6d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1695,20 +1965,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 140,
           "razonamiento": 113,
           "estimado": false
         },
-        "costoUSD": 0.01234,
+        "costoUSD": 0.01296,
+        "costoReportadoUSD": null,
         "latenciaMs": 2430,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "8c3cf9db47fa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "26b0427e9a31",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1725,20 +2000,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 335,
           "razonamiento": 310,
           "estimado": false
         },
-        "costoUSD": 0.02214,
+        "costoUSD": 0.02277,
+        "costoReportadoUSD": null,
         "latenciaMs": 3215,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "b6f24a72d06c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "ad5e8ab32b35",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1755,20 +2035,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 127,
           "razonamiento": 105,
           "estimado": false
         },
-        "costoUSD": 0.01173,
+        "costoUSD": 0.01235,
+        "costoReportadoUSD": null,
         "latenciaMs": 2937,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "e0e94f8ccfee",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e6e57b500cef",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1785,20 +2070,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 552,
+          "entrada": 615,
           "entradaCacheada": 0,
           "salida": 391,
           "razonamiento": 365,
           "estimado": false
         },
-        "costoUSD": 0.02507,
+        "costoUSD": 0.0257,
+        "costoReportadoUSD": null,
         "latenciaMs": 3588,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "17075629e0c5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3123e96b97eb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1815,20 +2105,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 545,
+          "entrada": 608,
           "entradaCacheada": 0,
           "salida": 186,
           "razonamiento": 158,
           "estimado": false
         },
-        "costoUSD": 0.01475,
+        "costoUSD": 0.01538,
+        "costoReportadoUSD": null,
         "latenciaMs": 2694,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "aaa4b9b8d6ff",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "439acdb78fed",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1845,20 +2140,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 320,
           "razonamiento": 294,
           "estimado": false
         },
-        "costoUSD": 0.02137,
+        "costoUSD": 0.02199,
+        "costoReportadoUSD": null,
         "latenciaMs": 3220,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "a6e70122f1fb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a0fd9e2b3b62",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1875,20 +2175,25 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 541,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 394,
           "razonamiento": 369,
           "estimado": false
         },
-        "costoUSD": 0.02511,
+        "costoUSD": 0.02574,
+        "costoReportadoUSD": null,
         "latenciaMs": 4060,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "81ea99f7b704",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a9036ef9c235",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       },
       {
@@ -1905,20 +2210,25 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 374,
           "razonamiento": 350,
           "estimado": false
         },
-        "costoUSD": 0.02406,
+        "costoUSD": 0.02468,
+        "costoReportadoUSD": null,
         "latenciaMs": 1690,
-        "modeloServido": "gpt-astra",
+        "modeloServido": "gpt-6-astra",
         "fallback": false,
-        "huellaEstado": "55b94350960c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e50b55404734",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
-          "reasoningEffort": "low"
+          "reasoningEffort": "low",
+          "estiloApi": "chat"
         }
       }
     ],
@@ -1937,18 +2247,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 222,
           "razonamiento": 197,
           "estimado": false
         },
-        "costoUSD": 0.006592,
+        "costoUSD": 0.00684,
+        "costoReportadoUSD": null,
         "latenciaMs": 2988,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "9bc634e2bc84",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "f65f5ce69b24",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -1967,18 +2281,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 552,
+          "entrada": 614,
           "entradaCacheada": 0,
           "salida": 348,
           "razonamiento": 321,
           "estimado": false
         },
-        "costoUSD": 0.009168,
+        "costoUSD": 0.009416,
+        "costoReportadoUSD": null,
         "latenciaMs": 3386,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "f73a763ca559",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "71ba939523d8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -1997,18 +2315,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 548,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 222,
           "razonamiento": 195,
           "estimado": false
         },
-        "costoUSD": 0.006632,
+        "costoUSD": 0.006884,
+        "costoReportadoUSD": null,
         "latenciaMs": 2201,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "e8701adafc68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "da5a4bb8c8f8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2027,18 +2349,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 283,
           "razonamiento": 257,
           "estimado": false
         },
-        "costoUSD": 0.0078,
+        "costoUSD": 0.008052,
+        "costoReportadoUSD": null,
         "latenciaMs": 2644,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "a67d640300e5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "596f4f629593",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2057,18 +2383,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 311,
           "razonamiento": 285,
           "estimado": false
         },
-        "costoUSD": 0.008372,
+        "costoUSD": 0.00862,
+        "costoReportadoUSD": null,
         "latenciaMs": 2254,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "57f1a45125c8",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d068addc07b7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2087,18 +2417,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 540,
+          "entrada": 603,
           "entradaCacheada": 0,
           "salida": 335,
           "razonamiento": 310,
           "estimado": false
         },
-        "costoUSD": 0.00886,
+        "costoUSD": 0.009112,
+        "costoReportadoUSD": null,
         "latenciaMs": 1918,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "8977ff576ef2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "710f10961966",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2117,18 +2451,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 399,
           "razonamiento": 374,
           "estimado": false
         },
-        "costoUSD": 0.010152,
+        "costoUSD": 0.0104,
+        "costoReportadoUSD": null,
         "latenciaMs": 1474,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "ec088ebe40e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "086f2883aec2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2147,18 +2485,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 90,
           "razonamiento": 64,
           "estimado": false
         },
-        "costoUSD": 0.003952,
+        "costoUSD": 0.0042,
+        "costoReportadoUSD": null,
         "latenciaMs": 3399,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "b9122f407e68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2270021559ac",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2177,18 +2519,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 548,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 245,
           "razonamiento": 217,
           "estimado": false
         },
-        "costoUSD": 0.007092,
+        "costoUSD": 0.007344,
+        "costoReportadoUSD": null,
         "latenciaMs": 2152,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "9bbdad67be0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b07dd612eacc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2207,18 +2553,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 527,
+          "entrada": 589,
           "entradaCacheada": 0,
           "salida": 369,
           "razonamiento": 346,
           "estimado": false
         },
-        "costoUSD": 0.009488,
+        "costoUSD": 0.009736,
+        "costoReportadoUSD": null,
         "latenciaMs": 3527,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "d9cb9a6294aa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b5550d453aa2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2237,18 +2587,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":0,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 89,
           "razonamiento": 66,
           "estimado": false
         },
-        "costoUSD": 0.00392,
+        "costoUSD": 0.004168,
+        "costoReportadoUSD": null,
         "latenciaMs": 2273,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "0277c8198529",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "13338b5b4ac7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2267,18 +2621,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 149,
           "razonamiento": 127,
           "estimado": false
         },
-        "costoUSD": 0.005136,
+        "costoUSD": 0.005388,
+        "costoReportadoUSD": null,
         "latenciaMs": 1280,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "2065d9ccda54",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "43f26deb1aea",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2297,18 +2655,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 423,
           "razonamiento": 396,
           "estimado": false
         },
-        "costoUSD": 0.010616,
+        "costoUSD": 0.010864,
+        "costoReportadoUSD": null,
         "latenciaMs": 3157,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "ab7669c4cd57",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e7162d1eb4d3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2327,18 +2689,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 168,
           "razonamiento": 143,
           "estimado": false
         },
-        "costoUSD": 0.005508,
+        "costoUSD": 0.005756,
+        "costoReportadoUSD": null,
         "latenciaMs": 1922,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "193a0dd82760",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "426736d22894",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2357,18 +2723,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 285,
           "razonamiento": 262,
           "estimado": false
         },
-        "costoUSD": 0.007872,
+        "costoUSD": 0.00812,
+        "costoReportadoUSD": null,
         "latenciaMs": 2044,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "5fcab5736d0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "efe8756a2179",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2387,18 +2757,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 161,
           "razonamiento": 135,
           "estimado": false
         },
-        "costoUSD": 0.005392,
+        "costoUSD": 0.00564,
+        "costoReportadoUSD": null,
         "latenciaMs": 3370,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "e1c7a8994b9a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "14d7c2270f9c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2417,18 +2791,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 180,
           "razonamiento": 152,
           "estimado": false
         },
-        "costoUSD": 0.005736,
+        "costoUSD": 0.005984,
+        "costoReportadoUSD": null,
         "latenciaMs": 1934,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "06773450237c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "84fae1f1f19e",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2447,18 +2825,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 103,
           "razonamiento": 78,
           "estimado": false
         },
-        "costoUSD": 0.004208,
+        "costoUSD": 0.004456,
+        "costoReportadoUSD": null,
         "latenciaMs": 3149,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "685c36e0e6ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "333a4bdd425c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2477,18 +2859,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 523,
+          "entrada": 585,
           "entradaCacheada": 0,
           "salida": 252,
           "razonamiento": 226,
           "estimado": false
         },
-        "costoUSD": 0.007132,
+        "costoUSD": 0.00738,
+        "costoReportadoUSD": null,
         "latenciaMs": 1517,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "0a06aca63b98",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "afa07e441bbd",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2507,18 +2893,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 137,
           "razonamiento": 109,
           "estimado": false
         },
-        "costoUSD": 0.004896,
+        "costoUSD": 0.005148,
+        "costoReportadoUSD": null,
         "latenciaMs": 3132,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "27ebba7266b7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9d41f4f13976",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2537,18 +2927,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 114,
           "razonamiento": 92,
           "estimado": false
         },
-        "costoUSD": 0.004412,
+        "costoUSD": 0.004664,
+        "costoReportadoUSD": null,
         "latenciaMs": 1830,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "235c7c8dd447",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "8a1dc58ada1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2567,18 +2961,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 378,
           "razonamiento": 351,
           "estimado": false
         },
-        "costoUSD": 0.009716,
+        "costoUSD": 0.009964,
+        "costoReportadoUSD": null,
         "latenciaMs": 1253,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "989fd6fb3154",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a83ec3e14eaa",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2597,18 +2995,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 207,
           "razonamiento": 184,
           "estimado": false
         },
-        "costoUSD": 0.006264,
+        "costoUSD": 0.006512,
+        "costoReportadoUSD": null,
         "latenciaMs": 3234,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "93aea35d426f",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "0bd3b7b06d41",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2627,18 +3029,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 317,
           "razonamiento": 292,
           "estimado": false
         },
-        "costoUSD": 0.00848,
+        "costoUSD": 0.008728,
+        "costoReportadoUSD": null,
         "latenciaMs": 2616,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "d531e70b82a4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "6b13b57ea197",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2657,18 +3063,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 326,
           "razonamiento": 299,
           "estimado": false
         },
-        "costoUSD": 0.008664,
+        "costoUSD": 0.008912,
+        "costoReportadoUSD": null,
         "latenciaMs": 2519,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "7926b23cb254",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a82124ddf085",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2687,18 +3097,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 547,
+          "entrada": 609,
           "entradaCacheada": 0,
           "salida": 413,
           "razonamiento": 387,
           "estimado": false
         },
-        "costoUSD": 0.010448,
+        "costoUSD": 0.010696,
+        "costoReportadoUSD": null,
         "latenciaMs": 3246,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "15d5a4089f7a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d6e8ef215f5f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2717,18 +3131,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 341,
           "razonamiento": 315,
           "estimado": false
         },
-        "costoUSD": 0.008944,
+        "costoUSD": 0.009192,
+        "costoReportadoUSD": null,
         "latenciaMs": 1244,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "40faf9d054c1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a97cc521d768",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2747,18 +3165,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 170,
           "razonamiento": 146,
           "estimado": false
         },
-        "costoUSD": 0.005548,
+        "costoUSD": 0.005796,
+        "costoReportadoUSD": null,
         "latenciaMs": 2024,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "c3ceabc15a87",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "53bd6633a9be",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2777,18 +3199,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 162,
           "razonamiento": 136,
           "estimado": false
         },
-        "costoUSD": 0.005408,
+        "costoUSD": 0.005656,
+        "costoReportadoUSD": null,
         "latenciaMs": 3092,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "8d1f53862487",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cde27a5bf81c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2807,18 +3233,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":0,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 302,
           "razonamiento": 279,
           "estimado": false
         },
-        "costoUSD": 0.008168,
+        "costoUSD": 0.008416,
+        "costoReportadoUSD": null,
         "latenciaMs": 3458,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "c6f2c9b07fe1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "bf497cf042da",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2837,18 +3267,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 217,
           "razonamiento": 190,
           "estimado": false
         },
-        "costoUSD": 0.006512,
+        "costoUSD": 0.00676,
+        "costoReportadoUSD": null,
         "latenciaMs": 3251,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "ea010b13facb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "4aa28a4685b3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2867,18 +3301,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 258,
           "razonamiento": 231,
           "estimado": false
         },
-        "costoUSD": 0.007292,
+        "costoUSD": 0.00754,
+        "costoReportadoUSD": null,
         "latenciaMs": 1798,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "9fd83f677270",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3f65037d53c2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2897,18 +3335,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 541,
+          "entrada": 603,
           "entradaCacheada": 0,
           "salida": 266,
           "razonamiento": 243,
           "estimado": false
         },
-        "costoUSD": 0.007484,
+        "costoUSD": 0.007732,
+        "costoReportadoUSD": null,
         "latenciaMs": 2111,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "d487e653906c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c38c4ac31649",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2927,18 +3369,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 147,
           "razonamiento": 125,
           "estimado": false
         },
-        "costoUSD": 0.005108,
+        "costoUSD": 0.00536,
+        "costoReportadoUSD": null,
         "latenciaMs": 1210,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "c690f42e83fc",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cea10bd4d422",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2957,18 +3403,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 93,
           "razonamiento": 70,
           "estimado": false
         },
-        "costoUSD": 0.004008,
+        "costoUSD": 0.004256,
+        "costoReportadoUSD": null,
         "latenciaMs": 3054,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "a5421461d514",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b6d05f99fd59",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -2987,18 +3437,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 559,
+          "entrada": 621,
           "entradaCacheada": 0,
           "salida": 241,
           "razonamiento": 217,
           "estimado": false
         },
-        "costoUSD": 0.007056,
+        "costoUSD": 0.007304,
+        "costoReportadoUSD": null,
         "latenciaMs": 1593,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "ab373c74214d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "23a2bf7ba711",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3017,18 +3471,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 179,
           "razonamiento": 157,
           "estimado": false
         },
-        "costoUSD": 0.005724,
+        "costoUSD": 0.005972,
+        "costoReportadoUSD": null,
         "latenciaMs": 3112,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "0165ca2dbd39",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "03d0d4ba0442",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3047,18 +3505,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 329,
           "razonamiento": 306,
           "estimado": false
         },
-        "costoUSD": 0.008708,
+        "costoUSD": 0.008956,
+        "costoReportadoUSD": null,
         "latenciaMs": 2991,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "069b0fe61114",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2cccb1481c3f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3077,18 +3539,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 549,
+          "entrada": 611,
           "entradaCacheada": 0,
           "salida": 126,
           "razonamiento": 102,
           "estimado": false
         },
-        "costoUSD": 0.004716,
+        "costoUSD": 0.004964,
+        "costoReportadoUSD": null,
         "latenciaMs": 3551,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "8fb3c023b7e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c190f127f30a",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3107,18 +3573,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 203,
           "razonamiento": 178,
           "estimado": false
         },
-        "costoUSD": 0.006212,
+        "costoUSD": 0.006464,
+        "costoReportadoUSD": null,
         "latenciaMs": 2085,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "90d24bcc0ed7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "67b065865219",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3137,18 +3607,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 146,
           "razonamiento": 119,
           "estimado": false
         },
-        "costoUSD": 0.005056,
+        "costoUSD": 0.005304,
+        "costoReportadoUSD": null,
         "latenciaMs": 1854,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "dbc0128cb80b",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2029b07095cc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3167,18 +3641,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 411,
           "razonamiento": 385,
           "estimado": false
         },
-        "costoUSD": 0.01034,
+        "costoUSD": 0.010592,
+        "costoReportadoUSD": null,
         "latenciaMs": 1366,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "f3001453c0b0",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3b2f671a53e3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3197,18 +3675,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 135,
           "razonamiento": 111,
           "estimado": false
         },
-        "costoUSD": 0.00484,
+        "costoUSD": 0.005088,
+        "costoReportadoUSD": null,
         "latenciaMs": 2028,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "34fc8b4be0c7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9ffae85a94fb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3227,18 +3709,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 200,
           "razonamiento": 178,
           "estimado": false
         },
-        "costoUSD": 0.006128,
+        "costoUSD": 0.00638,
+        "costoReportadoUSD": null,
         "latenciaMs": 1692,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "48e949a2e97a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc87ad55187",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3257,18 +3743,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 143,
           "razonamiento": 116,
           "estimado": false
         },
-        "costoUSD": 0.004992,
+        "costoUSD": 0.00524,
+        "costoReportadoUSD": null,
         "latenciaMs": 2259,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "3ef540f3f192",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "318d76ccdf1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3287,18 +3777,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 150,
           "razonamiento": 126,
           "estimado": false
         },
-        "costoUSD": 0.005156,
+        "costoUSD": 0.005404,
+        "costoReportadoUSD": null,
         "latenciaMs": 1442,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "0b9a3f798964",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e18cf11cfb7d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3317,18 +3811,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 419,
           "razonamiento": 396,
           "estimado": false
         },
-        "costoUSD": 0.010524,
+        "costoUSD": 0.010772,
+        "costoReportadoUSD": null,
         "latenciaMs": 1916,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "00a7bf3056ec",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e43235c03186",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3347,18 +3845,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 529,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 151,
           "razonamiento": 126,
           "estimado": false
         },
-        "costoUSD": 0.005136,
+        "costoUSD": 0.005388,
+        "costoReportadoUSD": null,
         "latenciaMs": 1285,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "e3d3263f40b4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "80392af77f1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3377,18 +3879,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 544,
+          "entrada": 606,
           "entradaCacheada": 0,
           "salida": 367,
           "razonamiento": 344,
           "estimado": false
         },
-        "costoUSD": 0.009516,
+        "costoUSD": 0.009764,
+        "costoReportadoUSD": null,
         "latenciaMs": 2785,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "b0a365622a8d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc58535326f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3407,18 +3913,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 364,
           "razonamiento": 341,
           "estimado": false
         },
-        "costoUSD": 0.009448,
+        "costoUSD": 0.009696,
+        "costoReportadoUSD": null,
         "latenciaMs": 2105,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "f230b48e03d2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3e1946144a06",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3437,18 +3947,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 196,
           "razonamiento": 173,
           "estimado": false
         },
-        "costoUSD": 0.006072,
+        "costoUSD": 0.00632,
+        "costoReportadoUSD": null,
         "latenciaMs": 2747,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "624a506504ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "5fcbe7db7f9d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3467,18 +3981,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 542,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 160,
           "razonamiento": 133,
           "estimado": false
         },
-        "costoUSD": 0.005368,
+        "costoUSD": 0.00562,
+        "costoReportadoUSD": null,
         "latenciaMs": 2079,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "60f0ee4ac340",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b8280b3ada6d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3497,18 +4015,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 382,
           "razonamiento": 355,
           "estimado": false
         },
-        "costoUSD": 0.009776,
+        "costoUSD": 0.010024,
+        "costoReportadoUSD": null,
         "latenciaMs": 2072,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "8c3cf9db47fa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "26b0427e9a31",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3527,18 +4049,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 347,
           "razonamiento": 321,
           "estimado": false
         },
-        "costoUSD": 0.009096,
+        "costoUSD": 0.009348,
+        "costoReportadoUSD": null,
         "latenciaMs": 2087,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "b6f24a72d06c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "ad5e8ab32b35",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3557,18 +4083,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 268,
           "razonamiento": 242,
           "estimado": false
         },
-        "costoUSD": 0.007512,
+        "costoUSD": 0.00776,
+        "costoReportadoUSD": null,
         "latenciaMs": 1380,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "e0e94f8ccfee",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e6e57b500cef",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3587,18 +4117,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 552,
+          "entrada": 615,
           "entradaCacheada": 0,
           "salida": 260,
           "razonamiento": 232,
           "estimado": false
         },
-        "costoUSD": 0.007408,
+        "costoUSD": 0.00766,
+        "costoReportadoUSD": null,
         "latenciaMs": 2089,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "17075629e0c5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3123e96b97eb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3617,18 +4151,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 545,
+          "entrada": 608,
           "entradaCacheada": 0,
           "salida": 416,
           "razonamiento": 394,
           "estimado": false
         },
-        "costoUSD": 0.0105,
+        "costoUSD": 0.010752,
+        "costoReportadoUSD": null,
         "latenciaMs": 3532,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "aaa4b9b8d6ff",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "439acdb78fed",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3647,18 +4185,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 315,
           "razonamiento": 292,
           "estimado": false
         },
-        "costoUSD": 0.008448,
+        "costoUSD": 0.008696,
+        "costoReportadoUSD": null,
         "latenciaMs": 2514,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "a6e70122f1fb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a0fd9e2b3b62",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3677,18 +4219,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 541,
+          "entrada": 604,
           "entradaCacheada": 0,
           "salida": 191,
           "razonamiento": 166,
           "estimado": false
         },
-        "costoUSD": 0.005984,
+        "costoUSD": 0.006236,
+        "costoReportadoUSD": null,
         "latenciaMs": 1406,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "81ea99f7b704",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a9036ef9c235",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3707,18 +4253,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 410,
           "razonamiento": 383,
           "estimado": false
         },
-        "costoUSD": 0.010344,
+        "costoUSD": 0.010592,
+        "costoReportadoUSD": null,
         "latenciaMs": 1551,
         "modeloServido": "claude-opus-5-5",
         "fallback": false,
-        "huellaEstado": "55b94350960c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e50b55404734",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {
           "effort": "low"
         }
@@ -3744,18 +4294,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.000024948,
+        "costoReportadoUSD": null,
         "latenciaMs": 399,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "9bc634e2bc84",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "f65f5ce69b24",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3777,18 +4331,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 547,
+          "entrada": 609,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022974,
+        "costoUSD": 0.000025578,
+        "costoReportadoUSD": null,
         "latenciaMs": 427,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "f73a763ca559",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "71ba939523d8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3810,18 +4368,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022806,
+        "costoUSD": 0.00002541,
+        "costoReportadoUSD": null,
         "latenciaMs": 597,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "e8701adafc68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "da5a4bb8c8f8",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3843,18 +4405,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024864,
+        "costoReportadoUSD": null,
         "latenciaMs": 319,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "a67d640300e5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "596f4f629593",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3876,18 +4442,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.000024948,
+        "costoReportadoUSD": null,
         "latenciaMs": 269,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "57f1a45125c8",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d068addc07b7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3909,18 +4479,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002247,
+        "costoUSD": 0.000025074,
+        "costoReportadoUSD": null,
         "latenciaMs": 246,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "8977ff576ef2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "710f10961966",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3942,18 +4516,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022554,
+        "costoUSD": 0.000025158,
+        "costoReportadoUSD": null,
         "latenciaMs": 200,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "ec088ebe40e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "086f2883aec2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -3975,18 +4553,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.00002499,
+        "costoReportadoUSD": null,
         "latenciaMs": 490,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "b9122f407e68",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2270021559ac",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4008,18 +4590,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022806,
+        "costoUSD": 0.00002541,
+        "costoReportadoUSD": null,
         "latenciaMs": 234,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "9bbdad67be0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b07dd612eacc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4041,18 +4627,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 522,
+          "entrada": 584,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000021924,
+        "costoUSD": 0.000024528,
+        "costoReportadoUSD": null,
         "latenciaMs": 533,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "d9cb9a6294aa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b5550d453aa2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4074,18 +4664,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024864,
+        "costoReportadoUSD": null,
         "latenciaMs": 590,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "0277c8198529",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "13338b5b4ac7",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4107,18 +4701,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022428,
+        "costoUSD": 0.000025032,
+        "costoReportadoUSD": null,
         "latenciaMs": 340,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "2065d9ccda54",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "43f26deb1aea",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4140,18 +4738,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022386,
+        "costoUSD": 0.00002499,
+        "costoReportadoUSD": null,
         "latenciaMs": 495,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "ab7669c4cd57",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e7162d1eb4d3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4173,18 +4775,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022302,
+        "costoUSD": 0.000024906,
+        "costoReportadoUSD": null,
         "latenciaMs": 336,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "193a0dd82760",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "426736d22894",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4206,18 +4812,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022554,
+        "costoUSD": 0.0000252,
+        "costoReportadoUSD": null,
         "latenciaMs": 561,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "5fcab5736d0e",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "efe8756a2179",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4239,18 +4849,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022596,
+        "costoUSD": 0.0000252,
+        "costoReportadoUSD": null,
         "latenciaMs": 567,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "e1c7a8994b9a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "14d7c2270f9c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4272,18 +4886,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 528,
+          "entrada": 590,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022176,
+        "costoUSD": 0.00002478,
+        "costoReportadoUSD": null,
         "latenciaMs": 562,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "06773450237c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "84fae1f1f19e",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4305,18 +4923,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022302,
+        "costoUSD": 0.000024906,
+        "costoReportadoUSD": null,
         "latenciaMs": 413,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "685c36e0e6ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "333a4bdd425c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4338,18 +4960,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 518,
+          "entrada": 580,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000021756,
+        "costoUSD": 0.00002436,
+        "costoReportadoUSD": null,
         "latenciaMs": 573,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "0a06aca63b98",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "afa07e441bbd",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4371,18 +4997,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022428,
+        "costoUSD": 0.000025032,
+        "costoReportadoUSD": null,
         "latenciaMs": 270,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "27ebba7266b7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9d41f4f13976",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4404,18 +5034,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 528,
+          "entrada": 590,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022176,
+        "costoUSD": 0.00002478,
+        "costoReportadoUSD": null,
         "latenciaMs": 158,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "235c7c8dd447",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "8a1dc58ada1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4437,18 +5071,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022386,
+        "costoUSD": 0.000025032,
+        "costoReportadoUSD": null,
         "latenciaMs": 457,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "989fd6fb3154",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a83ec3e14eaa",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4470,18 +5108,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 526,
+          "entrada": 588,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022092,
+        "costoUSD": 0.000024696,
+        "costoReportadoUSD": null,
         "latenciaMs": 168,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "93aea35d426f",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "0bd3b7b06d41",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4503,18 +5145,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024864,
+        "costoReportadoUSD": null,
         "latenciaMs": 180,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "d531e70b82a4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "6b13b57ea197",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4536,18 +5182,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022302,
+        "costoUSD": 0.000024906,
+        "costoReportadoUSD": null,
         "latenciaMs": 431,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "7926b23cb254",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a82124ddf085",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4569,18 +5219,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 541,
+          "entrada": 603,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022722,
+        "costoUSD": 0.000025326,
+        "costoReportadoUSD": null,
         "latenciaMs": 476,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "15d5a4089f7a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "d6e8ef215f5f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4602,18 +5256,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 525,
+          "entrada": 587,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002205,
+        "costoUSD": 0.000024654,
+        "costoReportadoUSD": null,
         "latenciaMs": 267,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "40faf9d054c1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a97cc521d768",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4635,18 +5293,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022302,
+        "costoUSD": 0.000024948,
+        "costoReportadoUSD": null,
         "latenciaMs": 266,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "c3ceabc15a87",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "53bd6633a9be",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4668,18 +5330,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022512,
+        "costoUSD": 0.000025116,
+        "costoReportadoUSD": null,
         "latenciaMs": 291,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "8d1f53862487",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cde27a5bf81c",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4701,18 +5367,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":true,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 526,
+          "entrada": 589,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022092,
+        "costoUSD": 0.000024738,
+        "costoReportadoUSD": null,
         "latenciaMs": 165,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "c6f2c9b07fe1",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "bf497cf042da",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4734,18 +5404,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 538,
+          "entrada": 600,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022596,
+        "costoUSD": 0.0000252,
+        "costoReportadoUSD": null,
         "latenciaMs": 347,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "ea010b13facb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "4aa28a4685b3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4767,18 +5441,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 527,
+          "entrada": 590,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022134,
+        "costoUSD": 0.00002478,
+        "costoReportadoUSD": null,
         "latenciaMs": 163,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "9fd83f677270",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3f65037d53c2",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4800,18 +5478,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 535,
+          "entrada": 597,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002247,
+        "costoUSD": 0.000025074,
+        "costoReportadoUSD": null,
         "latenciaMs": 307,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "d487e653906c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c38c4ac31649",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4833,18 +5515,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022554,
+        "costoUSD": 0.000025158,
+        "costoReportadoUSD": null,
         "latenciaMs": 262,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "c690f42e83fc",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "cea10bd4d422",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4866,18 +5552,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 531,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022302,
+        "costoUSD": 0.000024948,
+        "costoReportadoUSD": null,
         "latenciaMs": 191,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "a5421461d514",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b6d05f99fd59",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4899,18 +5589,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 553,
+          "entrada": 615,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000023226,
+        "costoUSD": 0.00002583,
+        "costoReportadoUSD": null,
         "latenciaMs": 465,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "ab373c74214d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "23a2bf7ba711",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4932,18 +5626,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024864,
+        "costoReportadoUSD": null,
         "latenciaMs": 526,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "0165ca2dbd39",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "03d0d4ba0442",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4965,18 +5663,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 526,
+          "entrada": 589,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022092,
+        "costoUSD": 0.000024738,
+        "costoReportadoUSD": null,
         "latenciaMs": 293,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "069b0fe61114",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2cccb1481c3f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -4998,18 +5700,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 543,
+          "entrada": 605,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022806,
+        "costoUSD": 0.00002541,
+        "costoReportadoUSD": null,
         "latenciaMs": 174,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "8fb3c023b7e9",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "c190f127f30a",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5031,18 +5737,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 533,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022386,
+        "costoUSD": 0.00002499,
+        "costoReportadoUSD": null,
         "latenciaMs": 503,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "90d24bcc0ed7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "67b065865219",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5064,18 +5774,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 529,
+          "entrada": 591,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022218,
+        "costoUSD": 0.000024822,
+        "costoReportadoUSD": null,
         "latenciaMs": 188,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "dbc0128cb80b",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "2029b07095cc",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5097,18 +5811,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 525,
+          "entrada": 587,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002205,
+        "costoUSD": 0.000024654,
+        "costoReportadoUSD": null,
         "latenciaMs": 368,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "f3001453c0b0",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3b2f671a53e3",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5130,18 +5848,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 529,
+          "entrada": 591,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022218,
+        "costoUSD": 0.000024822,
+        "costoReportadoUSD": null,
         "latenciaMs": 327,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "34fc8b4be0c7",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "9ffae85a94fb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5163,18 +5885,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 527,
+          "entrada": 589,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022134,
+        "costoUSD": 0.000024738,
+        "costoReportadoUSD": null,
         "latenciaMs": 368,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "48e949a2e97a",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc87ad55187",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5196,18 +5922,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":1,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 528,
+          "entrada": 590,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022176,
+        "costoUSD": 0.00002478,
+        "costoReportadoUSD": null,
         "latenciaMs": 300,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "3ef540f3f192",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "318d76ccdf1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5229,18 +5959,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022428,
+        "costoUSD": 0.000025032,
+        "costoReportadoUSD": null,
         "latenciaMs": 445,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "0b9a3f798964",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e18cf11cfb7d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5262,18 +5996,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 592,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024864,
+        "costoReportadoUSD": null,
         "latenciaMs": 512,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "00a7bf3056ec",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e43235c03186",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5295,18 +6033,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 524,
+          "entrada": 586,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022008,
+        "costoUSD": 0.000024612,
+        "costoReportadoUSD": null,
         "latenciaMs": 398,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "e3d3263f40b4",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "80392af77f1d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5328,18 +6070,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 539,
+          "entrada": 601,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022638,
+        "costoUSD": 0.000025242,
+        "costoReportadoUSD": null,
         "latenciaMs": 392,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "b0a365622a8d",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "fcc58535326f",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5361,18 +6107,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022512,
+        "costoUSD": 0.000025158,
+        "costoReportadoUSD": null,
         "latenciaMs": 381,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "f230b48e03d2",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3e1946144a06",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5394,18 +6144,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.00002499,
+        "costoReportadoUSD": null,
         "latenciaMs": 305,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "624a506504ba",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "5fcbe7db7f9d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5427,18 +6181,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":3,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 537,
+          "entrada": 599,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022554,
+        "costoUSD": 0.000025158,
+        "costoReportadoUSD": null,
         "latenciaMs": 201,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "60f0ee4ac340",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "b8280b3ada6d",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5460,18 +6218,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"interrogar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 529,
+          "entrada": 591,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022218,
+        "costoUSD": 0.000024822,
+        "costoReportadoUSD": null,
         "latenciaMs": 175,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "8c3cf9db47fa",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "26b0427e9a31",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5493,18 +6255,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 534,
+          "entrada": 596,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022428,
+        "costoUSD": 0.000025032,
+        "costoReportadoUSD": null,
         "latenciaMs": 379,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "b6f24a72d06c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "ad5e8ab32b35",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5526,18 +6292,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":false,\"peligro\":0,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 595,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.00002499,
+        "costoReportadoUSD": null,
         "latenciaMs": 434,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "e0e94f8ccfee",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e6e57b500cef",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5559,18 +6329,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":4,\"accion\":\"arrestar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 547,
+          "entrada": 609,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022974,
+        "costoUSD": 0.000025578,
+        "costoReportadoUSD": null,
         "latenciaMs": 169,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "17075629e0c5",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "3123e96b97eb",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5592,18 +6366,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 540,
+          "entrada": 602,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002268,
+        "costoUSD": 0.000025284,
+        "costoReportadoUSD": null,
         "latenciaMs": 164,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "aaa4b9b8d6ff",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "439acdb78fed",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5625,18 +6403,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":1,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 532,
+          "entrada": 594,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022344,
+        "costoUSD": 0.000024948,
+        "costoReportadoUSD": null,
         "latenciaMs": 568,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "a6e70122f1fb",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a0fd9e2b3b62",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5658,18 +6440,22 @@
         "salidaTexto": "{\"pasa\":false,\"miente\":true,\"peligro\":2,\"accion\":\"rechazar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 536,
+          "entrada": 598,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.000022512,
+        "costoUSD": 0.000025116,
+        "costoReportadoUSD": null,
         "latenciaMs": 594,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "81ea99f7b704",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "a9036ef9c235",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       },
       {
@@ -5691,18 +6477,22 @@
         "salidaTexto": "{\"pasa\":true,\"miente\":false,\"peligro\":0,\"accion\":\"aprobar\"}",
         "crudo": "(demo: no hubo respuesta HTTP; datos simulados)",
         "tokens": {
-          "entrada": 530,
+          "entrada": 593,
           "entradaCacheada": 0,
           "salida": 0,
           "razonamiento": null,
           "estimado": false
         },
-        "costoUSD": 0.00002226,
+        "costoUSD": 0.000024906,
+        "costoReportadoUSD": null,
         "latenciaMs": 417,
         "modeloServido": "jev-latest",
         "fallback": false,
-        "huellaEstado": "55b94350960c",
+        "idRespuesta": null,
+        "requestId": null,
+        "huellaEstado": "e50b55404734",
         "intentos": 1,
+        "registradoAt": "2026-10-10T14:09:53.302Z",
         "opcionesUsadas": {}
       }
     ]

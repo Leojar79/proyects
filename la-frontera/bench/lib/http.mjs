@@ -1,7 +1,7 @@
 // POST JSON con fetch, sin SDK. Devuelve el cuerpo crudo (texto) además del JSON interpretado,
 // para guardar la respuesta HTTP tal como llegó.
 
-import { ErrorProveedor, leerRetryAfter, recortar, statusReintentable } from './errores.mjs'
+import { ErrorProveedor, esCuotaAgotada, idDePeticion, leerRetryAfter, recortar, statusReintentable } from './errores.mjs'
 
 const CABECERAS_SECRETAS = new Set(['authorization', 'x-api-key', 'api-key'])
 
@@ -28,7 +28,8 @@ export async function enviarJSON(peticion, signal, nombreProveedor) {
   } catch (e) {
     // Si el runner abortó (tiempo agotado), que lo resuelva el runner.
     if (signal?.aborted) throw e
-    const causa = e?.cause?.code ?? e?.cause?.message ?? e?.message ?? String(e)
+    // (cause.code puede ser 0 o vacío: se juntan las partes que tengan texto.)
+    const causa = [e?.cause?.code, e?.cause?.message ?? e?.message].filter(Boolean).join(' ') || String(e)
     let host = peticion.url
     try {
       host = new URL(peticion.url).host
@@ -36,7 +37,7 @@ export async function enviarJSON(peticion, signal, nombreProveedor) {
     throw new ErrorProveedor(
       `Error de red al llamar a ${nombreProveedor} (${host}): ${causa}. ` +
         'Revisa que la red del entorno permita ese dominio.',
-      { reintentable: true, causa: e },
+      { reintentable: true, causa: e, codigo: 'red' },
     )
   }
   let cuerpo = null
@@ -52,9 +53,11 @@ export function errorHttp(nombreProveedor, respuesta, extra = {}) {
   const extracto = recortar(detalle ? `${detalle} — ${respuesta.crudo}` : respuesta.crudo, 600)
   return new ErrorProveedor(`${nombreProveedor} respondió HTTP ${respuesta.status}: ${extracto}`, {
     status: respuesta.status,
-    reintentable: statusReintentable(respuesta.status),
+    reintentable: statusReintentable(respuesta.status) && !esCuotaAgotada(respuesta.cuerpo),
     retryAfterMs: leerRetryAfter(respuesta.cabeceras),
     crudo: respuesta.crudo,
+    codigo: esCuotaAgotada(respuesta.cuerpo) ? 'cuota' : [401, 403].includes(respuesta.status) ? 'autenticacion' : 'http',
+    requestId: idDePeticion(respuesta.cabeceras),
     ...extra,
   })
 }

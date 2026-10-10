@@ -3,7 +3,7 @@
 Un juego y un video de 75 segundos para LinkedIn y redes sociales: un guardia de frontera estilo
 *Papers, Please* con **tres cerebros** que toman exactamente las mismas decisiones:
 
-- **GPT Astra** (OpenAI)
+- **GPT-6 Astra** (OpenAI, modelo `gpt-6-astra`)
 - **Claude Opus 5.5** (Anthropic)
 - **Jev** (TypeSafe)
 
@@ -12,20 +12,51 @@ dice el viajero) y responden las mismas 4 preguntas: ¿puede pasar?, ¿miente?, 
 hacer (aprobar, rechazar, interrogar o arrestar). Cada una tiene el mismo presupuesto y 3 vidas; gana
 la que dure más. En pantalla se ven contadores de **costo, velocidad y aciertos**.
 
+Es una comparación contra **modelos insignia** (GPT-6 Astra y Claude Opus 5.5, con el esfuerzo de
+razonamiento en `low`). Hay modelos de lenguaje mucho más baratos (por ejemplo, Claude Haiku 5.5) que
+no se probaron: el video, la voz y el texto de LinkedIn lo dicen.
+
 El video sale en tres formatos: vertical 9:16 (Reels, TikTok, Shorts), feed 4:5 (LinkedIn,
 Instagram) y horizontal 16:9 (LinkedIn, YouTube).
 
 ## Principio de honestidad
 
+El autor publica esto para mostrar a Jev: por eso nada puede quedar abierto a una acusación fundada
+de trampa.
+
 - **Ningún número se inventa.** Todo sale de una corrida real del benchmark (llamadas reales a las
-  tres APIs), guardada en `public/runs/`. El costo es: tokens que informa cada API × precio público.
-- **Mientras no haya corrida real**, se usa una corrida de demostración y **todo** cuadro del video
-  lleva la marca de agua «DEMO · datos simulados — no son resultados reales». No se puede quitar.
-  Un video con esa marca **no se publica**.
+  tres APIs), guardada en `public/runs/`. El costo es: tokens que informa cada API × precio por
+  millón de tokens (con fuente y fecha). Las llamadas con error que la API cobró también cuentan.
+- **Una sola regla decide si se puede publicar**: `shared/publicable.js`. La usan la app (marca de
+  agua), el render (nombre del archivo y código de salida), el guion (`GUION.md`) y el benchmark
+  (copia a `latest.json`). Bloquean, entre otros: datos demo, corrida parcial o de prueba, más de
+  10 % de errores de API, una llamada que no usó la configuración declarada (por ejemplo,
+  `reasoning_effort`), un precio sin verificar o distinto del de `shared/modelos.js`, presupuesto o
+  vidas no registrados o cambiados, y la **divulgación vacía**.
+- **NO-PUBLICAR.** Con cualquier bloqueo, **todo** cuadro del video lleva marca de agua («DEMO ·
+  datos simulados» o «NO PUBLICABLE · motivo»), los archivos se llaman `...-demo.mp4` o
+  `...-NO-PUBLICAR.mp4` (también los fotogramas), la consola lista los motivos con cómo resolverlos
+  y `npm run video` termina con código de error. El archivo se genera igual, solo para revisarlo.
+  `GUION.md` muestra los mismos bloqueos arriba de todo. Un video así **no se publica**.
+- **El presupuesto y las vidas se fijan antes de correr.** El benchmark los guarda dentro de la
+  corrida (`juego`) al empezar, y el video usa esos, no los de `shared/config.js`. Cambiarlos después
+  de ver los resultados es un bloqueo («Presupuesto o vidas cambiados después de la corrida»).
+- **Ganadores con empates honestos** (`calcularGanadores` en `shared/juego.js`; la pantalla, la voz
+  y el texto de LinkedIn usan la misma función): diferencias de **2 casos o menos** en aciertos son
+  empate (una sola corrida de 60 casos no distingue más); un costo gana solo si es al menos 5 %
+  menor; la velocidad se compara en décimas de segundo, como se ve en pantalla; en duración, llegar
+  al final vale más que cualquier cantidad de decisiones.
 - **El texto de la voz se elige según los datos**: si Jev no gana en algo (por ejemplo, en
-  aciertos), el guion lo dice tal cual.
-- **Precios con fuente y fecha.** Los que no se confirmaron en la página oficial se avisan en
-  pantalla y en el checklist.
+  aciertos), el guion lo dice tal cual. La conclusión «Los modelos generativos, para crear. Jev,
+  para decidir.» solo aparece si Jev gana o empata en aciertos y también en costo; si no, el cierre
+  dice quién conviene si cada acierto cuenta y quién si manda el costo. No se dice que un modelo
+  «razona» si no se midió razonamiento, ni que Jev devuelve «0 tokens de salida» si su API no los
+  informa.
+- **Divulgación obligatoria** (ver «Divulgación» más abajo): va en la primera línea del texto de
+  LinkedIn, en la voz del cierre y en pantalla. Si no cabe en la voz, el guion da error en vez de
+  omitirla.
+- **Verificable.** El cierre muestra el archivo de la corrida y su huella sha256; súbelo al
+  repositorio público junto con el código.
 
 ## Lo que necesitas
 
@@ -73,10 +104,15 @@ la decisión leída, los tokens y el costo. Revisa:
   Si dice que no reconoce la respuesta, copia el JSON crudo que imprime y pídele a Claude que ajuste
   `bench/providers/typesafe.mjs`. Comprueba que salgan las 4 respuestas con su probabilidad.
 - **GPT:** si OpenAI responde que el modelo no existe, define `OPENAI_MODEL` con el nombre exacto
-  que aparece en tu cuenta de OpenAI (por ejemplo `OPENAI_MODEL=gpt-astra-2026-09-03`).
-- **OPENAI_API_STYLE:** `chat` (por defecto) o `responses`. Si la API de chat falla, el script
-  reintenta solo con `responses` y te avisa; para dejarlo fijo, define `OPENAI_API_STYLE=responses`.
-- Opcional: `TYPESAFE_MODEL` si TypeSafe te indica otro nombre de modelo.
+  que aparece en tu cuenta de OpenAI (por ejemplo `OPENAI_MODEL=gpt-6-astra-2026-09-03`).
+  Si OpenAI no acepta `reasoning_effort: "low"`, el benchmark **se detiene** (no lo quita en silencio:
+  GPT correría con otro esfuerzo y otro costo que los publicados). Pon un valor admitido en
+  `shared/modelos.js` y repite la prueba.
+- **OPENAI_API_STYLE:** `chat` (por defecto) o `responses`. Si el modelo no se admite en la API de
+  chat, el script reintenta con `responses` (mismas opciones) y te avisa; para dejarlo fijo, define
+  `OPENAI_API_STYLE=responses`.
+- **Jev:** si devuelve el nivel de peligro como número, define `TYPESAFE_SCORE_BASE` (0 o 1) según
+  su escala. Opcional: `TYPESAFE_MODEL` si TypeSafe te indica otro nombre de modelo.
 - Que los tokens y el costo tengan sentido, y el «modelo servido» de cada una.
 
 ### 4. Corre el benchmark completo
@@ -85,13 +121,17 @@ la decisión leída, los tokens y el costo. Revisa:
 npm run benchmark
 ```
 
-Pasa los 60 viajeros por las tres IAs. **Antes de empezar imprime el costo estimado**; con los
-precios actuales son unos pocos dólares: aproximadamente US$ 2.40 en total (GPT ~US$ 1.70,
-Opus ~US$ 0.70, Jev menos de un centavo) y como máximo unos US$ 9 si los modelos razonan mucho.
-Las cifras exactas las calcula `bench/run.mjs` al arrancar.
+**Antes de correrlo, deja fijos el presupuesto y las vidas** en `JUEGO` de `shared/config.js`: la
+corrida los guarda al empezar y el video usa esos. No se cambian después de ver los resultados.
+
+Pasa los 60 viajeros por las tres IAs. **Antes de empezar imprime el costo estimado** (unos pocos
+dólares con los precios actuales; las cifras exactas las calcula `bench/run.mjs` al arrancar) y, en
+una terminal interactiva, pide confirmación (`--si` para no preguntar).
 
 Guarda `public/runs/<fecha>.json` y lo copia a `public/runs/latest.json` (la corrida que usa el
-video) solo si está completa y ningún proveedor tuvo más de 10 % de errores de API.
+video) solo si no tiene bloqueos de `shared/publicable.js`, salvo los que se arreglan después sin
+repetir la corrida: precios sin verificar (`npm run recalcular`) y la divulgación. Si no la copia,
+dice por qué.
 
 Opciones (se pasan después de `--`, por ejemplo `npm run benchmark -- --limit 5`):
 
@@ -101,8 +141,27 @@ Opciones (se pasan después de `--`, por ejemplo `npm run benchmark -- --limit 5
 | `--limit N` | Solo los primeros N viajeros (no toca `latest.json`). |
 | `--proveedores gpt,opus,jev` | Solo esos proveedores (no toca `latest.json`). |
 | `--continuar ARCHIVO` | Retoma una corrida cortada (salta los viajeros que ya tienen resultado). Ejemplo: `--continuar 2026-10-10_18-00-00` (el nombre del archivo de `public/runs/`, con o sin `.json`). |
-| `--reintentar-errores` | Con `--continuar`, vuelve a llamar a los viajeros que terminaron en error. |
+| `--reintentar-errores` | Con `--continuar`, vuelve a llamar a los viajeros que terminaron en error (el error anterior queda registrado en `reemplazaA`). |
 | `--concurrencia N` | Viajeros a la vez (por defecto 2; los 3 proveedores de un viajero van en paralelo). |
+| `--si` | No pide confirmación antes de gastar. |
+
+### 4b. Verifica los precios y recalcula (sin repetir el benchmark)
+
+Los precios marcados `verificado: false` en `shared/modelos.js` vienen de agregadores, no de la
+página oficial, y **bloquean la publicación**. Para cada uno:
+
+1. Confírmalo en la página oficial (la dirección está en su campo `fuente`).
+2. Corrígelo en `shared/modelos.js` con `verificado: true`, la `fuente` y la `fecha` de consulta.
+3. Corre:
+
+```
+npm run recalcular
+```
+
+Recalcula el costo de `public/runs/latest.json` (y de su archivo con fecha) con los precios nuevos, a
+partir de los tokens guardados: no llama a ninguna API y no toca decisiones, latencias ni reglas.
+Deja registro del cambio en la corrida (`recalculos`). Para ver antes/después sin escribir:
+`npm run recalcular -- --simular`.
 
 ### 5. Mira el video en el navegador
 
@@ -119,11 +178,22 @@ reproducir/pausa (también con la barra espaciadora), barra de tiempo, formato, 
 npm run guion
 ```
 
-Crea `GUION.md` (cada tramo con su tiempo, el texto a grabar y lo que se ve; el texto completo de
-corrido; consejos para grabar y sincronizar; una propuesta de publicación para LinkedIn con el método
-y los precios; hashtags y el checklist) y `out/subtitulos.srt`. Si todavía usas la demo, `GUION.md`
-lo avisa arriba en grande: vuelve a generarlo después del benchmark, porque los números cambian.
-Para elegir otra corrida: `npm run guion -- --run demo`.
+Crea `GUION.md` y `out/subtitulos.srt`. `GUION.md` trae, en este orden:
+
+- **Arriba de todo, los bloqueos y avisos** de `shared/publicable.js`, cada uno con cómo resolverlo
+  (si falta la divulgación, un aviso grande aparte).
+- Cada tramo con su tiempo, el texto a grabar y lo que se ve; el texto completo de corrido; consejos
+  para grabar y sincronizar.
+- Una propuesta de publicación para LinkedIn: la **divulgación en la primera línea**, el presupuesto
+  fijado antes de correr y lo que costaba atender a los 60 viajeros, los resultados, la conclusión
+  (solo si los datos la sostienen), la sección «Lo que también hay que decir» (modelos insignia y
+  Claude Haiku 5.5 sin probar, latencia medida desde tu red, una sola corrida, empates, marcas), la
+  configuración **realmente usada** en cada llamada y los precios por millón de tokens con fuente y
+  fecha.
+- Hashtags y el checklist.
+
+Si todavía usas la demo, `GUION.md` lo avisa arriba en grande: vuelve a generarlo después del
+benchmark, porque los números cambian. Para elegir otra corrida: `npm run guion -- --run demo`.
 
 ### 7. Renderiza los videos
 
@@ -137,7 +207,10 @@ mayoría ve los videos sin sonido. Los archivos quedan en `out/`:
 
 - `out/la-frontera-vertical.mp4`, `-feed.mp4`, `-horizontal.mp4`
 - con subtítulos: `out/la-frontera-vertical-subs.mp4`, etc.
-- si la corrida es la demo, el nombre termina en `-demo` y la consola avisa que **no se debe publicar**.
+- si la corrida es la demo, el nombre termina en `-demo`; si tiene cualquier otro bloqueo de
+  `shared/publicable.js`, en `-NO-PUBLICAR`. En los dos casos el video lleva marca de agua, la
+  consola lista los motivos con cómo resolverlos y el comando termina con código de error.
+  **No se publican.** (Lo mismo vale para los fotogramas de `--fotogramas`.)
 
 Tiempos medidos en este entorno (4 CPU): el video vertical completo con subtítulos tarda unos
 2 minutos (incluida la construcción de la app); los tres formatos, unos 6 minutos. Al final, el
@@ -159,11 +232,25 @@ importa `out/subtitulos.srt` sobre el video sin subtítulos.
 
 El checklist completo está al final de `GUION.md`. Lo esencial:
 
-- [ ] La corrida es real (`"source": "live"`) y el video **no** tiene la marca de agua DEMO.
-- [ ] Confirmaste en la página oficial los precios marcados `verificado: false` en `shared/modelos.js`.
-- [ ] Los nombres de los modelos coinciden con los que respondieron las APIs (están en `GUION.md`).
-- [ ] Declaraste si TypeSafe te paga o te dio créditos (ver «Divulgación» más abajo).
+- [ ] `GUION.md` no muestra bloqueos y los archivos del video **no** terminan en `-demo` ni en
+      `-NO-PUBLICAR` (sin marca de agua).
+- [ ] Confirmaste en la página oficial los precios marcados `verificado: false` y corriste
+      `npm run recalcular`.
+- [ ] Los nombres de los modelos y la configuración usada coinciden con lo declarado (están en `GUION.md`).
+- [ ] Escribiste la divulgación (ver «Divulgación» más abajo) y sigue en la primera línea del texto.
+- [ ] No quitaste «Lo que también hay que decir» del texto de LinkedIn.
+- [ ] Subiste al repositorio público el archivo de la corrida (su sha256 sale en el cierre).
 - [ ] Viste el video completo, la voz coincide con la pantalla y el enlace del método funciona.
+
+## El flujo completo, en resumen
+
+1. Fija `JUEGO` (presupuesto y vidas) y `PUBLICACION.divulgacion` en `shared/config.js`.
+2. `npm run probar-apis` (un viajero; revisa formato, modelo y opciones).
+3. `npm run benchmark` (60 viajeros; guarda la corrida con sus reglas y la copia a `latest.json` si se puede).
+4. Verifica los precios en las páginas oficiales → `shared/modelos.js` (`verificado: true`) → `npm run recalcular`.
+5. `npm run guion` → revisa que arriba de `GUION.md` no quede ningún bloqueo.
+6. `npm run video -- --formato todos --subtitulos` (y sin `--subtitulos` si quieres poner la voz encima).
+7. Graba la voz con `GUION.md`, únela al video y publica con el texto propuesto.
 
 ## Cómo cambiar cosas
 
@@ -174,31 +261,38 @@ presupuestoUSD: 0.25, // lo mismo para las tres
 vidas: 3,             // se pierde una al dejar pasar una amenaza o arrestar a un inocente
 ```
 
-No hace falta repetir el benchmark: el juego se recalcula con la misma corrida. Sí hay que volver a
-generar el guion (`npm run guion`) y los videos (`npm run video ...`), porque el texto cambia con
-los resultados.
+**Se fijan antes de correr el benchmark y no se cambian después.** Quién «dura más» depende sobre
+todo del presupuesto: ajustarlo después de ver los resultados sería elegir al ganador. Por eso cada
+corrida guarda los valores con los que empezó (`juego`) y el video usa esos; si `shared/config.js`
+dice otra cosa, es un bloqueo («Presupuesto o vidas cambiados después de la corrida»). Para probar
+otro presupuesto hay que correr el benchmark de nuevo. Los aciertos y los errores graves siempre
+cuentan los 60 casos, sin límite de presupuesto, y la tabla muestra lo que costó atenderlos a todos.
 
 **Precios** — `shared/modelos.js`, campo `precio` de cada proveedor (dólares por millón de tokens de
 entrada, entrada en caché y salida, más `fuente`, `verificado` y `fecha`). Cada corrida guarda una
-copia de los precios con los que calculó el costo; por eso, si corriges un precio, tienes que correr
-el benchmark de nuevo para que el video use el precio nuevo.
+copia de los precios con los que calculó el costo. Si corriges un precio, corre `npm run recalcular`
+(recalcula con los tokens guardados, sin llamar a las APIs); mientras la corrida tenga un precio
+distinto del de `shared/modelos.js`, o sin verificar, el video no se puede publicar.
 
-**Divulgación** — `shared/config.js`, objeto `PUBLICACION`:
+**Divulgación (obligatoria)** — `shared/config.js`, objeto `PUBLICACION`:
 
 ```js
-divulgacion: 'Colaboración pagada con TypeSafe', // vacío si no hay ninguna relación
-enlaceMetodo: 'github.com/Leojar79/proyects',     // dónde revisar el método y el código
+divulgacion: 'Colaboración pagada con TypeSafe', // o 'Sin relación comercial con TypeSafe'
+enlaceMetodo: 'github.com/Leojar79/proyects/tree/main/la-frontera', // método, código y datos
 ```
 
-La divulgación aparece en el cierre del video, en la voz (si es corta) y en el texto propuesto para
-LinkedIn. Después de cambiarla, vuelve a generar el guion y los videos.
+Tu relación con TypeSafe en una frase, **aunque no haya ninguna** («Sin relación comercial con
+TypeSafe»). Vacía, bloquea la publicación. Aparece en la primera línea del texto de LinkedIn, en la
+voz del cierre y en pantalla durante todo el video. Si es tan larga que no cabe en la voz (unas 10
+palabras), `npm run guion` da error: acórtala en vez de omitirla. Después de cambiarla, vuelve a
+generar el guion y los videos.
 
 ## Pruebas
 
 ```
 npm run validar                    # las respuestas correctas de los 60 viajeros salen de las reglas
-node --test bench/                 # benchmark y adaptadores de las APIs (sin red)
-node --test render/guion.test.mjs  # el guion: ritmo y frases verdaderas en cientos de corridas al azar
+npm test                           # todo: benchmark, adaptadores (sin red) y guion
+node --test render/guion.test.mjs  # el guion: ritmo, empates y frases verdaderas en miles de corridas al azar
 node bench/chequear-corrida.mjs public/runs/latest.json --completa
 ```
 
@@ -208,7 +302,7 @@ node bench/chequear-corrida.mjs public/runs/latest.json --completa
 |---|---|
 | `shared/` | Reglas, preguntas, modelos y precios, configuración, línea de tiempo, cálculo del juego, formato de números y guion de voz. Lo usan el benchmark, la app y el render. |
 | `data/viajeros.json` | Los 60 viajeros con sus documentos y la respuesta correcta. |
-| `bench/` | El benchmark (llamadas reales a las APIs) y la corrida demo (`npm run demo`). |
+| `bench/` | El benchmark (llamadas reales a las APIs), `recalcular.mjs` (precios verificados) y la corrida demo (`npm run demo`). |
 | `src/` | La app: el video se dibuja en el navegador en función del tiempo. |
 | `render/` | `guion.mjs` (GUION.md y subtítulos) y `render.mjs` (MP4 con Playwright y ffmpeg). |
 | `public/runs/` | Corridas: `demo.json`, `latest.json` y una por fecha. |
@@ -220,6 +314,9 @@ Detalles técnicos y contratos entre las partes: `ARQUITECTURA.md`.
 
 - **«No encontré ninguna corrida»**: corre `npm run demo` (demostración) o `npm run benchmark` (real).
 - **El video dice DEMO**: todavía no hay `public/runs/latest.json` real; corre el benchmark.
+- **El video dice NO PUBLICABLE o el archivo termina en `-NO-PUBLICAR`**: mira arriba de `GUION.md`
+  (o la consola del render) la lista de bloqueos y cómo resolver cada uno.
+- **`npm run guion` dice que la divulgación no cabe**: acórtala en `shared/config.js` (unas 10 palabras como máximo).
 - **«No encontré ffmpeg»**: instálalo (en Ubuntu: `sudo apt install ffmpeg`; en Mac: `brew install ffmpeg`).
 - **No abre Chromium (en tu computadora)**: instala el navegador de Playwright con `npx playwright install chromium`.
 - **Cambiaste algo en `src/` y el video no lo muestra**: no uses `--sin-build`.

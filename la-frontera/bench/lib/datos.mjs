@@ -1,10 +1,11 @@
 // Rutas, lectura del conjunto de viajeros y escritura de corridas.
 
+import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { textoEstado } from '../../shared/preguntas.js'
+import { esquemaJSON, preguntasJev, promptSistemaLLM, textoEstado } from '../../shared/preguntas.js'
 
 export const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 
@@ -43,6 +44,34 @@ export function cargarViajeros(ruta = rutaViajeros()) {
 // resultados de un viajero cuyo contenido cambió en data/viajeros.json.
 export function huellaViajero(viajero) {
   return createHash('sha256').update(textoEstado(viajero)).digest('hex').slice(0, 12)
+}
+
+// Huella de todo lo demás que reciben las IAs: prompt de sistema y esquema (GPT y Opus) y
+// preguntas (Jev). --continuar se niega a mezclar resultados si cambió.
+export function huellaPrompt() {
+  const texto = JSON.stringify([promptSistemaLLM(), esquemaJSON(), preguntasJev()])
+  return createHash('sha256').update(texto).digest('hex').slice(0, 12)
+}
+
+// Commit del código con el que se corre (para que cualquiera pueda reproducir la corrida).
+// cambiosSinCommit: true si hay archivos versionados modificados en la-frontera/.
+export function commitActual() {
+  const git = (...args) => spawnSync('git', args, { cwd: RAIZ, encoding: 'utf8' })
+  const head = git('rev-parse', 'HEAD')
+  if (head.error || head.status !== 0) return { commit: null, cambiosSinCommit: null }
+  const estado = git('status', '--porcelain', '--untracked-files=no', '--', '.')
+  return {
+    commit: head.stdout.trim(),
+    cambiosSinCommit: estado.status === 0 ? estado.stdout.trim().length > 0 : null,
+  }
+}
+
+// Estimación de tokens cuando la API no los informa: caracteres / 4, con 1,5 de margen por la
+// tokenización del español (la misma que usa la estimación previa de costo de bench/run.mjs).
+// Se prefiere sobreestimar: subestimar el costo de un proveedor sería un sesgo a su favor.
+export const MARGEN_ESTIMACION = 1.5
+export function estimarTokens(caracteres) {
+  return Math.ceil((caracteres / 4) * MARGEN_ESTIMACION)
 }
 
 // 2026-10-10_18-05-09 (UTC), apto para nombre de archivo y para el parámetro ?run= de la app.

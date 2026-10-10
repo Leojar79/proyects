@@ -350,34 +350,25 @@ function CabinaDetalle({ m, L, t, info, cajas }) {
   const colaX = L.orientacion === 'horizontal' ? win.w * 0.5 : win.w * 0.5
   const tamHead = L.formato === 'vertical' ? 26 : L.formato === 'feed' ? 22 : 20
   const horizontal = L.orientacion === 'horizontal'
+  // Letrero de cámara rápida: si alguna respuesta tardó más que la ventana, las respuestas se
+  // muestran aceleradas. El factor se redondea hacia arriba a décimas (3,02 s -> x1.1, nunca "x1").
   const factorTiempo = d.escala < 1 && t >= d.t0 - 0.2 && t < d.revela + 0.3
-  // Letrero de cámara rápida entre las dos etiquetas de la cabecera.
-  const anchoIzq = anchoTexto(`VIAJERO ${info.indice + 1}/${m.N}`, tamHead, 400, FUENTE_TITULO) + tamHead * 1.2
-  const anchoDer = anchoTexto(`HOY ${FECHA_PUESTO}`, tamHead, 400, FUENTE_TITULO) + tamHead * 2.8
-  const libre = head.w - anchoIzq - anchoDer - 36
-  const textoLargo = `TIEMPO ${multiplicador(1 / d.escala)}`
-  let textoTiempo = textoLargo
-  let tamTiempo = tamParaAncho(textoLargo, libre - tamHead * 2.2, tamHead, 10, 400, FUENTE_TITULO)
-  if (tamTiempo < 15) {
-    textoTiempo = multiplicador(1 / d.escala)
-    tamTiempo = tamParaAncho(textoTiempo, libre - tamHead * 2.2, tamHead, 10, 400, FUENTE_TITULO)
-  }
+  const textoTiempo = `CÁMARA RÁPIDA ${multiplicador(Math.ceil(10 / d.escala - 1e-9) / 10)}`
+  // En vertical y feed la ventanilla es angosta: el letrero va sobre la banda del pasaporte
+  // (solo decorativa: "PASAPORTE"), sin tapar la nacionalidad ni los datos.
+  const tamTiempo = horizontal ? 22 : tamParaAncho(textoTiempo, pas.w * 0.62, L.formato === 'vertical' ? 24 : 20, 16, 400, FUENTE_TITULO)
+  const letreroTiempo = factorTiempo && (
+    <Etiqueta tam={tamTiempo} color="#1a1400" fondo={COLORES.ambar} borde="#7a5600" style={{ padding: `${Math.round(tamTiempo * 0.22)}px ${Math.round(tamTiempo * 0.4)}px` }}>
+      <Icono nombre="avance" alto={tamTiempo} color="#1a1400" />
+      <TextoPixel>{textoTiempo}</TextoPixel>
+    </Etiqueta>
+  )
   return (
     <>
       <div style={{ position: 'absolute', left: head.x, top: head.y, width: head.w, height: head.h, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Etiqueta tam={tamHead} color={COLORES.ambar}>
           VIAJERO {info.indice + 1}/{m.N}
         </Etiqueta>
-        {factorTiempo && !horizontal ? (
-          <div style={{ opacity: clamp((t - d.t0 + 0.2) * 5), transform: `scale(${easeOutBack(prog(t, d.t0 - 0.2, 0.3))})` }}>
-            <Etiqueta tam={tamTiempo} color="#1a1400" fondo={COLORES.ambar} borde="#7a5600" style={{ padding: `${tamTiempo * 0.32}px ${tamTiempo * 0.4}px` }}>
-              <Icono nombre="avance" alto={tamTiempo} color="#1a1400" />
-              {textoTiempo}
-            </Etiqueta>
-          </div>
-        ) : (
-          <div />
-        )}
         <Etiqueta tam={tamHead} color="#dfe6ff">
           <Icono nombre="calendario" alto={tamHead * 1.1} color="#dfe6ff" claro="#2a3150" />
           HOY {FECHA_PUESTO}
@@ -389,11 +380,8 @@ function CabinaDetalle({ m, L, t, info, cajas }) {
             <Retrato semilla={v.semilla} tam={tamRet} t={t} hablando={hablando} />
           </div>
           {factorTiempo && horizontal && (
-            <div style={{ position: 'absolute', right: 14, top: 22, opacity: clamp((t - d.t0 + 0.2) * 5), transform: `scale(${easeOutBack(prog(t, d.t0 - 0.2, 0.3))})` }}>
-              <Etiqueta tam={22} color="#1a1400" fondo={COLORES.ambar} borde="#7a5600">
-                <Icono nombre="avance" alto={22} color="#1a1400" />
-                TIEMPO {multiplicador(1 / d.escala)}
-              </Etiqueta>
+            <div style={{ position: 'absolute', right: 14, top: 22, opacity: clamp((t - d.t0 + 0.2) * 5), transform: `scale(${easeOutBack(prog(t, d.t0 - 0.2, 0.3))})`, transformOrigin: 'right center' }}>
+              {letreroTiempo}
             </div>
           )}
         </Ventanilla>
@@ -410,6 +398,20 @@ function CabinaDetalle({ m, L, t, info, cajas }) {
         }}
       >
         <Pasaporte v={v} w={pas.w} h={pas.h} L={L} />
+        {factorTiempo && !horizontal && (
+          <div
+            style={{
+              position: 'absolute',
+              left: Math.round(pas.w * 0.035),
+              top: Math.round((Math.round(L.fs.chico * 1.2) - (tamTiempo + 2 * Math.round(tamTiempo * 0.22))) / 2),
+              opacity: clamp((t - d.t0 + 0.2) * 5),
+              transform: `scale(${easeOutBack(prog(t, d.t0 - 0.2, 0.3))})`,
+              transformOrigin: 'left center',
+            }}
+          >
+            {letreroTiempo}
+          </div>
+        )}
       </div>
       <div
         style={{

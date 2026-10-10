@@ -86,9 +86,16 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
   "source": "live",
   "createdAt": "2026-10-10T18:00:00.000Z",
   "nota": "texto libre opcional",
+  "juego": { "presupuestoUSD": 0.25, "vidas": 3 },
+  "commit": "48545c32c2d4d6e42307acbea9893ec72f79335f",
+  "cambiosSinCommit": false,
+  "huellaPrompt": "8b6d3d473be1",
+  "basePeligroJev": null,
+  "parcial": false,
+  "probe": false,
   "viajeros": ["v01", "v02"],
   "proveedores": [
-    { "id": "gpt", "nombre": "GPT Astra", "empresa": "OpenAI", "modelo": "gpt-astra", "color": "#19c37d",
+    { "id": "gpt", "nombre": "GPT-6 Astra", "empresa": "OpenAI", "modelo": "gpt-6-astra", "color": "#19c37d",
       "precio": { "entradaPorMTok": 10, "entradaCacheadaPorMTok": 1, "salidaPorMTok": 50, "fuente": "...", "verificado": false, "fecha": "2026-10-10" },
       "opciones": { "reasoningEffort": "low" } }
   ],
@@ -104,9 +111,28 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
         "crudo": "respuesta HTTP cruda, recortada a 4000 caracteres",
         "tokens": { "entrada": 612, "entradaCacheada": 0, "salida": 180, "razonamiento": 120, "estimado": false },
         "costoUSD": 0.0151,
+        "costoReportadoUSD": null,
         "latenciaMs": 2310,
-        "modeloServido": "gpt-astra-2026-09-03",
-        "fallback": false
+        "modeloServido": "gpt-6-astra-2026-09-03",
+        "fallback": false,
+        "idRespuesta": "chatcmpl-...",
+        "requestId": "req_...",
+        "huellaEstado": "3f2a9c0d1b7e",
+        "intentos": 1,
+        "registradoAt": "2026-10-10T18:00:03.120Z",
+        "opcionesUsadas": { "reasoningEffort": "low", "estiloApi": "chat" }
+      },
+      {
+        "viajeroId": "v02",
+        "ok": false,
+        "error": "GPT se negó a responder: ...",
+        "codigoError": "negativa",
+        "decision": null,
+        "tokens": { "entrada": 640, "entradaCacheada": 0, "salida": 35, "razonamiento": null, "estimado": false },
+        "costoUSD": 0,
+        "costoFacturadoUSD": 0.00815,
+        "latenciaMs": null,
+        "...": "mismos campos de registro que arriba"
       }
     ],
     "opus": [],
@@ -115,13 +141,55 @@ public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
 }
 ```
 
+Corrida (primer nivel):
+- `juego`: presupuesto y vidas **registrados antes de correr** (copiados de `JUEGO` en `shared/config.js`).
+  El juego usa estos, no los de la configuración actual; si cambian después, la corrida no es publicable.
+- `commit`: `git rev-parse HEAD` al empezar (null si no se pudo). `cambiosSinCommit`: true si había archivos
+  versionados de `la-frontera/` modificados (null si no se sabe). Sirven para reproducir la corrida.
+- `huellaPrompt`: sha256 (12 caracteres) del prompt de sistema, el esquema JSON y las preguntas de Jev.
+  `--continuar` se niega a seguir si cambió (no se mezclan resultados de dos prompts). Cada resultado
+  tiene además `huellaEstado` (texto que recibió la IA para ese viajero).
+- `basePeligroJev`: `TYPESAFE_SCORE_BASE` con que se interpretó el peligro numérico de Jev (0, 1 o null).
+- `parcial`: true con `--limit`, con un subconjunto de proveedores o en `--probe`. `probe`: true en `--probe`.
+  Ninguna de las dos se publica.
+- `recalculos` (opcional): historia de `npm run recalcular` (fecha y precios de antes y después).
+- `actualizadoAt` (opcional): última escritura durante la corrida o al continuarla.
+
+Cada resultado:
 - `confianza`: solo Jev la entrega: `{ "pasa": 0.91, "miente": 0.12, "peligro": 0.77, "accion": 0.88 }`
-  (probabilidad de la respuesta elegida). Para GPT y Opus es `null`.
+  (probabilidad de la respuesta elegida, en 0-1). Para GPT y Opus es `null`.
 - `tokens.salida` incluye los tokens de razonamiento interno (se cobran como salida); `razonamiento` los desglosa si la API los reporta.
-- `tokens.estimado: true` si la API no reportó tokens y se estimaron (caracteres / 4). Se avisa en pantalla.
-- `costoUSD` = `calcularCosto(precio, tokens)`.
-- `latenciaMs`: tiempo de la petición HTTP que tuvo éxito (sin contar reintentos).
-- Errores: `ok: false`, `decision: null`, `error: "mensaje"`, `costoUSD: 0`.
+  **`tokens.salida: null`** = la API no informó la salida (no se asume 0; la pantalla debe decir "no informa").
+  Un `0` es un cero informado por la API.
+- `tokens.estimado: true` si la API no reportó la entrada y se estimó (caracteres / 4 × 1,5). Se avisa en pantalla.
+- `costoUSD` = `calcularCosto(precio, tokens)` en respuestas válidas; 0 en errores.
+- `costoFacturadoUSD` (solo errores): lo que la API cobró aunque la respuesta no sirviera (negativa, JSON
+  inválido, formato no reconocido), calculado con los tokens que informó. `null` si no hubo respuesta
+  (red, tiempo agotado, HTTP de error). El juego lo descuenta del presupuesto (`costoReal` de `shared/juego.js`).
+- `costoReportadoUSD`: costo que informó la propia API, si lo hizo (si no, null). El benchmark avisa si
+  difiere más de 5 % del calculado.
+- `latenciaMs`: tiempo de la petición HTTP que tuvo éxito (sin contar reintentos); null en errores.
+- `idRespuesta`: id que la API dio a la respuesta (cuerpo); `requestId`: cabecera `request-id` / `x-request-id`.
+  Permiten confrontar cada llamada con el panel del proveedor. null si no los informó.
+- `opcionesUsadas`: opciones **tal como salieron en la petición**, con TODAS las declaradas en
+  `proveedor.opciones` (GPT: `{ reasoningEffort, estiloApi }`; Opus: `{ effort }`; Jev: `{}`). El benchmark nunca
+  quita una opción en silencio: si la API la rechaza, la llamada falla con `codigoError: "opcion_no_admitida"`.
+- `fallback`: siempre false. Opus se llama sin respaldo del lado del servidor; si otro modelo respondiera,
+  sería un error (`codigoError: "fallback"`), nunca una respuesta de Opus.
+- `intentos`: llamadas hechas para este resultado; `erroresPrevios` (opcional): mensaje de cada intento fallido
+  que se reintentó. Tiempo límite: 180 s para GPT y Opus (a lo sumo 1 reintento por tiempo agotado), 30 s para Jev.
+- `reemplazaA` (opcional): con `--reintentar-errores`, los resultados fallidos que este reemplazó
+  (`error`, `codigoError`, `intentos`, `tokens`, `costoFacturadoUSD`, ids). No se borran.
+- `registradoAt`: cuándo se guardó el resultado.
+- Errores: `ok: false`, `decision: null`, `error: "mensaje"`, `codigoError` (`http`, `red`, `tiempo_agotado`,
+  `negativa`, `json_invalido`, `esquema`, `max_tokens`, `incompleta`, `formato`, `opcion_no_admitida`,
+  `configuracion`, `cuota`, `autenticacion`, `fallback`, `api`), `costoUSD: 0`.
+
+Publicación: `shared/publicable.js` decide si un video se puede publicar con la corrida. `bench/run.mjs`
+solo copia a `latest.json` si no hay más bloqueos que los que se arreglan después sin repetir la corrida
+(precio sin verificar o cambiado: `npm run recalcular`; divulgación: `shared/config.js`), y nunca si alguna
+respuesta de Jev quedó con formato no reconocido (fallo del parser, no de Jev).
+`node bench/chequear-corrida.mjs <archivo> [--completa]` revisa este contrato.
 
 ## Contrato: app (`src/`)
 

@@ -1,13 +1,12 @@
 // Escena 2 (4-14 s): (a) las 4 decisiones por viajero, (b) cómo responde cada cerebro,
 // (c) reglas del juego. Cada parte entra y sale con movimiento calculado desde t.
 
-import { JUEGO } from '../../shared/config.js'
 import { usd, porcentaje } from '../../shared/formato.js'
 import { ACCIONES } from '../../shared/preguntas.js'
 import { clamp, easeInCubic, easeOutBack, easeOutCubic, prog } from '../lib/anim.js'
 import { ESC } from '../lib/datos.js'
 import { FUENTE_MONO, FUENTE_TEXTO, FUENTE_TITULO, tamParaAncho, tamParaCaja } from '../lib/medir.js'
-import { COLORES, SELLO, alfa, siNo, tono } from '../lib/textos.js'
+import { COLORES, SELLO, alfa, lista, siNo, tono } from '../lib/textos.js'
 import { Icono } from '../componentes/Pixel.jsx'
 import { bordePixel, TextoPixel } from '../componentes/ui.jsx'
 
@@ -195,8 +194,17 @@ function ParteB({ m, L, t, parte }) {
   const json = ejLLM ? ejLLM.r.salidaTexto : ''
   const tamJ = horizontal ? 30 : L.subs ? 24 : L.formato === 'vertical' ? 28 : 26
   const kTipeo = clamp((t - t0 - 0.6) / 1.8)
-  const textoLLM = 'Razonan y escriben la respuesta (JSON). Se paga cada token, incluido el razonamiento interno.'
-  const textoJev = 'No escribe: devuelve la decisión con su probabilidad.'
+  // Los textos dependen de lo que se midió en la corrida (no se afirma razonamiento que no hubo).
+  const statsDe = (id) => m.stats.proveedores.find((x) => x.id === id)
+  const conRazon = llms.filter((p) => statsDe(p.id)?.tokensRazonamientoProm > 0)
+  const textoLLM =
+    conRazon.length && conRazon.length === llms.length
+      ? 'Razonan y escriben la respuesta (JSON). Se paga cada token, incluido el razonamiento interno.'
+      : conRazon.length
+        ? `Escriben la respuesta (JSON). Se paga cada token, incluido el razonamiento interno de ${lista(conRazon.map((p) => p.nombre))}.`
+        : 'Escriben la respuesta (JSON). Se paga cada token de entrada y de salida.'
+  const sJev = jev ? statsDe(jev.id) : null
+  const textoJev = sJev?.salidaInformada && sJev.tokensSalidaProm > 0 ? 'Devuelve la decisión con su probabilidad.' : 'No escribe: devuelve la decisión con su probabilidad.'
   const anchoTexto = w - pad * 2
   const tamLLM = tamParaCaja(textoLLM, anchoTexto, horizontal ? 3 : 3, tamTxt, 20, 600)
   const tamJev = tamParaCaja(textoJev, anchoTexto, 2, tamTxt, 20, 600)
@@ -302,7 +310,7 @@ function lineasJSON(texto, ancho, tam) {
   return out.slice(0, 8)
 }
 
-function ParteC({ L, t, parte }) {
+function ParteC({ m, L, t, parte }) {
   const c = L.contenido
   const horizontal = L.orientacion === 'horizontal'
   const gap = 24
@@ -313,18 +321,19 @@ function ParteC({ L, t, parte }) {
     {
       icono: <Icono nombre="moneda" alto={Math.min(84, h * 0.4)} color="#7a5600" />,
       titulo: 'Mismo presupuesto',
-      grande: `${usd(JUEGO.presupuestoUSD)} para cada uno`,
+      // Presupuesto y vidas registrados en la corrida antes de correr.
+      grande: `${usd(m.presupuestoUSD)} para cada uno`,
       texto: '',
     },
     {
       icono: (
         <div style={{ display: 'flex', gap: 8 }}>
-          {Array.from({ length: JUEGO.vidas }, (_, i) => (
+          {Array.from({ length: m.vidas }, (_, i) => (
             <Icono key={i} nombre="corazon" alto={Math.min(60, h * 0.3)} color="#ff3b55" claro="#ffc2cb" />
           ))}
         </div>
       ),
-      titulo: `${JUEGO.vidas} vidas`,
+      titulo: `${m.vidas} vidas`,
       grande: '',
       texto: 'Pierdes una si dejas pasar a una amenaza o arrestas a un inocente.',
     },
@@ -381,5 +390,5 @@ export function Presentacion({ m, L, t }) {
   const parte = PARTES.find((p) => t >= p.inicio && t < p.fin) ?? PARTES[PARTES.length - 1]
   if (parte.id === 'a') return <ParteA L={L} t={t} parte={parte} />
   if (parte.id === 'b') return <ParteB m={m} L={L} t={t} parte={parte} />
-  return <ParteC L={L} t={t} parte={parte} />
+  return <ParteC m={m} L={L} t={t} parte={parte} />
 }

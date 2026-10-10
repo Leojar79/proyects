@@ -2,7 +2,6 @@
 // respuestas / costo / tokens / JSON o confianza; o el tablero en avance rápido),
 // contadores (presupuesto, vidas, aciertos, latencia) y la pantalla de GAME OVER.
 
-import { JUEGO } from '../../shared/config.js'
 import { usd, segundos, entero, porcentaje } from '../../shared/formato.js'
 import { clamp, easeOutBack, easeOutCubic, golpe, prog, azarFijo, sacudir } from '../lib/anim.js'
 import { estadoProveedor, casilla } from '../lib/datos.js'
@@ -42,9 +41,9 @@ function Cabecera({ p, M, apagado }) {
   )
 }
 
-function Corazones({ vidas, perdioVidaEn, t, tam }) {
+function Corazones({ vidas, total, perdioVidaEn, t, tam }) {
   const items = []
-  for (let i = 0; i < JUEGO.vidas; i++) {
+  for (let i = 0; i < total; i++) {
     const lleno = i < vidas
     const rompiendo = !lleno && i === vidas && perdioVidaEn !== null && t - perdioVidaEn < 0.9
     if (rompiendo) {
@@ -76,8 +75,9 @@ function Corazones({ vidas, perdioVidaEn, t, tam }) {
   return <div style={{ display: 'flex', gap: tam * 0.12, alignItems: 'center' }}>{items}</div>
 }
 
-function Contadores({ p, M, e, t, L }) {
-  const total = JUEGO.presupuestoUSD
+function Contadores({ m, p, M, e, t, L }) {
+  // Presupuesto y vidas de la corrida (registrados antes de correr).
+  const total = m.presupuestoUSD
   const frac = clamp(e.gastado / total)
   const texto = usd(e.gastado)
   const tamG = tamParaAncho(texto, M.interior - M.tam * 1.1 - anchoTexto(`/ ${usd(total).replace('US$ ', '')}`, M.tamSec, 600) - 16, M.tam, 18, 800)
@@ -99,7 +99,7 @@ function Contadores({ p, M, e, t, L }) {
         <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: '35%', background: 'rgba(255,255,255,0.18)' }} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Corazones vidas={e.vidas} perdioVidaEn={e.perdioVidaEn} t={t} tam={tamCor} />
+        <Corazones vidas={e.vidas} total={m.vidas} perdioVidaEn={e.perdioVidaEn} t={t} tam={tamCor} />
         {menosVida ? (
           <div style={{ fontFamily: FUENTE_TITULO, fontSize: Math.round(M.tamChico * 0.62), color: Math.floor(t * 8) % 2 ? '#ff4d5e' : '#ffd0d6', whiteSpace: 'nowrap', transform: `scale(${easeOutBack(prog(t, e.perdioVidaEn, 0.25))})`, transformOrigin: 'right center' }}>
             -1 VIDA
@@ -117,6 +117,9 @@ function Contadores({ p, M, e, t, L }) {
     </div>
   )
 }
+
+const salidaInformada = (tk) => tk.salida !== null && tk.salida !== undefined && Number.isFinite(tk.salida)
+const textoTokens = (tk) => `${entero(tk.entrada ?? 0)} entrada · ${salidaInformada(tk) ? `${entero(tk.salida)} salida` : 'salida: no informada'}`
 
 // Hoja de papel donde cae el sello.
 function Hoja({ w, h, children, style }) {
@@ -218,10 +221,10 @@ function CuerpoDetalleViajero({ m, p, i, t, M, h, L }) {
           </div>
         </div>
       )}
-      {/* Cronómetro (tiempo real medido) */}
+      {/* Cronómetro (tiempo real medido). Una llamada con error no tiene latencia: "—". */}
       {paso.activo && t >= d.t0 && (
         <div style={{ position: 'absolute', right: 6, top: 6, padding: '2px 6px', background: resuelto ? COLORES.tinta : 'transparent', color: resuelto ? '#fff' : COLORES.tinta, fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: M.tamSec * 0.85, fontVariantNumeric: 'tabular-nums' }}>
-          {segundos(resuelto && r?.latenciaMs ? r.latenciaMs : ((t - d.t0) / d.escala) * 1000)}
+          {resuelto ? (r?.ok && r.latenciaMs > 0 ? segundos(r.latenciaMs) : '—') : segundos(((t - d.t0) / d.escala) * 1000)}
         </div>
       )}
       {/* Marca de acierto o error al revelar */}
@@ -255,8 +258,16 @@ function CuerpoDetalleViajero({ m, p, i, t, M, h, L }) {
           <span style={{ fontFamily: FUENTE_TEXTO, fontWeight: 600, fontSize: tamEtqCosto, color: COLORES.suave }}>costo</span>
           <span style={{ fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tamCosto, color: COLORES.ambar, fontVariantNumeric: 'tabular-nums' }}>{textoCosto}</span>
         </div>
-        <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 600, fontSize: tamParaAncho(`${entero(tk.entrada ?? 0)} entrada · ${entero(tk.salida ?? 0)} salida`, w, tamTok, 16, 600), color: COLORES.suave, whiteSpace: 'nowrap', lineHeight: 1.25 }}>
-          <span style={{ color: COLORES.texto, fontWeight: 800 }}>{entero(tk.entrada ?? 0)}</span> entrada · <span style={{ color: COLORES.texto, fontWeight: 800 }}>{entero(tk.salida ?? 0)}</span> salida
+        {/* Si la API no informó los tokens de salida, se dice (no se muestra un 0 inventado). */}
+        <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 600, fontSize: tamParaAncho(textoTokens(tk), w, tamTok, 16, 600), color: COLORES.suave, whiteSpace: 'nowrap', lineHeight: 1.25 }}>
+          <span style={{ color: COLORES.texto, fontWeight: 800 }}>{entero(tk.entrada ?? 0)}</span> entrada ·{' '}
+          {salidaInformada(tk) ? (
+            <>
+              <span style={{ color: COLORES.texto, fontWeight: 800 }}>{entero(tk.salida)}</span> salida
+            </>
+          ) : (
+            'salida: no informada'
+          )}
         </div>
         {tk.razonamiento > 0 && (
           <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 600, fontSize: tamParaAncho(`razonamiento interno: ${entero(tk.razonamiento)}`, w, tamTok, 16, 600), color: '#e7b9ff', whiteSpace: 'nowrap', lineHeight: 1.25 }}>
@@ -522,7 +533,7 @@ export function Columna({ m, p, caja, t, L, info, kEntrada = 1, k }) {
             <CuerpoRapido m={m} p={p} t={t} M={M} h={bodyH} info={info} L={L} />
           )}
         </div>
-        <Contadores p={p} M={M} e={e} t={t} L={L} />
+        <Contadores m={m} p={p} M={M} e={e} t={t} L={L} />
       </div>
       {go && (
         <div style={{ position: 'absolute', left: 0, right: 0, top: M.cabH, height: bodyH }}>

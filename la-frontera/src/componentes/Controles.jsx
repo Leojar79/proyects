@@ -16,7 +16,7 @@ const NOMBRES_ESCENA = {
 
 const CORRIDAS = ['latest', 'demo', 'prueba-ui']
 
-export function Controles({ t, setT, reproduciendo, alternar, formato, setFormato, runNombre, setRunNombre, corridaUsada, subs, setSubs, esDemo }) {
+export function Controles({ t, setT, reproduciendo, alternar, formato, setFormato, runNombre, setRunNombre, corridaUsada, subs, setSubs, esDemo, publicable }) {
   const [otra, setOtra] = useState('')
   const opciones = CORRIDAS.includes(runNombre) ? CORRIDAS : [...CORRIDAS, runNombre]
   return (
@@ -61,10 +61,24 @@ export function Controles({ t, setT, reproduciendo, alternar, formato, setFormat
         </label>
         {corridaUsada && (
           <span style={{ color: esDemo ? '#ffc23d' : '#3ddc84' }}>
-            usando «{corridaUsada}» {esDemo ? '(demo: datos simulados)' : '(corrida real)'}
+            usando «{corridaUsada}» {esDemo ? '(NO PUBLICABLE)' : '(publicable)'}
           </span>
         )}
       </div>
+      {publicable && (publicable.bloqueos.length > 0 || publicable.avisos.length > 0) && (
+        <div style={{ fontSize: 13, lineHeight: 1.4 }}>
+          {publicable.bloqueos.map((b, i) => (
+            <div key={`b${i}`} style={{ color: '#ff8a9a' }}>
+              Bloquea la publicación: {b.texto}
+            </div>
+          ))}
+          {publicable.avisos.map((a, i) => (
+            <div key={`a${i}`} style={{ color: '#ffc23d' }}>
+              Aviso: {a.texto}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="linea-tiempo">
         <input type="range" min={0} max={DURACION} step={1 / VIDEO.fps} value={t} onChange={(e) => setT(parseFloat(e.target.value))} />
         {ESCENAS.map((e) => (

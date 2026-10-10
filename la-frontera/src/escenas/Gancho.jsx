@@ -1,7 +1,6 @@
 // Escena 1 (0-4 s): título, "3 cerebros · 1 frontera · US$ X de presupuesto", los tres
 // nombres entrando con fuerza y un sello que golpea la pantalla. No anticipa resultados.
 
-import { JUEGO } from '../../shared/config.js'
 import { usd } from '../../shared/formato.js'
 import { clamp, easeOutBack, easeOutCubic, golpe, prog, sacudir } from '../lib/anim.js'
 import { FUENTE_TEXTO, FUENTE_TITULO, tamParaAncho } from '../lib/medir.js'
@@ -88,7 +87,8 @@ export function Gancho({ m, L, t }) {
   const g = golpe(t, T_SELLO, -8)
   const sac = sacudir(g.sacudida, t, 22)
   const frase1 = '3 cerebros · 1 frontera'
-  const frase2 = `${usd(JUEGO.presupuestoUSD)} de presupuesto`
+  // Presupuesto registrado en la corrida antes de correr (no el de la configuración actual).
+  const frase2 = `${usd(m.presupuestoUSD)} de presupuesto`
   const tamFrase = Math.min(L.fs.grande, tamParaAncho(frase2, c.w * 0.9, L.fs.grande, 24, 800))
   const kF1 = easeOutCubic(prog(t, 0.65, 0.4))
   const kF2 = easeOutCubic(prog(t, 0.85, 0.4))

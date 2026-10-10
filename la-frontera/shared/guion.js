@@ -5,6 +5,13 @@
 // Reglas:
 // - Ninguna frase afirma algo que los datos no muestren: cada dato (quién duró más, quién es más
 //   barato, quién acertó más, cuántas llegaron al final...) se lee de `estadisticas`.
+// - Toda afirmación de "gana" / "el más X" / "empate" sale de `estadisticas.ganadores`
+//   (calcularGanadores de shared/juego.js, con la regla de empates): la misma que pone las coronas
+//   MEJOR en la pantalla de resultados. Este archivo no decide ganadores por su cuenta.
+// - La conclusión "Jev, para decidir" solo se dice si `estadisticas.jevRecomendable` (igual que la
+//   pantalla del cierre); si no, una frase neutra que sale de los ganadores.
+// - La divulgación (PUBLICACION.divulgacion) se dice siempre que exista. Si no cabe en el ritmo,
+//   se lanza un error: nunca se omite en silencio.
 // - Ritmo máximo: RITMO_MAXIMO palabras por segundo en cada tramo. Los números cuentan como se
 //   leen en voz alta ("35" = "treinta y cinco" = 3 palabras). Cada frase tiene variantes de más
 //   larga a más corta; se usa la primera que cabe. Si ninguna cabe, se lanza un error.
@@ -15,7 +22,12 @@
 
 import { PUBLICACION } from './config.js'
 import { entero, factor, segundos, usd } from './formato.js'
-import { DURACION, ESCENAS, VIAJEROS_DETALLE } from './timeline.js'
+import { EMPATE_ACIERTOS, EMPATE_COSTO } from './juego.js'
+import { COLA_RAPIDO, DURACION, ESCENAS, VIAJEROS_DETALLE } from './timeline.js'
+
+// Alcance de la comparación (A3 de la auditoría): solo modelos insignia. Lo usan la voz y GUION.md.
+export const FRASE_INSIGNIA = 'Comparé contra modelos insignia; hay opciones más baratas.'
+const FRASE_INSIGNIA_CORTA = 'Comparé solo con modelos insignia.'
 
 export const RITMO_MAXIMO = 2.5 // palabras por segundo
 const RITMO_HOLGADO = 2.0 // para decidir cuánto dura un tramo con poco texto
@@ -30,7 +42,9 @@ const LOCALE = 'es-419'
 const PARTES_PRESENTACION = [0, 3.4, 6.8] // cuatro decisiones · cómo responde cada cerebro · reglas
 const FILA_RESULTADOS = (k) => 0.9 + k * 1.75 // duración, costo, costo x mil, velocidad, aciertos
 const BANNER_RESULTADOS = 9.7 // "X veces más barato"
-const LINEA2_CIERRE = 4.0 // la voz pasa de la frase final a las fuentes
+// La voz pasa de la frase final a las fuentes (divulgación, alcance). La frase final cabe en 3.6 s
+// (9 palabras) y deja 4 s (10 palabras) para la divulgación y el alcance de la comparación.
+const LINEA2_CIERRE = 3.6
 
 const ESC = Object.fromEntries(ESCENAS.map((e) => [e.id, e]))
 
@@ -121,13 +135,20 @@ export function dineroVoz(x) {
   return `${d} ${d === '1' ? 'dólar' : 'dólares'}`
 }
 
-// "menos de medio segundo", "3 segundos", "2.3 segundos".
+// "menos de medio segundo", "3 segundos", "casi 5 segundos", "más de 5 segundos", "2.3 segundos".
+// Se parte de lo que muestra la pantalla (un decimal). Si la cifra dicha la redondea, se dice hacia
+// dónde ("casi" / "más de"): la voz nunca hace a nadie más lento ni más rápido de lo que se ve.
 export function segundosVoz(ms) {
   if (!Number.isFinite(ms) || ms <= 0) return null
   if (ms < 500) return 'menos de medio segundo'
   if (ms < 1000) return 'menos de un segundo'
-  const s = cifra(ms / 1000)
-  return `${s} ${s === '1' ? 'segundo' : 'segundos'}`
+  const pantalla = r1(ms / 1000)
+  const s = cifra(pantalla)
+  const dicho = Number(s.replace(/,/g, ''))
+  const unidad = s === '1' ? 'segundo' : 'segundos'
+  if (dicho > pantalla + 1e-9) return `casi ${s} ${unidad}`
+  if (dicho < pantalla - 1e-9) return `más de ${s} ${unidad}`
+  return `${s} ${unidad}`
 }
 
 // "unas 770 veces", "unas 40 veces", "2.4 veces".
@@ -151,13 +172,30 @@ function lista(nombres) {
 const CORTOS = { gpt: 'GPT', opus: 'Opus', jev: 'Jev' }
 const C = (p) => CORTOS[p?.id] ?? p?.nombre ?? '—'
 
-// Ganadores de una métrica (con empates), igual que la tabla de src/escenas/Resultados.jsx.
-function ganadores(ps, valor, menorEsMejor, valido = () => true) {
-  const candidatos = ps.filter(valido)
-  if (!candidatos.length) return []
-  const vals = candidatos.map(valor)
-  const mejor = menorEsMejor ? Math.min(...vals) : Math.max(...vals)
-  return candidatos.filter((p) => Math.abs(valor(p) - mejor) <= Math.max(1e-12, Math.abs(mejor) * 1e-9))
+const conRespuestas = (p) => p.respondidas > 0
+const mismoConjunto = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
+
+// Divulgación tal como se dice en la voz (sin el punto final), o '' si no hay.
+function divulgacionVoz() {
+  return String(PUBLICACION.divulgacion ?? '')
+    .trim()
+    .replace(/[.\s]+$/, '')
+}
+
+// Texto de la pantalla de presentación (src/escenas/Presentacion.jsx), para «lo que se ve».
+function pantallaLLM(llms) {
+  const conRazon = llms.filter((p) => p.tokensRazonamientoProm > 0)
+  if (conRazon.length && conRazon.length === llms.length) return 'razonan y escriben la respuesta (JSON); se paga cada token, incluido el razonamiento interno'
+  if (conRazon.length) return `escriben la respuesta (JSON); se paga cada token, incluido el razonamiento interno de ${lista(conRazon.map((p) => p.nombre))}`
+  return 'escriben la respuesta (JSON); se paga cada token de entrada y de salida'
+}
+
+// Cómo se ven los tokens de salida de Jev en su columna (src/componentes/Columna.jsx): nunca se
+// habla de "0 tokens de salida" si la API no los informó.
+function salidaJevEnPantalla(jev) {
+  if (!conRespuestas(jev)) return ''
+  if (!jev.salidaInformada) return '«salida: no informada» (la API no informa tokens de salida), '
+  return jev.tokensSalidaProm === 0 ? '0 tokens de salida y ' : ''
 }
 
 // ---------------------------------------------------------------------------
@@ -169,7 +207,8 @@ function contexto(est) {
   const det = ESC.detalle
   const rap = ESC.rapido
   const slotDet = (det.fin - det.inicio) / VIAJEROS_DETALLE
-  const slotRap = (rap.fin - rap.inicio) / Math.max(1, N - VIAJEROS_DETALLE)
+  // Igual que src/lib/datos.js y shared/timeline.js: el último COLA_RAPIDO no recibe viajeros.
+  const slotRap = (rap.fin - COLA_RAPIDO - rap.inicio) / Math.max(1, N - VIAJEROS_DETALLE)
   const pasos = (p) => est.sim?.porProveedor?.[p.id]?.pasos ?? []
   const inicioViajero = (i) => (i < VIAJEROS_DETALLE ? det.inicio + i * slotDet : rap.inicio + (i - VIAJEROS_DETALLE) * slotRap)
   // Último momento en que puede aparecer el veredicto del viajero i (cota superior, como src/lib/datos.js).
@@ -197,7 +236,34 @@ function contexto(est) {
   const jev = ps.find((p) => p.id === 'jev') ?? null
   const llms = ps.filter((p) => p.id !== 'jev')
   const jevConProbabilidad = jev ? pasos(jev).some((x) => x.resultado?.confianza) : false
-  return { est, ps, N, jev, llms, pasos, inicioViajero, momentoFin, activoEn, vidasEn, jevConProbabilidad, slotRap, anunciados: new Set() }
+  // Ganadores de cada métrica: SIEMPRE los de shared/juego.js (los mismos de las coronas MEJOR).
+  const G = est.ganadores ?? { duracion: [], costo: [], velocidad: [], aciertos: [] }
+  const porIds = (ids) => (ids ?? []).map((id) => ps.find((p) => p.id === id)).filter(Boolean)
+  // Solo se dice que un modelo "razona" si se midió razonamiento (tokens de razonamiento > 0).
+  const conRazon = llms.filter((p) => p.tokensRazonamientoProm > 0)
+  // "Jev no escribe" es una característica del producto (su documentación); no se dice si la API
+  // informó tokens de salida mayores que 0.
+  const jevNoEscribe = Boolean(jev) && !(jev.tokensSalidaProm > 0)
+  return {
+    est,
+    ps,
+    N,
+    jev,
+    llms,
+    G,
+    porIds,
+    conRazon,
+    jevNoEscribe,
+    pasos,
+    inicioViajero,
+    momentoFin,
+    activoEn,
+    vidasEn,
+    jevConProbabilidad,
+    slotRap,
+    anunciados: new Set(),
+    dicho: { insignia: false },
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -240,9 +306,9 @@ function gancho(ctx) {
   const { est, ps } = ctx
   const n = ps.length
   const llegaron = est.sobrevivientes?.length ?? 0
-  // Si alguna "llegó al final" sin responder nada (todas sus llamadas fallaron), decir que llegó
-  // sería engañoso: se usa la pregunta del sello.
-  const mudas = (est.sobrevivientes ?? []).some((p) => !(p.decisionesEnJuego > 0))
+  // Si alguna no respondió nada (todas sus llamadas fallaron), "solo dos llegaron al final" sonaría
+  // a que jugó y perdió: se usa la pregunta del sello.
+  const mudas = ps.some((p) => !conRespuestas(p))
   let desenlace
   if (mudas) desenlace = '¿Quién dura más?'
   else if (n === 1) desenlace = llegaron ? 'Llegó al final.' : 'No llegó al final.'
@@ -264,13 +330,14 @@ function gancho(ctx) {
 }
 
 function presentacion(ctx) {
-  const { est, llms, jev } = ctx
+  const { est, llms, jev, conRazon, jevNoEscribe } = ctx
   const e = ESC.presentacion
   const [a, b, c] = PARTES_PRESENTACION.map((x) => e.inicio + x)
   const L = lista(llms.map(C))
   const plural = llms.length !== 1
-  const razonan = llms.some((p) => p.tokensRazonamientoProm > 0)
-  const jevNoEscribe = jev && jev.tokensSalidaProm === 0
+  // "Razonan" solo si TODOS los modelos nombrados razonaron (tokens de razonamiento medidos > 0).
+  const razonan = llms.length > 0 && conRazon.length === llms.length
+  // "Jev, no." contesta a "escriben su respuesta": Jev no genera texto (característica del producto).
   const remate = jev ? (jevNoEscribe ? `${C(jev)}, no.` : `${C(jev)} solo devuelve la decisión.`) : ''
   const vidas = est.vidas
   return [
@@ -286,14 +353,17 @@ function presentacion(ctx) {
       b,
       c,
       [
-        razonan && llms.length ? `${L} ${plural ? 'razonan y escriben' : 'razona y escribe'}. ${remate}` : null,
+        razonan ? `${L} ${plural ? 'razonan y escriben' : 'razona y escribe'}${jev ? `; ${C(jev)} solo decide.` : ' su respuesta.'}` : null,
         llms.length ? `${L} ${plural ? 'escriben su respuesta' : 'escribe su respuesta'}. ${remate}` : null,
         llms.length ? `${L} ${plural ? 'escriben' : 'escribe'}. ${remate}` : null,
         jev ? remate : 'Así responde cada una.',
       ],
       `«¿CÓMO RESPONDE CADA CEREBRO?»: ${lista(llms.map((p) => p.nombre)) || 'los modelos de lenguaje'} ` +
-        '(«razonan y escriben la respuesta; se paga cada token, incluido el razonamiento interno») escriben su JSON con ' +
-        `monedas que caen${jev ? `; ${jev.nombre} («no escribe: devuelve la decisión con su probabilidad») muestra barras de probabilidad` : ''}.`,
+        `(«${pantallaLLM(llms)}») escriben su JSON con monedas que caen` +
+        (jev
+          ? `; ${jev.nombre} («${jev.salidaInformada && jev.tokensSalidaProm > 0 ? 'devuelve la decisión con su probabilidad' : 'no escribe: devuelve la decisión con su probabilidad'}») muestra barras de probabilidad`
+          : '') +
+        '.',
       'presentación: cómo responde',
     ),
     fijo(
@@ -311,14 +381,15 @@ function presentacion(ctx) {
 }
 
 function detalle(ctx) {
-  const { ps, llms, jev, N, pasos, inicioViajero, momentoFin, vidasEn, jevConProbabilidad, est } = ctx
+  const { ps, llms, jev, N, pasos, inicioViajero, momentoFin, vidasEn, jevConProbabilidad, est, conRazon, jevNoEscribe } = ctx
   const e = ESC.detalle
   const t1 = techo1(inicioViajero(1))
   const t2 = techo1(inicioViajero(2))
   const L = lista(llms.map(C))
   const plural = llms.length !== 1
   const n = ps.length
-  const razonan = llms.some((p) => p.tokensRazonamientoProm > 0)
+  // Solo se nombran los modelos con razonamiento medido (tokens de razonamiento > 0).
+  const LR = lista(conRazon.map(C))
   // Errores graves (corazón perdido) en los dos primeros viajeros, para "lo que se ve".
   const graves = (i) => ps.filter((p) => pasos(p)[i]?.activo && pasos(p)[i]?.evaluacion?.errorGrave).map((p) => p.nombre)
   const verGraves = (i) => {
@@ -341,7 +412,7 @@ function detalle(ctx) {
   } else if (conVidasMenos.length > 1) nota = `${lista(conVidasMenos.map(C))} ya perdieron vidas.`
   const sujetoNotaEsJev = jev && (fuera.length ? fuera : conVidasMenos).length === 1 && (fuera[0] ?? conVidasMenos[0]) === jev
   const mecanismo = jev
-    ? jev.tokensSalidaProm === 0
+    ? jevNoEscribe
       ? jevConProbabilidad
         ? 'no escribe: devuelve la decisión con su probabilidad.'
         : 'no escribe: devuelve solo la decisión.'
@@ -357,8 +428,9 @@ function detalle(ctx) {
     jev
       ? [nota ? `${nota} ${fraseJev(true)}` : null, fraseJev(false), `${C(jev)} solo decide.`]
       : [nota || null, 'Mismas reglas para todas.'],
-    `Viajero 3/${N}${jev ? `: la columna de ${jev.nombre} muestra ${jev.tokensSalidaProm === 0 ? '0 tokens de salida y ' : ''}` +
-      'las barras de probabilidad de cada respuesta' : ''}${nota ? `; ${nota.replace(/\.$/, '')} (se ve en sus corazones o en su GAME OVER)` : ''}.`,
+    `Viajero 3/${N}${jev ? `: la columna de ${jev.nombre} muestra ${salidaJevEnPantalla(jev)}` +
+      `${jevConProbabilidad ? 'las barras de probabilidad de cada respuesta' : 'su decisión'}` : ''}` +
+      `${nota ? `; ${nota.replace(/\.$/, '')} (se ve en sus corazones o en su GAME OVER)` : ''}.`,
     'detalle: viajero 3',
   )
   // Los que ya se anunciaron "fuera" no se repiten al entrar al avance rápido.
@@ -382,15 +454,15 @@ function detalle(ctx) {
       t1,
       t2,
       [
-        llms.length && razonan
-          ? `${L} ${plural ? 'razonan' : 'razona'} antes de responder, y ese razonamiento también se paga.`
+        conRazon.length
+          ? `${LR} ${conRazon.length > 1 ? 'razonan' : 'razona'} antes de responder, y ese razonamiento también se paga.`
           : null,
         llms.length ? `${L} ${plural ? 'escriben su respuesta' : 'escribe su respuesta'}, y se paga cada token.` : null,
         llms.length ? `${L}: se paga cada token.` : null,
         'Cada respuesta tiene su costo.',
       ],
-      `Viajero 2/${N}: en ${llms.length ? `las columnas de ${lista(llms.map((p) => p.nombre))}` : 'las columnas'} se ven los tokens de entrada, de salida y ` +
-        `de «razonamiento interno», y el JSON que escribieron.${verGraves(1)}`,
+      `Viajero 2/${N}: en ${llms.length ? `las columnas de ${lista(llms.map((p) => p.nombre))}` : 'las columnas'} se ven los tokens de entrada y de salida` +
+        `${conRazon.length ? `, el «razonamiento interno» de ${lista(conRazon.map((p) => p.nombre))}` : ''} y el JSON que escribieron.${verGraves(1)}`,
       'detalle: viajero 2',
     ),
     tramo3,
@@ -430,8 +502,9 @@ function variantesEvento(ctx, m) {
     const p = ps[0]
     const tras = trasDecisiones(p)
     if (p.motivoFin === 'sin_fondos') {
-      const atendidos = p.finIndice ?? 0
-      const porDecision = atendidos > 0 ? dineroVoz(p.gastadoFinal / atendidos) : null
+      // Lo gastado dividido por las decisiones tomadas (no por los viajeros atendidos: una llamada
+      // con error gasta lo que se cobró pero no es una decisión).
+      const porDecision = p.decisionesEnJuego > 0 ? dineroVoz(p.gastadoFinal / p.decisionesEnJuego) : null
       lista_ = [
         porDecision && p.decisionesEnJuego > 1
           ? { texto: `${C(p)} se queda sin presupuesto ${tras}, a ${porDecision} cada una. ${siguen}`, costo: p.id }
@@ -597,151 +670,252 @@ function rapido(ctx) {
 }
 
 // ---------------------------------------------------------------------------
-// Resultados y cierre
+// Resultados y cierre. Toda afirmación de "gana", "el más X" o "empate" sale de ctx.G
+// (estadisticas.ganadores), igual que las coronas MEJOR de src/escenas/Resultados.jsx.
+
+// "dd/mm/aaaa" de una fecha ISO.
+function fechaCortaVoz(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso ?? '')
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : String(iso ?? '—')
+}
+
+// Avisos al pie de la tabla de resultados (los mismos que calcula src/escenas/Resultados.jsx).
+function avisosPantalla(est) {
+  const ps = est.proveedores
+  const nombres = (xs) => lista(xs.map((p) => p.nombre))
+  const out = []
+  if (est.reglasRegistradas) out.push(`Presupuesto (${usd(est.presupuestoUSD)}) y vidas (${est.vidas}) fijados antes de correr`)
+  const sinVerificar = ps.filter((p) => p.precio?.verificado === false)
+  if (sinVerificar.length) out.push(`precio sin verificar en la página oficial: ${nombres(sinVerificar)}`)
+  const errores = ps.filter((p) => p.erroresApi > 0 || p.faltantes > 0)
+  if (errores.length) out.push(`errores de API, cuentan como fallo: ${lista(errores.map((p) => `${p.nombre} (${p.erroresApi + p.faltantes})`))}`)
+  const cero = ps.filter((p) => conRespuestas(p) && p.costoPromedioUSD === 0)
+  if (cero.length) out.push(`costo 0: la API informó 0 tokens (${nombres(cero)}); no compite en costo`)
+  const estimados = ps.filter((p) => p.tokensEstimados)
+  if (estimados.length) out.push(`tokens estimados: ${nombres(estimados)}`)
+  const salida = ps.filter((p) => conRespuestas(p) && !p.salidaInformada)
+  if (salida.length) out.push(`tokens de salida no informados por la API: ${nombres(salida)}`)
+  const respaldo = ps.filter((p) => p.usoFallback)
+  if (respaldo.length) out.push(`modelo de respaldo en algunas llamadas: ${nombres(respaldo)}`)
+  return out.slice(0, 5)
+}
+
+// ¿Se puede hablar de "el más barato"? Solo si todos los que respondieron tienen un costo > 0
+// (un costo 0 significa que la API informó 0 tokens: no compite, y la pantalla lo avisa).
+function costoComparable(ctx) {
+  const compiten = ctx.ps.filter(conRespuestas)
+  return compiten.length >= 2 && compiten.every((p) => p.costoPromedioUSD > 0)
+}
 
 function resultados(ctx) {
-  const { est, ps, N, jev } = ctx
+  const { est, ps, N, jev, llms, G, porIds } = ctx
   const e = ESC.resultados
   const T = (x) => e.inicio + x
-  const conResp = (p) => p.respondidas > 0
+  const uno = ps.length === 1
+  const coronas = (ids) => {
+    const xs = porIds(ids)
+    return xs.length ? ` (corona MEJOR: ${lista(xs.map((p) => p.nombre))})` : ''
+  }
 
-  // Duración
-  const dur = ganadores(ps, (p) => (p.llegoAlFinal ? 1e9 : 0) + p.decisionesEnJuego, false)
-  const supervivientes = est.sobrevivientes ?? []
-  const mudas = ps.filter((p) => !(p.decisionesEnJuego > 0))
+  // --- Duración (fila «Decisiones con el presupuesto»)
+  const dur = porIds(G.duracion)
+  const sup = est.sobrevivientes ?? []
+  // Sin respuestas no hay nada que celebrar ni que comparar: se dice tal cual.
+  const mudas = ps.filter((p) => !conRespuestas(p))
+  let base = []
+  if (uno) {
+    const p = ps[0]
+    if (conRespuestas(p)) base = p.llegoAlFinal ? [`${C(p)} llegó al final.`] : [`${C(p)} no llegó al final.`]
+  } else if (sup.length > 1) {
+    const L = lista(sup.map(C))
+    base = sup.length === ps.length ? [`Las ${cuantas(ps.length)} llegaron al final.`, 'Todas llegaron.'] : [`${L} llegaron al final.`, `Llegaron ${L}.`]
+  } else if (sup.length === 1) {
+    base = [`Solo ${C(sup[0])} llegó al final.`, `${C(sup[0])} llegó al final.`]
+  } else if (dur.length === 1) {
+    base = [`${C(dur[0])} duró más que nadie.`, `${C(dur[0])} duró más.`]
+  } else if (dur.length > 1) {
+    const L = lista(dur.map(C))
+    base = dur.length === ps.length ? [`Las ${cuantas(ps.length)} duraron lo mismo.`, 'Empate en duración.'] : [`Empate en duración: ${L}.`, `Empatan ${L}.`]
+  }
   let textoDur
   if (mudas.length) {
-    // Sin respuestas no hay nada que celebrar aunque el juego diga que "llegó al final".
-    textoDur = [`${lista(mudas.map(C))} no ${mudas.length > 1 ? 'respondieron' : 'respondió'} ninguna.`, 'Hubo fallas de API.']
-  } else if (supervivientes.length > 1) {
-    const L = lista(supervivientes.map(C))
-    textoDur =
-      supervivientes.length === ps.length
-        ? [`Las ${cuantas(ps.length)} llegaron al final.`, 'Todas llegaron.']
-        : [`${L} llegaron al final.`, `Llegaron ${L}.`]
-  } else if (dur.length === 1) {
-    const w = dur[0]
-    textoDur = w.llegoAlFinal ? [`Solo ${C(w)} llegó al final.`, `${C(w)} llegó al final.`] : [`${C(w)} duró más que nadie.`, `${C(w)} duró más.`]
-  } else {
-    textoDur = dur.length === ps.length ? [`Las ${cuantas(ps.length)} duraron lo mismo.`, 'Empate en duración.'] : [`Empate en duración: ${lista(dur.map(C))}.`, 'Empate en duración.']
-  }
+    const nadie = `${lista(mudas.map(C))} no ${mudas.length > 1 ? 'respondieron' : 'respondió'} ninguna.`
+    textoDur = [...base.map((b) => `${nadie} ${b}`), nadie, 'Hubo fallas de API.']
+  } else textoDur = base.length ? base : ['Así terminó el juego.']
 
-  // Costo
-  const barato = est.masBarato
+  // --- Costo (filas «Costo por decisión» y «Costo por mil decisiones»)
   const caro = est.masCaro
-  const hayComparacion = barato && caro && barato.id !== caro.id
-  const textoCosto = hayComparacion
-    ? [
-        `Por cada mil decisiones: ${C(caro)}, ${dineroVoz(caro.costoPor1000USD)}; ${C(barato)}, ${dineroVoz(barato.costoPor1000USD)}.`,
-        `Mil decisiones: ${C(caro)}, ${dineroVoz(caro.costoPor1000USD)}; ${C(barato)}, ${dineroVoz(barato.costoPor1000USD)}.`,
-        `${C(barato)}, el más barato; ${C(caro)}, el más caro.`,
-        `${C(barato)}, el más barato.`,
-      ]
-    : barato
-      ? [`Mil decisiones de ${C(barato)}: ${dineroVoz(barato.costoPor1000USD)}.`, 'Así quedó el costo.']
-      : ['Así quedó el costo.']
-
-  // Velocidad y aciertos
-  const vel = ganadores(ps, (p) => p.latenciaPromedioMs, true, conResp)
-  const aci = ganadores(ps, (p) => p.precisionAccion, false)
-  const frasesVel = vel.length === 1 ? [`${C(vel[0])}, el más rápido.`] : vel.length > 1 ? ['Empate en velocidad.'] : []
-  let frasesAci
-  if (aci.length === ps.length && ps.length > 1) frasesAci = ['En aciertos, empate.']
-  else if (aci.length === 1 && vel.length === 1 && aci[0] === vel[0]) frasesAci = null
-  else if (aci.length === 1) frasesAci = [`En aciertos, gana ${C(aci[0])}.`, `Aciertos: ${C(aci[0])}.`]
-  else frasesAci = [`En aciertos, empatan ${lista(aci.map(C))}.`, 'Aciertos: empate.']
-  const textoVelAci = []
-  if (frasesAci === null) {
-    textoVelAci.push(`${C(vel[0])} gana en velocidad y en aciertos.`, `Velocidad y aciertos: ${C(vel[0])}.`)
-  } else {
-    for (const a of frasesAci) textoVelAci.push(`${frasesVel[0] ?? ''} ${a}`)
-    textoVelAci.push(frasesAci.at(-1))
+  const barato = est.masBarato
+  const baratos = porIds(G.costo)
+  const textoCosto = []
+  const d = (p) => dineroVoz(p.costoPor1000USD)
+  if (!uno && costoComparable(ctx) && baratos.length === ps.length) {
+    textoCosto.push('Empate en costo.')
+  } else if (caro && barato && caro.id !== barato.id && d(caro) !== d(barato)) {
+    textoCosto.push(
+      `Por cada mil decisiones: ${C(caro)}, ${d(caro)}; ${C(barato)}, ${d(barato)}.`,
+      `Mil decisiones: ${C(caro)}, ${d(caro)}; ${C(barato)}, ${d(barato)}.`,
+    )
+  } else if (barato && (!caro || caro.id === barato.id)) textoCosto.push(`Mil decisiones de ${C(barato)}: ${d(barato)}.`)
+  if (!uno && costoComparable(ctx)) {
+    if (baratos.length === 1) textoCosto.push(`${C(baratos[0])}, el más barato.`)
+    else if (baratos.length > 1 && baratos.length < ps.length) textoCosto.push(`Empatan en costo: ${lista(baratos.map(C))}.`)
   }
+  textoCosto.push('Así quedó el costo.')
 
-  // Cuántas veces más barato
-  const veces = hayComparacion && barato.costoPromedioUSD > 0 ? caro.costoPromedioUSD / barato.costoPromedioUSD : null
-  const sinVerificar = ps.filter((p) => p.precio?.verificado === false)
-  const textoVeces = veces
-    ? [
-        `Por decisión, ${C(barato)} sale ${vecesVoz(veces)} más barato que ${C(caro)}.`,
-        `${C(barato)} sale ${vecesVoz(veces)} más barato que ${C(caro)}.`,
-        `${C(barato)}: ${vecesVoz(veces)} más barato.`,
-      ]
-    : [sinVerificar.length ? 'Ojo: hay precios aún sin verificar.' : 'Con los precios públicos de cada API.', 'Esos son los números.']
+  // --- Velocidad y aciertos
+  const vel = porIds(G.velocidad)
+  const aci = porIds(G.aciertos)
+  let frasesVel = []
+  if (!uno) {
+    if (vel.length === 1) frasesVel = [`${C(vel[0])}, el más rápido.`]
+    else if (vel.length > 1) frasesVel = vel.length === ps.length ? ['Empate en velocidad.'] : [`${lista(vel.map(C))}, los más rápidos.`]
+  }
+  // "Empate" a secas solo si empatan TODAS; si no, se nombra a las que empatan (hallazgo 1).
+  let frasesAci = []
+  if (uno) {
+    const p = ps[0]
+    if (conRespuestas(p)) frasesAci = [`Aciertos: ${entero(p.aciertosAccion)} de ${entero(p.casos)}.`]
+  } else if (aci.length === ps.length) frasesAci = ['En aciertos, empate.', 'Aciertos: empate.']
+  else if (aci.length === 1) frasesAci = [`En aciertos, gana ${C(aci[0])}.`, `Aciertos: ${C(aci[0])}.`]
+  else if (aci.length > 1) frasesAci = [`En aciertos, empatan ${lista(aci.map(C))}.`, `Aciertos: ${lista(aci.map(C))}.`]
+  const textoVelAci = []
+  if (!uno && aci.length === 1 && vel.length === 1 && aci[0] === vel[0]) {
+    textoVelAci.push(`${C(vel[0])} gana en velocidad y en aciertos.`, `Velocidad y aciertos: ${C(vel[0])}.`)
+  }
+  for (const a of frasesAci) for (const v of frasesVel) textoVelAci.push(`${v} ${a}`)
+  textoVelAci.push(...frasesAci, ...frasesVel, 'Velocidad y aciertos, en la tabla.')
 
-  const bannerJev = jev && barato?.id === 'jev' && hayComparacion
-  const avisos = []
-  if (sinVerificar.length) avisos.push(`precio sin verificar: ${lista(sinVerificar.map((p) => p.nombre))}`)
-  if (ps.some((p) => p.tokensEstimados)) avisos.push('tokens estimados')
-  if (ps.some((p) => p.usoFallback)) avisos.push('modelo de respaldo')
-  if (ps.some((p) => p.erroresApi > 0)) avisos.push('errores de API')
+  // --- Cuántas veces más barato es Jev (est.factoresJev: solo diferencias de 5 % o más)
+  const factores = ps
+    .filter((p) => est.factoresJev?.[p.id] >= EMPATE_COSTO)
+    .map((p) => ({ p, f: est.factoresJev[p.id] }))
+    .sort((a, b) => b.f - a.f)
+  // La voz dice la comparación con el más caro (la de los dos no cabe en 4 s); la franja muestra las dos.
+  let textoVeces
+  if (jev && factores.length) {
+    const { p, f } = factores[0]
+    const v = vecesVoz(f)
+    textoVeces = [`Por decisión, ${C(jev)} sale ${v} más barato que ${C(p)}.`, `${C(jev)} sale ${v} más barato que ${C(p)}.`, `${C(jev)}: ${v} más barato que ${C(p)}.`]
+  } else textoVeces = [llms.length ? FRASE_INSIGNIA : null, 'Esos son los números.']
+
+  const avisos = avisosPantalla(est)
+  const precios = ps.map((p) => `${p.nombre} ${p.precio?.entradaPorMTok ?? '?'}/${p.precio?.salidaPorMTok ?? '?'}`).join(' · ')
+  const franja =
+    jev && factores.length
+      ? `Franja «${jev.nombre}: ${factores.map((x, i) => (i === 0 ? `${factor(x.f)} más barato que ${x.p.nombre}` : `${factor(x.f)} más que ${x.p.nombre}`)).join(' y ')}, por decisión» ` +
+        `con los precios en US$ por millón de tokens (entrada/salida): ${precios}. `
+      : ''
 
   const fila = (k) => T(FILA_RESULTADOS(k))
-  return [
+  const tramos = [
     fijo(
       T(0.1),
       fila(1) - 0.05,
       textoDur,
-      `«RESULTADOS». Fila «Decisiones con el presupuesto»: ${ps.map((p) => `${p.nombre} ${p.decisionesEnJuego}/${N}`).join(', ')}` +
-        ` (${dur.map((p) => p.nombre).join(' y ')} con la corona MEJOR).`,
+      `«RESULTADOS». Fila «Decisiones con el presupuesto»: ${ps
+        .map((p) => `${p.nombre} ${conRespuestas(p) ? `${p.decisionesEnJuego}/${N}` : '— (sin respuestas)'}`)
+        .join(', ')}${coronas(G.duracion)}; debajo, lo que costaron los ${N} casos: ${ps.map((p) => `${p.nombre} ${usd(p.costoTotalUSD)}`).join(', ')}.`,
       'resultados: duración',
     ),
     fijo(
       fila(1) - 0.05,
       fila(3) - 0.05,
       textoCosto,
-      `Filas «Costo por decisión» (${ps.map((p) => `${p.nombre} ${usd(p.costoPromedioUSD)}`).join(', ')}) y «Costo por mil decisiones» ` +
-        `(${ps.map((p) => `${p.nombre} ${usd(p.costoPor1000USD)}`).join(', ')}).`,
+      `Filas «Costo por decisión» (${ps.map((p) => `${p.nombre} ${conRespuestas(p) ? usd(p.costoPromedioUSD) : '—'}`).join(', ')}) y «Costo por mil decisiones» ` +
+        `(${ps.map((p) => `${p.nombre} ${conRespuestas(p) ? usd(p.costoPor1000USD) : '—'}`).join(', ')})${coronas(G.costo)}.`,
       'resultados: costo',
     ),
     fijo(
       fila(3) - 0.05,
       T(BANNER_RESULTADOS) - 0.1,
       textoVelAci,
-      `Filas «Velocidad promedio» (${ps.map((p) => `${p.nombre} ${segundos(p.latenciaPromedioMs)}`).join(', ')}) y «Aciertos» ` +
-        `(${ps.map((p) => `${p.nombre} ${p.aciertosAccion}/${p.casos}`).join(', ')}).`,
+      `Fila «Velocidad promedio» (${ps.map((p) => `${p.nombre} ${conRespuestas(p) ? segundos(p.latenciaPromedioMs) : '—'}`).join(', ')})${coronas(G.velocidad)} y ` +
+        `«Aciertos en la acción (de ${N})» (${ps.map((p) => `${p.nombre} ${p.aciertosAccion}/${p.casos}, ${p.erroresGraves} ${p.erroresGraves === 1 ? 'error grave' : 'errores graves'}`).join('; ')})` +
+        `${coronas(G.aciertos)}, con la nota «diferencias de ${EMPATE_ACIERTOS} casos o menos = empate · una corrida, ${N} casos».`,
       'resultados: velocidad y aciertos',
     ),
     fijo(
       T(BANNER_RESULTADOS) - 0.1,
       e.fin,
       textoVeces,
-      (bannerJev ? `Franja «${barato.nombre}: ${factor(veces)} más barato que ${caro.nombre}». ` : '') +
-        (avisos.length ? `Avisos al pie: ${avisos.join('; ')}.` : 'Tabla completa en pantalla.'),
+      franja + (avisos.length ? `Avisos al pie: ${avisos.join('; ')}.` : 'Tabla completa en pantalla.'),
       'resultados: veces más barato',
     ),
   ]
+  if (tramos.at(-1).texto === FRASE_INSIGNIA) ctx.dicho.insignia = true
+  return tramos
 }
 
 function cierre(ctx) {
-  const { jev, est } = ctx
+  const { jev, est, ps, llms, G, porIds } = ctx
   const e = ESC.cierre
   const corte = e.inicio + LINEA2_CIERRE
-  const divulgacion = (PUBLICACION.divulgacion ?? '').trim().replace(/\.$/, '')
+  const finVoz = DURACION - 0.4
+  const div = divulgacionVoz()
   const enlace = PUBLICACION.enlaceMetodo
+
+  // Frase final: el lema solo si los datos lo sostienen (misma condición que src/escenas/Cierre.jsx);
+  // si no, una frase neutra que sale de los ganadores de aciertos y de costo.
+  let variantes1
+  let pantalla1
+  if (est.jevRecomendable && jev) {
+    variantes1 = [`Los modelos generativos, para crear. ${C(jev)}, para decidir.`, `Modelos generativos para crear; ${C(jev)} para decidir.`]
+    pantalla1 = `«MI CONCLUSIÓN»: «Los modelos generativos: para crear.» y «${jev.nombre}: para decidir.»`
+  } else {
+    const A = porIds(G.aciertos)
+    const B = costoComparable(ctx) ? porIds(G.costo) : []
+    const LA = lista(A.map(C))
+    const LB = lista(B.map(C))
+    variantes1 = []
+    if (ps.length > 1 && A.length && B.length) {
+      if (mismoConjunto(A, B)) {
+        variantes1.push(`${LA}: ${A.length > 1 ? 'los que más aciertan y los más baratos' : 'el que más acierta y el más barato'}.`, `Aciertos y costo: ${LA}.`)
+      } else {
+        variantes1.push(`Si cada acierto cuenta, ${LA}; si manda el costo, ${LB}.`, `Para acertar, ${LA}; para ahorrar, ${LB}.`, `Aciertos: ${LA}. Costo: ${LB}.`)
+      }
+    } else if (ps.length > 1 && A.length && A.length < ps.length) {
+      variantes1.push(`Si cada acierto cuenta, ${LA}.`, `Para acertar, ${LA}.`)
+    }
+    variantes1.push('Los números, en la tabla.')
+    const nombres = (xs) => lista(xs.map((p) => p.nombre))
+    const lineas = []
+    const Ap = porIds(G.aciertos)
+    const Bp = porIds(G.costo)
+    if (Ap.length) lineas.push(`«Si cada acierto cuenta: ${nombres(Ap)}.»`)
+    if (Bp.length) lineas.push(`«Si manda el costo: ${nombres(Bp)}.»`)
+    pantalla1 = lineas.length ? lineas.join(' y ') : '«Los números, en la tabla.»'
+  }
+
+  // Divulgación (obligatoria si existe: si no cabe, error) y alcance de la comparación (A3).
+  const insignia = llms.length > 0 && !ctx.dicho.insignia
+  const variantes2 = div
+    ? [insignia ? `${div}. ${FRASE_INSIGNIA}` : null, insignia ? `${div}. ${FRASE_INSIGNIA_CORTA}` : null, `${div}. Link en la descripción.`, `${div}.`]
+    : [insignia ? FRASE_INSIGNIA : null, insignia ? FRASE_INSIGNIA_CORTA : null, '¿Dudas? Revisa el método: link en la descripción.', 'Link en la descripción.']
+  if (div && !elegir(corte, finVoz, [`${div}.`])) {
+    const max = Math.floor(RITMO_MAXIMO * (piso1(finVoz) - r1(corte)) + 1e-9)
+    throw new Error(
+      `Guion: la divulgación «${div}» (${contarPalabras(div).habladas} palabras habladas) no cabe en la voz del cierre ` +
+        `(máximo ${max} palabras). Acórtala en PUBLICACION.divulgacion de shared/config.js: no se omite en silencio.`,
+    )
+  }
+
+  const precios = ps.map((p) => `${p.nombre} ${p.precio?.entradaPorMTok ?? '?'}/${p.precio?.salidaPorMTok ?? '?'}`).join(' · ')
+  const esfuerzos = [...new Set(llms.map((p) => p.opciones?.reasoningEffort ?? p.opciones?.effort ?? null))]
+  const alcance = llms.length
+    ? `«Comparado con los modelos insignia (${esfuerzos.length === 1 && esfuerzos[0] === 'low' ? 'razonamiento al mínimo: low' : 'razonamiento según cada modelo'}). Hay modelos de lenguaje más baratos que no se probaron.»; `
+    : ''
   return [
-    fijo(
-      e.inicio,
-      corte,
-      jev
-        ? [`Los modelos de lenguaje, para crear. ${C(jev)}, para decidir.`, `Modelos de lenguaje para crear; ${C(jev)} para decidir.`]
-        : ['Cada herramienta, para su trabajo.'],
-      `«Los modelos de lenguaje: para crear.» y «${jev?.nombre ?? 'Jev'}: para decidir.»; abajo desfilan viajeros.`,
-      'cierre: frase final',
-    ),
+    fijo(e.inicio, corte, variantes1, `${pantalla1}; abajo desfilan viajeros.`, 'cierre: frase final'),
     fijo(
       corte,
-      DURACION - 0.4,
-      [
-        divulgacion ? `${divulgacion}. Revisa el método: link en la descripción.` : null,
-        divulgacion ? `${divulgacion}.` : null,
-        '¿Dudas? Revisa el método: link en la descripción.',
-        'Método y código: link en la descripción.',
-        'Link en la descripción.',
-      ],
-      `Fuentes: precios públicos de cada API, fecha de la corrida${est.esDemo ? ' (datos simulados)' : ''}, «Método y código: ${enlace}»` +
-        `${divulgacion ? ` y «${divulgacion}»` : ''}; cierra el título «LA FRONTERA» con los tres nombres.`,
-      'cierre: método',
+      finVoz,
+      variantes2,
+      `Fuentes: ${div ? `recuadro con la divulgación «${String(PUBLICACION.divulgacion).trim()}»; ` : ''}` +
+        `«Corrida: ${fechaCortaVoz(est.fechaCorrida)}${est.esDemo ? ' (datos simulados, demo)' : ''}» con el archivo de datos y su huella sha256; ` +
+        `«Precios en US$ por millón de tokens (entrada/salida): ${precios}»; ${alcance}«Método y código: ${enlace}»; ` +
+        `créditos y marcas. Cierra el título «LA FRONTERA» con ${ps.length === 1 ? 'el nombre' : `los ${cuantas(ps.length)} nombres`}.`,
+      'cierre: divulgación y método',
     ),
   ]
 }

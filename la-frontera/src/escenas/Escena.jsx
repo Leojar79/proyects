@@ -1,11 +1,13 @@
 // Dibuja el cuadro completo del segundo t: fondo, escena activa, cortina de transición,
-// subtítulos y marca de agua. Es una función pura de (t, datos, formato).
+// subtítulos, marca de agua (si la corrida no se puede publicar) y la etiqueta de divulgación.
+// Es una función pura de (t, datos, formato).
 
 import { ESCENAS, escenaEn } from '../../shared/timeline.js'
 import { clamp } from '../lib/anim.js'
 import { Fondo } from '../componentes/Fondo.jsx'
 import { Escritorio } from '../componentes/Escritorio.jsx'
 import { MarcaAgua } from '../componentes/MarcaAgua.jsx'
+import { Divulgacion } from '../componentes/Divulgacion.jsx'
 import { Subtitulos } from '../componentes/Subtitulos.jsx'
 import { Gancho } from './Gancho.jsx'
 import { Presentacion } from './Presentacion.jsx'
@@ -59,7 +61,8 @@ export function Escena({ m, L, t, subs }) {
       <div style={{ position: 'absolute', inset: 0 }}>{contenido}</div>
       <Cortina L={L} t={t} />
       {subs && <Subtitulos L={L} segmentos={m.segmentos} t={t} />}
-      {m.esDemo && <MarcaAgua L={L} />}
+      {m.esDemo && <MarcaAgua L={L} texto={m.marcaAgua} publicable={m.publicable} />}
+      <Divulgacion L={L} texto={m.divulgacion} />
     </div>
   )
 }

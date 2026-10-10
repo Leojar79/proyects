@@ -8,10 +8,11 @@
 // Uso: node bench/demo.mjs
 
 import { join, relative } from 'node:path'
+import { JUEGO } from '../shared/config.js'
 import { calcularCosto, PROVEEDORES } from '../shared/modelos.js'
 import { ACCIONES, NIVELES_PELIGRO, preguntasJev, promptSistemaLLM, textoEstado } from '../shared/preguntas.js'
 import { problemasCorrida, NOTA_DEMO } from './lib/contrato.mjs'
-import { carpetaRuns, cargarViajeros, escribirJSON, huellaViajero, redondearCosto } from './lib/datos.mjs'
+import { carpetaRuns, cargarViajeros, escribirJSON, huellaPrompt, huellaViajero, redondearCosto } from './lib/datos.mjs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 
@@ -97,6 +98,12 @@ function decisionSimulada(rnd, verdad, conError) {
   }
 }
 
+// Opciones tal como las registraría el benchmark real: TODAS las declaradas en shared/modelos.js,
+// más el estilo de API en el caso de GPT.
+function opcionesUsadasSimuladas(p) {
+  return p.id === 'gpt' ? { ...p.opciones, estiloApi: 'chat' } : { ...p.opciones }
+}
+
 function confianzaSimulada(rnd, conError) {
   const rango = conError ? [0.45, 0.75] : [0.75, 0.99]
   const p = () => Math.round(entre(rnd, rango) * 100) / 100
@@ -120,6 +127,8 @@ export function generarDemo(viajeros, createdAt = new Date().toISOString()) {
       const estado = textoEstado(v)
       const entrada = Math.ceil((esJev ? estado + preguntas : sistema + estado).length / 4)
       const razonamiento = sim.razonamiento ? enteroEntre(rnd, ...sim.razonamiento) : null
+      // Jev: 0 tokens de salida, simulados como INFORMADOS por la API (número, no null). En una
+      // corrida real, si la API no los informa, quedan en null ("no informado").
       const salida = esJev ? 0 : enteroEntre(rnd, 22, 28) + razonamiento
       const tokens = { entrada, entradaCacheada: 0, salida, razonamiento, estimado: false }
       const confianza = esJev ? confianzaSimulada(rnd, conError) : null
@@ -133,12 +142,16 @@ export function generarDemo(viajeros, createdAt = new Date().toISOString()) {
         crudo: '(demo: no hubo respuesta HTTP; datos simulados)',
         tokens,
         costoUSD: redondearCosto(calcularCosto(p.precio, tokens)),
+        costoReportadoUSD: null,
         latenciaMs: Math.round(entre(rnd, sim.latenciaMs)),
         modeloServido: p.modelo,
         fallback: false,
+        idRespuesta: null,
+        requestId: null,
         huellaEstado: huellaViajero(v),
         intentos: 1,
-        opcionesUsadas: p.opciones,
+        registradoAt: createdAt,
+        opcionesUsadas: opcionesUsadasSimuladas(p),
       }
     })
   }
@@ -148,6 +161,13 @@ export function generarDemo(viajeros, createdAt = new Date().toISOString()) {
     source: 'demo',
     createdAt,
     nota: NOTA_DEMO,
+    juego: { presupuestoUSD: JUEGO.presupuestoUSD, vidas: JUEGO.vidas },
+    commit: null,
+    cambiosSinCommit: null,
+    huellaPrompt: huellaPrompt(),
+    basePeligroJev: null,
+    parcial: false,
+    probe: false,
     viajeros: viajeros.map((v) => v.id),
     proveedores,
     resultados,
