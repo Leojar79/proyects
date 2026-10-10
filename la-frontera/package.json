@@ -1,0 +1,30 @@
+{
+  "name": "la-frontera",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Juego 'La Frontera': el mismo guardia fronterizo con tres cerebros (GPT Astra, Claude Opus 5.5 y Jev) y contadores reales de costo, velocidad y aciertos.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "validar": "node scripts/validar-viajeros.mjs",
+    "probar-apis": "node bench/run.mjs --probe",
+    "benchmark": "node bench/run.mjs",
+    "demo": "node bench/demo.mjs",
+    "guion": "node render/guion.mjs",
+    "video": "node render/render.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "@fontsource/inter": "^5.2.5",
+    "@fontsource/press-start-2p": "^5.2.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "playwright": "1.56.1",
+    "vite": "^7.2.4"
+  }
+}

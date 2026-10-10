@@ -1,0 +1,6 @@
+node_modules
+dist
+out
+public/runs/probe-*.json
+.env
+public/runs/prueba-*.json
