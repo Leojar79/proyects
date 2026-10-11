@@ -68,10 +68,13 @@ export function motivosNoPublicable(run, viajeros, { juego, publicacion, proveed
     }
   }
 
+  // Solo hay que declarar si existe una relación (pago, créditos, colaboración, empleo).
   const div = publicacion?.divulgacion
-  if (div === null || div === undefined || String(div).trim() === '') {
+  const sinRelacion = publicacion?.relacionTypeSafe === 'ninguna'
+  if (!sinRelacion && (div === null || div === undefined || String(div).trim() === '')) {
     b('divulgacion', 'Falta declarar tu relación con TypeSafe (shared/config.js)')
   }
+
 
   return { bloqueos, avisos }
 }

@@ -17,13 +17,14 @@ export const VIDEO = {
 }
 
 export const PUBLICACION = {
-  // OBLIGATORIO antes de publicar: tu relación con TypeSafe, en una frase. Aparece al inicio y al
-  // final del video, en la voz y en la primera línea del texto de LinkedIn. Mientras esté vacío,
-  // el video sale con marca de agua "NO PUBLICABLE". Ejemplos:
-  //   'Sin relación comercial con TypeSafe'
-  //   'Colaboración pagada con TypeSafe'
-  //   'TypeSafe me dio créditos gratis para esta prueba'
+  // Solo si relacionTypeSafe es 'declarada': tu relación con TypeSafe en una frase. Se muestra en
+  // el video y en la primera línea del texto de LinkedIn; si falta, el video sale "NO PUBLICABLE".
+  // Ejemplos: 'Colaboración pagada con TypeSafe', 'TypeSafe me dio créditos gratis para esta prueba'
   divulgacion: '',
+  // Tu relación con TypeSafe: 'ninguna' (creador independiente: no hay nada que declarar y no se
+  // muestra nada) o 'declarada' (hay pago, créditos, colaboración o empleo: entonces `divulgacion`
+  // es obligatoria y se muestra en el video y en el post).
+  relacionTypeSafe: 'ninguna',
   // Dónde puede la gente revisar el método, el código y los datos de la corrida.
   enlaceMetodo: 'github.com/Leojar79/proyects/tree/main/la-frontera',
 }
