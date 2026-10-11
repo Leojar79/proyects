@@ -16,6 +16,7 @@ benchmark (`source: "live"`). Mientras no haya corrida real, se usa una corrida 
 3. `npm run dev`: vista previa del video con controles (play, pausa, barra de tiempo, formato).
 4. `npm run guion`: genera `GUION.md` (texto para grabar la voz, con tiempos) y `out/subtitulos.srt` con los números de la corrida.
 5. `npm run video -- --formato todos`: renderiza los MP4 cuadro a cuadro (vertical, feed, horizontal).
+6. `npm run video:sim -- --formato todos`: la segunda composición, «simulación» (ver abajo), con la voz grabada.
 
 Sin corrida real, `npm run demo` genera `public/runs/demo.json` y todo funciona con marca de agua.
 
@@ -30,6 +31,8 @@ shared/            Contratos compartidos (navegador + Node). Funciones puras, si
   juego.js         evaluarDecision, simularJuego, resumirProveedor, calcularEstadisticas.
   formato.js       usd(), segundos(), porcentaje(), factor().
   guion.js         segmentosGuion(estadisticas): texto de voz por tramo, basado en los datos.
+  simulacion.js    estimarCostos(viajeros) y SUPUESTOS: costos ESTIMADOS de la simulación.
+  simulacion-video.js  Etiqueta, conclusión, marcas, publicableSim, formato de centavos y subtítulos (.srt).
 data/viajeros.json 60 viajeros con documentos, lo que dicen y la respuesta correcta.
 scripts/validar-viajeros.mjs   Verifica que cada respuesta correcta se deduzca de las reglas.
 bench/             Benchmark en Node (llamadas reales a las APIs).
@@ -37,7 +40,10 @@ bench/             Benchmark en Node (llamadas reales a las APIs).
   providers/*.mjs  Un adaptador por API: anthropic.mjs, openai.mjs, typesafe.mjs
   demo.mjs         Genera public/runs/demo.json (source: "demo").
 src/               App React: el juego/video. Todo se dibuja en función del tiempo t.
-render/            Render a MP4 (Playwright + ffmpeg), guion y subtítulos.
+  sim/             Composición «simulación» (entrada sim.html).
+sim/voz.json       Tiempos de la voz grabada (secciones y frases).
+audio/voz.m4a      La voz grabada (en .gitignore; solo la sirve `npm run dev`).
+render/            Render a MP4 (Playwright + ffmpeg), guion y subtítulos. srt-sim.mjs: .srt de la simulación.
 public/runs/       Corridas (demo.json, latest.json, <fecha>.json).
 ```
 
@@ -227,3 +233,55 @@ Reglas de dibujo:
 `segmentosGuion(estadisticas)` devuelve `[{ inicio, fin, escena, texto, enPantalla }]`, alineados con
 `ESCENAS` de `shared/timeline.js`. El texto se elige según los datos (por ejemplo, solo dice
 "solo una llegó al final" si eso pasó). Ritmo máximo: 2,5 palabras por segundo.
+
+## Composición «simulación» (`sim.html` + `src/sim/`)
+
+Segunda composición, independiente del juego: el video sincronizado con la voz grabada del autor
+(`GUION-LIBRE.md`). Es una **simulación ilustrativa**: no usa `public/runs/` ni datos del benchmark,
+no muestra aciertos, vidas, latencias ni ganadores. Vite construye las dos entradas
+(`rollupOptions.input`: `index.html` y `sim.html`).
+
+```
+sim/voz.json           { duracion: 93, secciones: [{ id, inicio, fin }], frases: [{ inicio, fin, texto }] }
+shared/simulacion.js   estimarCostos(viajeros) -> [{ id, nombre, precio, tokensEntrada, tokensSalida,
+                       costo: { minimo, central, maximo }, decisiones: { central, minimo, maximo } }]
+src/sim/tiempos.js     T: segundo en que entra cada elemento (cuando la voz lo nombra); SECCION_DE.
+src/sim/modelo.js      prepararModeloSim(): voz, estimaciones, viajeros de ejemplo (v02 y v01), publicable.
+src/sim/EscenaSim.jsx  Cuadro completo en t: fondo, sección activa, cortina, subtítulos, etiqueta fija.
+src/sim/escenas/       Una escena por sección: Gancho, QueEs, Decisiones, ComoResponde, Juego,
+                       Numeros, Aclaracion, Cierre.
+```
+
+Parámetros de URL: `formato`, `render=1`, `subs=1`, `t` (igual que el juego; no hay `run`).
+En modo render expone:
+
+```js
+window.__frontera = {
+  composicion: 'simulacion',
+  listo: false,           // fuentes cargadas y modelo preparado
+  duracion: 93,           // sim/voz.json
+  fps: 30,
+  esDemo: false,          // no son datos de demo: es una simulación rotulada en todo el video
+  publicable: { bloqueos: [], avisos: [] },   // publicableSim (shared/simulacion-video.js)
+  error: null,
+  setTiempo(t) {},        // dibuja el cuadro de t de forma síncrona (flushSync)
+}
+```
+
+Reglas:
+- Mismas reglas de dibujo que el juego: todo es función pura de `t` (nada de transiciones CSS,
+  `Date.now`, `Math.random` ni `requestAnimationFrame` en modo render).
+- Etiqueta fija «SIMULACIÓN ILUSTRATIVA · costos estimados con precios publicados» en todos los cuadros,
+  dentro de la zona segura (vertical: debajo de los 220 px de arriba; el contenido termina antes de los
+  380 px de abajo; feed y horizontal: márgenes de 60 px).
+- Números: solo precios por millón de tokens y lo que devuelve `estimarCostos`, con «≈»/«estimado».
+- Publicación (`publicableSim`): solo la regla de divulgación de `shared/publicable.js`. Con
+  `relacionTypeSafe: 'ninguna'` no se muestra nada y no bloquea; con otra relación, `divulgacion` es
+  obligatoria (bloquea si está vacía). Los precios sin verificar son avisos, no bloqueos.
+- Subtítulos (`subs=1` y `out/subtitulos-simulacion.srt`): las frases de `sim/voz.json` con sus
+  tiempos exactos, máximo 2 líneas (~40 caracteres en el `.srt`).
+- Audio: `audio/voz.m4a` solo lo sirve el servidor de desarrollo (`/__sim/voz.m4a`, plugin de
+  `vite.config.js` con `apply: 'serve'`). El render lo mezcla con ffmpeg (`--audio`); `render.mjs` se
+  niega a seguir si encuentra audio dentro de `dist/`.
+- Render: `node render/render.mjs --composicion sim [--audio ruta]` →
+  `out/la-frontera-simulacion-<formato>[-subs][-NO-PUBLICAR].mp4` (video H.264 copiado + AAC 192k).

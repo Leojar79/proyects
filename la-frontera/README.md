@@ -242,6 +242,58 @@ El checklist completo está al final de `GUION.md`. Lo esencial:
 - [ ] Subiste al repositorio público el archivo de la corrida (su sha256 sale en el cierre).
 - [ ] Viste el video completo, la voz coincide con la pantalla y el enlace del método funciona.
 
+## Versión simulación (con tu voz)
+
+Una **segunda composición**, independiente del juego con corridas del benchmark: el video de 93 s
+sincronizado con tu voz leyendo `GUION-LIBRE.md`. Se presenta todo como **simulación ilustrativa**
+con **costos estimados** (precios publicados × tokens supuestos); no llama a ninguna API ni usa
+`public/runs/`. La composición del juego (`index.html`, `npm run video`) no cambia.
+
+**Qué necesitas:** `audio/voz.m4a` (tu voz limpia; está en `.gitignore`: **nunca** la subas al
+repositorio ni la copies a `public/` o `dist/`) y `sim/voz.json` (tiempos de cada frase).
+
+```
+npm run dev                 # abre http://localhost:5173/sim.html (vista previa CON tu voz)
+npm run video:sim -- --formato todos              # out/la-frontera-simulacion-<formato>.mp4
+npm run video:sim -- --formato vertical --subtitulos   # ...-vertical-subs.mp4 (subtítulos dibujados)
+npm run subtitulos:sim      # solo out/subtitulos-simulacion.srt
+```
+
+- **Vista previa** (`/sim.html`): reproducir/pausa (barra espaciadora), barra de tiempo con las
+  secciones de la voz, formato y subtítulos. La voz suena **solo** con `npm run dev` (el servidor de
+  desarrollo la sirve desde `audio/voz.m4a`); en `dist/` no hay audio.
+- **Render**: `node render/render.mjs --composicion sim` acepta las mismas opciones que el juego
+  (`--formato todos`, `--subtitulos`, `--fotogramas 2,30,66`, `--desde/--hasta`, `--sin-build`,
+  `--trabajos N`) y además `--audio <ruta>` (por defecto `audio/voz.m4a`). El video dura lo que dice
+  `sim/voz.json` (93 s); el audio se mezcla al final (video copiado sin recomprimir, audio AAC 192k;
+  manda la duración del video). Cada render también escribe `out/subtitulos-simulacion.srt` (líneas
+  de ~40 caracteres, máximo 2), para subirlo aparte si prefieres subtítulos del reproductor.
+- **Salida**: `out/la-frontera-simulacion-<formato>[-subs].mp4`. Si hubiera un bloqueo, el nombre
+  termina en `-NO-PUBLICAR`, el video lleva marca de agua y el comando termina con código 1.
+- **Publicación**: solo aplica la regla de divulgación. Con `PUBLICACION.relacionTypeSafe: 'ninguna'`
+  (`shared/config.js`) no se muestra ninguna divulgación ni etiqueta y no hay bloqueo. Si fuera
+  `'declarada'`, `PUBLICACION.divulgacion` se muestra en el video y es obligatoria. Los precios no
+  verificados **no** bloquean la simulación: se rotulan «precio de fuentes secundarias».
+
+**Reglas de honestidad (las cumple el video):**
+
+- Etiqueta fija durante todo el video: «SIMULACIÓN ILUSTRATIVA · costos estimados con precios publicados».
+- Sin aciertos, vidas, errores, velocidades, coronas de ganador ni GAME OVER: aquí no se midió nada.
+- Únicos números: precios por millón de tokens (con fuente y si están verificados) y los costos y
+  decisiones estimados de `shared/simulacion.js`, siempre con «≈», «estimado», rango y supuestos
+  (≈875 tokens de entrada para GPT y Opus, ≈773 para Jev; GPT y Opus escriben 40–300 tokens, 150 en el centro).
+- Los sellos de los viajeros de ejemplo son su **respuesta correcta** (`data/viajeros.json`), la misma
+  en las tres columnas y rotulada «respuesta correcta» (no es lo que contestó cada modelo): se compara
+  costo, no aciertos. Los tokens que se escriben y
+  las probabilidades de Jev en «cómo responde» van rotulados «ejemplo ilustrativo» / «valores de ejemplo».
+- La conclusión va rotulada como **opinión**; el cierre muestra fuentes de precios con fecha,
+  supuestos, que hay modelos de lenguaje más baratos sin comparar (Claude Haiku 5.5: US$ 0.10 / 0.50
+  por millón de tokens), las marcas y el enlace al método.
+
+**Si vuelves a grabar la voz:** actualiza `sim/voz.json` (duración, secciones y frases) y los momentos
+de `src/sim/tiempos.js` (cada elemento entra cuando la voz lo nombra). `npm test` comprueba que cada
+momento caiga dentro de su sección y que el `.srt` coincida con las frases.
+
 ## El flujo completo, en resumen
 
 1. Fija `JUEGO` (presupuesto y vidas) y `PUBLICACION.divulgacion` en `shared/config.js`.
@@ -291,7 +343,7 @@ generar el guion y los videos.
 
 ```
 npm run validar                    # las respuestas correctas de los 60 viajeros salen de las reglas
-npm test                           # todo: benchmark, adaptadores (sin red) y guion
+npm test                           # todo: benchmark, adaptadores (sin red), guion y simulación
 node --test render/guion.test.mjs  # el guion: ritmo, empates y frases verdaderas en miles de corridas al azar
 node bench/chequear-corrida.mjs public/runs/latest.json --completa
 ```
@@ -304,7 +356,10 @@ node bench/chequear-corrida.mjs public/runs/latest.json --completa
 | `data/viajeros.json` | Los 60 viajeros con sus documentos y la respuesta correcta. |
 | `bench/` | El benchmark (llamadas reales a las APIs), `recalcular.mjs` (precios verificados) y la corrida demo (`npm run demo`). |
 | `src/` | La app: el video se dibuja en el navegador en función del tiempo. |
-| `render/` | `guion.mjs` (GUION.md y subtítulos) y `render.mjs` (MP4 con Playwright y ffmpeg). |
+| `render/` | `guion.mjs` (GUION.md y subtítulos), `render.mjs` (MP4 con Playwright y ffmpeg; `--composicion sim` para la simulación) y `srt-sim.mjs` (subtítulos de la simulación). |
+| `src/sim/`, `sim.html` | La composición «simulación» (video con tu voz). |
+| `sim/voz.json` | Tiempos de la voz grabada: secciones y frases. |
+| `audio/` | Tu voz (`voz.m4a`). No se sube a GitHub. |
 | `public/runs/` | Corridas: `demo.json`, `latest.json` y una por fecha. |
 | `out/` | Lo que se genera: videos, subtítulos y fotogramas (no se sube a GitHub). |
 

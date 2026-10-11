@@ -82,7 +82,10 @@ export function GanchoSim({ m, L, t }) {
   const desdes = ['izq', 'der', 'abajo']
   const anchoSello = horizontal ? 1100 : Math.min(C.w * 0.96, 940)
   const altoSello = Math.round(anchoSello * (horizontal ? 0.17 : 0.2))
-  const g = golpe(t, T.selloCual, -7)
+  // El sello cae girado: se deja aire arriba para que su esquina no tape la frase del presupuesto.
+  const rotSello = horizontal ? -4 : -6
+  const g = golpe(t, T.selloCual, rotSello)
+  const aireSello = Math.ceil(Math.sin((Math.abs(rotSello) * Math.PI) / 180) * anchoSello * 0.5) + 6
   const sac = sacudir(g.sacudida, t, 20)
   const kT = suaveK(t, T.trabajo)
   const kP = easeOutBack(prog(t, T.presupuesto, 0.45), 1.8)
@@ -105,7 +108,7 @@ export function GanchoSim({ m, L, t }) {
           {frasePresu}
         </div>
       </div>
-      <div style={{ position: 'relative', width: anchoSello, height: altoSello, flex: 'none' }}>
+      <div style={{ position: 'relative', width: anchoSello, height: altoSello, flex: 'none', marginTop: aireSello }}>
         {g.visible && (
           <div style={{ position: 'absolute', inset: 0, transform: `rotate(${g.rot}deg) scale(${g.escala})`, opacity: g.o, border: `${Math.round(altoSello * 0.08)}px solid #e5383b`, outline: `${Math.round(altoSello * 0.03)}px solid #e5383b`, outlineOffset: `-${Math.round(altoSello * 0.16)}px`, background: 'rgba(229, 56, 59, 0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FUENTE_TITULO, fontSize: tamSello, color: '#ff4d4f', textShadow: '0 4px 0 #3a0610', whiteSpace: 'nowrap' }}>
             <TextoPixel>¿CUÁL AGUANTARÍA MÁS?</TextoPixel>

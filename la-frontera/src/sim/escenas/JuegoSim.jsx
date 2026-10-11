@@ -1,18 +1,18 @@
 // El juego (43.2 - 50.8 s): «Mismo viajero, misma información, mismas preguntas para las tres.
 // Lo que cambia es cuánto cuesta cada decisión.»
 // Las tres columnas reciben el MISMO viajero de ejemplo (v01) y el MISMO sello: su respuesta correcta
-// (data/viajeros.json), rotulada «ejemplo». No se compara quién acierta: solo el costo estimado.
+// (data/viajeros.json), rotulada «respuesta correcta». No se compara quién acierta: solo el costo estimado.
 
 import { centavos } from '../../../shared/simulacion-video.js'
 import { clamp, easeOutBack, easeOutCubic, golpe, prog } from '../../lib/anim.js'
-import { FUENTE_TEXTO, tamParaAncho } from '../../lib/medir.js'
+import { FUENTE_TEXTO, anchoTexto, tamParaAncho } from '../../lib/medir.js'
 import { COLORES, alfa, siNo } from '../../lib/textos.js'
 import { Icono } from '../../componentes/Pixel.jsx'
 import { Sello } from '../../componentes/Sello.jsx'
 import { bordePixel } from '../../componentes/ui.jsx'
 import { T } from '../tiempos.js'
 import { cajasJuego, ColumnaSim } from '../columnas.jsx'
-import { Hoja, Moneda, PasaporteCerrado, Rotulo } from '../piezas.jsx'
+import { Hoja, Moneda, PasaporteCerrado, Rotulo, colorNacion } from '../piezas.jsx'
 import { CabinaViajero } from './DecisionesSim.jsx'
 
 const ICONOS_PREGUNTAS = [
@@ -24,29 +24,40 @@ const ICONOS_PREGUNTAS = [
 
 function Cuerpo({ m, e, i, t, L, w, h, maxCosto }) {
   const vertical = L.formato === 'vertical'
+  const horizontal = L.orientacion === 'horizontal'
   const v = m.ejemploJuego
   const pad = 12
   const interior = w - pad * 2
   const tamIc = vertical ? 34 : 30
   const kInfo = easeOutBack(prog(t, T.mismaInfo + i * 0.06, 0.35), 2)
   const kPreg = (j) => easeOutBack(prog(t, T.mismasPreguntas + j * 0.07 + i * 0.03, 0.3), 2)
-  const hojaH = Math.round(Math.min(h * 0.26, vertical ? 140 : 120))
+  const hojaH = Math.round(Math.min(h * 0.3, horizontal ? 190 : vertical ? 170 : 140))
   const g = golpe(t, T.selloEjemplo, -4)
-  const tamChip = vertical ? 28 : 24
+  const tamChip = vertical ? 28 : horizontal ? 28 : 24
   const kChips = easeOutBack(prog(t, T.selloEjemplo + 0.2, 0.3))
   const tCosto = T.cuantoCuesta + i * 0.22
   const kC = easeOutBack(prog(t, tCosto, 0.4), 1.6)
   const kBarra = easeOutCubic(prog(t, tCosto + 0.15, 0.6))
-  const textoCosto = `≈ ${centavos(e.costo.central)} ¢`
-  const tamCosto = tamParaAncho(textoCosto, interior - 10, vertical ? 52 : 44, 26, 800)
-  const tamMini = vertical ? 24 : 21
+  const conCosto = t >= tCosto
+  const textoCosto = conCosto ? `≈ ${centavos(e.costo.central)} ¢` : '≈ ? ¢'
+  const tamCosto = tamParaAncho(`≈ ${centavos(e.costo.central)} ¢`, interior - 24, vertical ? 54 : horizontal ? 60 : 46, 26, 800)
+  const tamMini = vertical ? 24 : 22
   const frac = Math.max(e.costo.central / maxCosto, 0)
+  // El sello es la respuesta correcta del ejemplo (no lo que contestó cada modelo): el rótulo lo dice.
+  const tamRotulo = vertical ? 21 : 19
+  const cabeRotulo = (x) => anchoTexto(x, tamRotulo, 800) + 2 * Math.round(tamRotulo * 0.45) <= interior
+  const rotuloSello = ['EJEMPLO · RESPUESTA CORRECTA', 'RESPUESTA CORRECTA'].find(cabeRotulo) ?? 'EJEMPLO'
+  const respuestas = [
+    ['barrera', '#c9cfe0', siNo(v.verdad.pasa)],
+    ['mascara', '#c9b6ff', siNo(v.verdad.miente)],
+    ['peligro', '#ffc23d', `${v.verdad.peligro}/4`],
+  ]
   return (
-    <div style={{ position: 'absolute', inset: 0, padding: `${pad}px ${pad}px ${pad}px`, display: 'flex', flexDirection: 'column', gap: vertical ? 12 : 10 }}>
-      {/* Misma información y mismas preguntas */}
+    <div style={{ position: 'absolute', inset: 0, padding: `${pad}px ${pad}px ${pad + 4}px`, display: 'flex', flexDirection: 'column', gap: vertical ? 14 : 12 }}>
+      {/* Misma información (pasaporte) y mismas preguntas (los 4 íconos) */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: tamIc + 12 }}>
         <div style={{ transform: `scale(${kInfo})`, opacity: clamp(kInfo * 2) }}>
-          <PasaporteCerrado alto={tamIc + 8} color="#2f7d4f" />
+          <PasaporteCerrado alto={tamIc + 8} color={colorNacion(v.documento.nacionalidad)} />
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {ICONOS_PREGUNTAS.map(([ic, col], j) => (
@@ -57,32 +68,37 @@ function Cuerpo({ m, e, i, t, L, w, h, maxCosto }) {
         </div>
       </div>
       {/* Hoja con el sello: la respuesta correcta del ejemplo, igual en las tres */}
-      <Hoja w={interior} h={hojaH} style={{ transform: `translate(${g.sacudida * 3}px, ${g.sacudida * 4}px)`, opacity: t >= T.mismasPreguntas ? 1 : 0.4 }}>
-        {g.visible && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Sello accion={v.verdad.accion} t={t} t0={T.selloEjemplo} ancho={interior * 0.82} alto={hojaH * 0.56} rot={-5} clave={`ej-${e.id}`} sobrePapel />
-          </div>
-        )}
-        <div style={{ position: 'absolute', left: -6, top: -12 }}>
-          <Rotulo texto="EJEMPLO" tam={vertical ? 20 : 18} />
+      <div style={{ position: 'relative', marginTop: 6 }}>
+        <Hoja w={interior} h={hojaH} style={{ transform: `translate(${g.sacudida * 3}px, ${g.sacudida * 4}px)`, opacity: t >= T.mismasPreguntas ? 1 : 0.4 }}>
+          {g.visible && (
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Sello accion={v.verdad.accion} t={t} t0={T.selloEjemplo} ancho={interior * 0.84} alto={hojaH * 0.52} rot={-5} clave={`ej-${e.id}`} sobrePapel />
+            </div>
+          )}
+        </Hoja>
+        <div style={{ position: 'absolute', left: -6, top: -14 }}>
+          <Rotulo texto={rotuloSello} tam={tamRotulo} />
         </div>
-      </Hoja>
+      </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 6, opacity: clamp(kChips * 2), transform: `scale(${0.8 + 0.2 * kChips})` }}>
-        {[siNo(v.verdad.pasa), siNo(v.verdad.miente), `${v.verdad.peligro}/4`].map((x, j) => (
-          <div key={j} style={{ flex: 1, padding: '4px 0', textAlign: 'center', background: '#0e1322', boxShadow: bordePixel('#323c5e', 3, false), fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tamChip, color: '#fff', lineHeight: 1.15 }}>{x}</div>
+        {respuestas.map(([ic, col, x]) => (
+          <div key={ic} style={{ flex: 1, padding: '5px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: '#0e1322', boxShadow: bordePixel('#323c5e', 3, false), fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tamChip, color: '#fff', lineHeight: 1.15, whiteSpace: 'nowrap' }}>
+            <Icono nombre={ic} alto={Math.round(tamChip * 0.75)} color={col} claro="#0e1322" extra={{ R: '#e5383b', W: '#f5f5f5' }} />
+            {x}
+          </div>
         ))}
       </div>
       <div style={{ flex: 1 }} />
       {/* Lo que cambia: el costo estimado por decisión */}
-      <div style={{ padding: '10px 10px 12px', background: 'rgba(5,6,12,0.7)', boxShadow: bordePixel(alfa(e.color, 0.8), 3, false), opacity: clamp(kC * 2), transform: `scale(${0.75 + 0.25 * kC})`, display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ padding: '12px 12px 14px', background: 'rgba(5,6,12,0.82)', boxShadow: bordePixel(conCosto ? alfa(e.color, 0.85) : '#2a3150', 3, false), transform: `scale(${conCosto ? 0.75 + 0.25 * kC : 1})`, display: 'flex', flexDirection: 'column', gap: 6 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: FUENTE_TEXTO, fontWeight: 700, fontSize: tamMini, color: COLORES.suave, whiteSpace: 'nowrap' }}>
           <Moneda alto={tamMini} />
           costo estimado
         </div>
-        <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tamCosto, lineHeight: 1.05, color: COLORES.ambar, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{textoCosto}</div>
+        <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tamCosto, lineHeight: 1.05, color: conCosto ? COLORES.ambar : 'rgba(180,190,215,0.3)', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums', opacity: conCosto ? clamp(kC * 2) : 1 }}>{textoCosto}</div>
         <div style={{ fontFamily: FUENTE_TEXTO, fontWeight: 700, fontSize: tamMini, color: COLORES.suave, whiteSpace: 'nowrap' }}>por decisión</div>
-        <div style={{ position: 'relative', height: Math.round(tamMini * 0.7), background: '#20263b', boxShadow: bordePixel('#0a0c16', 2, false) }}>
-          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: Math.max(3, frac * (interior - 20) * kBarra), background: e.color }} />
+        <div style={{ position: 'relative', height: Math.round(tamMini * 0.75), background: '#20263b', boxShadow: bordePixel('#0a0c16', 2, false) }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: conCosto ? Math.max(3, frac * (interior - 24) * kBarra) : 0, background: e.color }} />
         </div>
       </div>
     </div>

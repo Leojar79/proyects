@@ -9,6 +9,19 @@ import { bordePixel, TextoPixel } from '../componentes/ui.jsx'
 
 export const SOMBRA_TEXTO = '0 4px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000'
 
+// Mezcla opaca de dos colores #rrggbb (k = peso de `b`). Sirve para fondos de panel teñidos con el
+// color de cada cerebro sin dejar ver el fondo (ladrillos, alambre) detrás del texto.
+export function mezcla(a, b, k) {
+  const ca = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(a)
+  const cb = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(b)
+  if (!ca || !cb) return a
+  const c = [1, 2, 3].map((i) => Math.round(parseInt(ca[i], 16) * (1 - k) + parseInt(cb[i], 16) * k).toString(16).padStart(2, '0'))
+  return `#${c.join('')}`
+}
+
+// Fondo de panel opaco, teñido a la izquierda con el color del cerebro.
+export const fondoTenido = (color, k = 0.2) => `linear-gradient(90deg, ${mezcla(COLORES.panel, color, k)}, ${COLORES.panel} 70%)`
+
 // Entrada con rebote: { k, o } (k para escala/posición, o para opacidad).
 export function pop(t, t0, dur = 0.4, s = 1.6) {
   const p = prog(t, t0, dur)
@@ -274,12 +287,12 @@ export function CabeceraCerebro({ e, w, tamNombre, tamSec, pad = 14 }) {
   )
 }
 
-// Fichas de acción (para la tarjeta "¿qué hacemos con él?").
+// Fichas de acción (para la tarjeta "¿qué hacemos con él?"). Inter 800: se lee mejor que la letra pixel a este tamaño.
 export function FichaAccion({ accion, tam, w }) {
   const s = SELLO[accion]
   const arresto = accion === 'arrestar'
   return (
-    <div style={{ width: w, padding: `${Math.round(tam * 0.45)}px 4px`, textAlign: 'center', fontFamily: FUENTE_TITULO, fontSize: tam, lineHeight: 1, color: arresto ? '#ffe4e8' : s.color, background: arresto ? 'repeating-linear-gradient(90deg, rgba(0,0,0,0.38) 0 4px, transparent 4px 14px), #8a1128' : alfa(s.color, 0.14), boxShadow: `inset 0 0 0 3px ${arresto ? '#c2193a' : s.color}`, whiteSpace: 'nowrap' }}>
+    <div style={{ width: w, padding: `${Math.round(tam * 0.28)}px 4px`, textAlign: 'center', fontFamily: FUENTE_TEXTO, fontWeight: 800, fontSize: tam, lineHeight: 1.1, letterSpacing: 0.5, color: arresto ? '#ffe4e8' : tono(s.color, 0.25), background: arresto ? 'repeating-linear-gradient(90deg, rgba(0,0,0,0.38) 0 4px, transparent 4px 14px), #8a1128' : alfa(s.color, 0.16), boxShadow: `inset 0 0 0 3px ${arresto ? '#c2193a' : s.color}`, whiteSpace: 'nowrap' }}>
       {s.verbo}
     </div>
   )

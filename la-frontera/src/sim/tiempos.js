@@ -60,8 +60,8 @@ export const T = {
   conclusion: 84.77, // «Mi conclusión:
   crear: 85.99, //  los modelos generativos sirven para crear.
   decidir: 88.56, //  Jev, para decidir.»
-  info: 89.3,
-  tituloFinal: 90.7,
+  info: 89.75, // termina la voz: la conclusión sube y aparecen fuentes, supuestos, método y marcas
+  tituloFinal: 90.9,
 }
 
 // Sección a la que pertenece cada grupo de momentos (para las pruebas).

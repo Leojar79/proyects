@@ -8,7 +8,7 @@ import { PUBLICACION } from '../../shared/config.js'
 import { PROVEEDORES } from '../../shared/modelos.js'
 import { textoMarcaAgua } from '../../shared/publicable.js'
 import { SUPUESTOS, estimarCostos } from '../../shared/simulacion.js'
-import { publicableSim } from '../../shared/simulacion-video.js'
+import { divulgacionVisible, publicableSim } from '../../shared/simulacion-video.js'
 
 export function prepararModeloSim() {
   const viajeros = datos.viajeros
@@ -32,7 +32,8 @@ export function prepararModeloSim() {
     publicable,
     bloqueado: publicable.bloqueos.length > 0,
     marcaAgua: textoMarcaAgua(publicable),
-    divulgacion: String(PUBLICACION.divulgacion ?? '').trim(),
+    // Con relacionTypeSafe 'ninguna' queda vacía: no se muestra ninguna divulgación ni etiqueta.
+    divulgacion: divulgacionVisible(PUBLICACION),
     enlaceMetodo: PUBLICACION.enlaceMetodo,
   }
 }

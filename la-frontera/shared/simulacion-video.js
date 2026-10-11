@@ -29,15 +29,16 @@ export const CONCLUSION = {
 export const LINEA_MARCAS =
   'Inspirado en Papers, Please (Lucas Pope). OpenAI, GPT, Anthropic, Claude, TypeSafe y Jev son marcas de sus dueños; las nombro solo para identificar los productos.'
 
-// ¿Se puede publicar la simulación? Solo bloquea la divulgación vacía (relación con TypeSafe).
-// Los precios sin verificar NO bloquean aquí (son estimaciones rotuladas), pero se avisan y se
-// rotulan «precio de fuentes secundarias» en pantalla.
+// ¿Se puede publicar la simulación? Aplica SOLO la regla de divulgación de shared/publicable.js:
+// con relacionTypeSafe 'ninguna' (creador independiente) no hay nada que declarar, no se muestra
+// nada y no bloquea; con cualquier otra relación ('declarada'), la divulgación es obligatoria y
+// bloquea si está vacía. Los precios sin verificar NO bloquean aquí (son estimaciones rotuladas):
+// se avisan y se rotulan «precio de fuentes secundarias» en pantalla.
 // Devuelve { bloqueos: [{codigo, texto}], avisos: [{codigo, texto}] } (mismo formato que shared/publicable.js).
 export function publicableSim({ publicacion, proveedores } = {}) {
   const bloqueos = []
   const avisos = []
-  const div = publicacion?.divulgacion
-  if (div === null || div === undefined || String(div).trim() === '') {
+  if (debeDeclarar(publicacion) && !textoDivulgacion(publicacion)) {
     bloqueos.push({ codigo: 'divulgacion', texto: 'Falta declarar tu relación con TypeSafe (shared/config.js)' })
   }
   for (const p of proveedores ?? []) {
@@ -47,6 +48,13 @@ export function publicableSim({ publicacion, proveedores } = {}) {
   }
   return { bloqueos, avisos }
 }
+
+// Hay relación que declarar salvo que el autor diga explícitamente que no tiene ninguna.
+export const debeDeclarar = (publicacion) => publicacion?.relacionTypeSafe !== 'ninguna'
+const textoDivulgacion = (publicacion) => String(publicacion?.divulgacion ?? '').trim()
+
+// Texto de divulgación que se MUESTRA en el video: vacío si no hay relación ('ninguna').
+export const divulgacionVisible = (publicacion) => (debeDeclarar(publicacion) ? textoDivulgacion(publicacion) : '')
 
 const LOCALE = 'es-419'
 
@@ -103,6 +111,25 @@ function agrupar(lineas, maxLineas) {
   return grupos
 }
 
+// Parte el texto de un subtítulo en 2 líneas de largo parecido (cada una de hasta `maxCar`),
+// prefiriendo cortar después de un signo de puntuación. Si cabe en una línea, queda en una.
+export function lineasEquilibradas(texto, maxCar = 40) {
+  const palabras = String(texto).split(/\s+/).filter(Boolean)
+  const completo = palabras.join(' ')
+  if (completo.length <= maxCar || palabras.length < 2) return [completo]
+  let mejor = null
+  for (let i = 1; i < palabras.length; i++) {
+    const a = palabras.slice(0, i).join(' ')
+    const b = palabras.slice(i).join(' ')
+    if (a.length > maxCar || b.length > maxCar) continue
+    const fin = a[a.length - 1]
+    const bonus = /[.:?!…;]/.test(fin) ? 14 : fin === ',' ? 8 : 0
+    const costo = Math.abs(a.length - b.length) - bonus
+    if (!mejor || costo < mejor.costo) mejor = { costo, lineas: [a, b] }
+  }
+  return mejor ? mejor.lineas : partirPorCaracteres(completo, maxCar)
+}
+
 // Cues de subtítulos: una frase por cue (máx. `maxLineas` líneas de ~`maxCar` caracteres); una frase
 // más larga se parte en varios cues y su tiempo se reparte en proporción a los caracteres.
 export function cuesSubtitulos(frases, { maxCar = 40, maxLineas = 2 } = {}) {
@@ -115,7 +142,9 @@ export function cuesSubtitulos(frases, { maxCar = 40, maxLineas = 2 } = {}) {
     grupos.forEach((g, k) => {
       const dur = ((f.fin - f.inicio) * g.join(' ').length) / total
       const fin = k === grupos.length - 1 ? f.fin : t + dur
-      cues.push({ inicio: round3(t), fin: round3(fin), lineas: g })
+      const texto = g.join(' ')
+      const equilibradas = maxLineas >= 2 ? lineasEquilibradas(texto, maxCar) : g
+      cues.push({ inicio: round3(t), fin: round3(fin), lineas: equilibradas.length <= maxLineas ? equilibradas : g })
       t = fin
     })
   }

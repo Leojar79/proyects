@@ -4,7 +4,7 @@
 
 import { ACCIONES } from '../../../shared/preguntas.js'
 import { clamp, easeOutBack, easeOutCubic, prog } from '../../lib/anim.js'
-import { FUENTE_TEXTO, FUENTE_TITULO, tamParaAncho } from '../../lib/medir.js'
+import { FUENTE_TEXTO, FUENTE_TITULO, anchoTexto, tamParaAncho } from '../../lib/medir.js'
 import { COLORES, tono } from '../../lib/textos.js'
 import { Icono } from '../../componentes/Pixel.jsx'
 import { Retrato } from '../../componentes/Retrato.jsx'
@@ -57,7 +57,8 @@ export function CabinaViajero({ v, caja, L, t, t0, tHabla0, tHabla1, rotulo, con
           </div>
           {rotulo && (
             <div style={{ position: 'absolute', left: 10, top: Math.max(20, win.h * 0.1) + 6 }}>
-              <Rotulo texto={rotulo} tam={tamRot} />
+              {/* Si «VIAJERO DE EJEMPLO» no cabe en la ventanilla, dice solo «EJEMPLO». */}
+              <Rotulo texto={anchoTexto(rotulo, tamRot, 800) + tamRot * 1.2 <= win.w - 20 ? rotulo : 'EJEMPLO'} tam={tamRot} />
             </div>
           )}
         </Ventanilla>
@@ -79,7 +80,7 @@ function Tarjeta({ q, w, h, L, t, t0 }) {
   const vertical = L.formato === 'vertical'
   const pad = 16
   const tamQ = tamParaAncho(q.texto, w - pad * 2, vertical ? 38 : 34, vertical ? 28 : 22, 800)
-  const tamTipo = vertical ? 20 : 17
+  const tamTipo = tamParaAncho(q.tipo, w * 0.5, vertical ? 22 : 20, 16, 400, FUENTE_TITULO)
   const tamIcono = Math.round(Math.min(h * 0.2, 52))
   const tamChip = vertical ? 30 : 26
   let visual = null
@@ -102,7 +103,7 @@ function Tarjeta({ q, w, h, L, t, t0 }) {
     )
   } else {
     const anchoF = Math.floor((w - pad * 2 - 8) / 2)
-    const tamF = tamParaAncho('INTERROGAR', anchoF - 16, vertical ? 18 : 16, 10, 400, FUENTE_TITULO)
+    const tamF = tamParaAncho('INTERROGAR', anchoF - 20, vertical ? 26 : 24, 18, 800)
     visual = (
       <div style={{ display: 'grid', gridTemplateColumns: `${anchoF}px ${anchoF}px`, gap: 8 }}>
         {ACCIONES.map((a) => (

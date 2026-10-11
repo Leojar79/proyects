@@ -5,12 +5,28 @@
 
 import { precioMasBarato } from '../../../shared/simulacion-video.js'
 import { clamp, easeOutBack, easeOutCubic, prog } from '../../lib/anim.js'
-import { FUENTE_TEXTO, FUENTE_TITULO, partirLineas, tamParaAncho } from '../../lib/medir.js'
+import { FUENTE_TEXTO, FUENTE_TITULO, anchoTexto, tamParaAncho } from '../../lib/medir.js'
 import { COLORES, fechaISOaCorta, numeroPrecio, tono } from '../../lib/textos.js'
-import { Icono } from '../../componentes/Pixel.jsx'
+import { Icono, PixelArt } from '../../componentes/Pixel.jsx'
 import { bordePixel } from '../../componentes/ui.jsx'
 import { T } from '../tiempos.js'
 import { Moneda, TituloPixel } from '../piezas.jsx'
+import { NB, conNB, partir } from '../texto.js'
+
+// Bandera (modelo «insignia» = el buque insignia de cada empresa). No es una corona de ganador.
+const BANDERA = [
+  'XRRRRRRRR.',
+  'XRRRRRRRRR',
+  'XRRWWRRRR.',
+  'XRRRRRRRRR',
+  'XRRRRRRRR.',
+  'X.........',
+  'X.........',
+  'X.........',
+]
+function Bandera({ alto }) {
+  return <PixelArt filas={BANDERA} alto={alto} colores={{ X: '#c9cfe0', R: '#4f7cff', W: '#ffffff' }} />
+}
 
 function Tachado({ alto }) {
   return (
@@ -23,9 +39,9 @@ function Tachado({ alto }) {
 
 function Linea({ icono, texto, detalle, w, tam, tamDet, t, t0 }) {
   const k = easeOutBack(prog(t, t0 - 0.05, 0.4), 1.6)
-  const anchoTexto = w - tam * 1.6 - 18
-  const lineas = partirLineas(texto, anchoTexto, tam, 800)
-  const lineasDet = detalle ? partirLineas(detalle, anchoTexto, tamDet, 600) : []
+  const anchoUtil = w - tam * 1.6 - 18
+  const lineas = partir(conNB(texto), anchoUtil, tam, 800)
+  const lineasDet = detalle ? partir(conNB(detalle), anchoUtil, tamDet, 600) : []
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, opacity: t >= t0 - 0.05 ? clamp(k * 2) : 0.12, transform: `translateX(${t >= t0 - 0.05 ? (1 - k) * 60 : 0}px)` }}>
       <div style={{ width: tam * 1.6, display: 'flex', justifyContent: 'center', paddingTop: 4, flex: 'none' }}>{icono(Math.round(tam * 1.05))}</div>
@@ -43,11 +59,16 @@ function Linea({ icono, texto, detalle, w, tam, tamDet, t, t0 }) {
 
 function Tabla({ m, L, w, t }) {
   const vertical = L.formato === 'vertical'
-  const tam = vertical ? 24 : 22
+  const horizontal = L.orientacion === 'horizontal'
+  const tam = vertical ? 25 : horizontal ? 25 : 22
   const k = easeOutCubic(prog(t, T.tabla, 0.5))
   const s = m.supuestos
-  const colNombre = Math.round(w * 0.3)
-  const colPrecio = Math.round(w * 0.2)
+  const colNombre = Math.round(w * 0.25)
+  const colPrecio = Math.round(Math.max(w * 0.21, anchoTexto('US$ / M tokens', tam, 700) + 18))
+  // La columna de la fuente usa el ancho que queda (sin pisar el borde de la tabla).
+  const fuenteDe = (e) => `${e.precio.verificado === false ? 'fuentes secundarias' : 'oficial (Anthropic)'} · ${fechaISOaCorta(e.precio.fecha)}`
+  const anchoFuente = w - 36 - colNombre - colPrecio - 2 * 10
+  const tamFuente = Math.min(...m.estimaciones.map((e) => tamParaAncho(fuenteDe(e), anchoFuente, tam, 16, 700)))
   const fila = (a, b, c, estilo = {}, key) => (
     <div key={key} style={{ display: 'flex', alignItems: 'baseline', gap: 10, padding: '6px 0', borderTop: '2px solid rgba(255,255,255,0.08)', ...estilo }}>
       <div style={{ width: colNombre, flex: 'none' }}>{a}</div>
@@ -55,15 +76,15 @@ function Tabla({ m, L, w, t }) {
       <div style={{ flex: 1 }}>{c}</div>
     </div>
   )
-  const supuesto = `Tokens por decisión: ≈${m.porId.gpt.tokensEntrada} de entrada (Jev ≈${m.porId.jev.tokensEntrada}). GPT y Opus escriben entre ${s.salidaLLM.minimo} y ${s.salidaLLM.maximo} tokens (${s.salidaLLM.central} en el centro), incluido el razonamiento interno. Presupuesto: US$ ${s.presupuestoUSD} para cada una.`
-  const lineasSup = partirLineas(supuesto, w - 36, tam, 600)
+  const supuesto = `Tokens por decisión: ≈${m.porId.gpt.tokensEntrada} de entrada (Jev${NB}≈${m.porId.jev.tokensEntrada}). GPT y Opus escriben entre ${s.salidaLLM.minimo} y ${s.salidaLLM.maximo} tokens (${s.salidaLLM.central} en el centro), incluido el razonamiento interno. Presupuesto: US$${NB}${s.presupuestoUSD.toFixed(2)} para cada una.`
+  const lineasSup = partir(supuesto, w - 36, tam, 600)
   return (
     <div style={{ width: w, padding: '14px 18px', background: 'rgba(6,8,16,0.88)', boxShadow: bordePixel('#2e3a5c', 4), fontFamily: FUENTE_TEXTO, fontSize: tam, color: COLORES.texto, opacity: clamp(k * 1.5), transform: `translateY(${(1 - k) * 40}px)`, flex: 'none' }}>
       <div style={{ fontFamily: FUENTE_TITULO, fontSize: tamParaAncho('SUPUESTOS Y PRECIOS', w - 40, vertical ? 20 : 18, 10, 400, FUENTE_TITULO), color: COLORES.ambar, marginBottom: 10 }}>SUPUESTOS Y PRECIOS</div>
       {fila(
         <span style={{ fontWeight: 700, color: COLORES.suave }}>modelo</span>,
-        <span style={{ fontWeight: 700, color: COLORES.suave }}>US$ / M tokens</span>,
-        <span style={{ fontWeight: 700, color: COLORES.suave }}>fuente del precio</span>,
+        <span style={{ fontWeight: 700, color: COLORES.suave, whiteSpace: 'nowrap' }}>US$ / M tokens</span>,
+        <span style={{ fontWeight: 700, color: COLORES.suave, whiteSpace: 'nowrap' }}>fuente del precio y fecha</span>,
         { borderTop: 'none' },
         'h',
       )}
@@ -71,8 +92,8 @@ function Tabla({ m, L, w, t }) {
         fila(
           <span style={{ fontWeight: 800, color: tono(e.color, 0.3), whiteSpace: 'nowrap' }}>{e.nombre}</span>,
           <span style={{ fontWeight: 800, whiteSpace: 'nowrap' }}>{numeroPrecio(e.precio.entradaPorMTok)} / {numeroPrecio(e.precio.salidaPorMTok)}</span>,
-          <span style={{ fontWeight: 700, color: e.precio.verificado === false ? COLORES.ambar : '#8ff0b5', whiteSpace: 'nowrap' }}>
-            {e.precio.verificado === false ? 'fuentes secundarias' : 'oficial (Anthropic)'} · {fechaISOaCorta(e.precio.fecha)}
+          <span style={{ fontWeight: 700, fontSize: tamFuente, color: e.precio.verificado === false ? COLORES.ambar : '#8ff0b5', whiteSpace: 'nowrap' }}>
+            {fuenteDe(e)}
           </span>,
           {},
           e.id,
@@ -94,13 +115,13 @@ export function AclaracionSim({ m, L, t }) {
   const gap = vertical ? 20 : 16
   const tamTitulo = tamParaAncho('LO QUE TAMBIÉN HAY QUE DECIR', C.w * 0.95, vertical ? 32 : 30, 14, 400, FUENTE_TITULO)
   const kT = easeOutBack(prog(t, 71.35, 0.4))
-  const wCard = horizontal ? Math.round(C.w * 0.52) : C.w
+  const wCard = horizontal ? Math.round(C.w * 0.5) : C.w
   const wTabla = horizontal ? C.w - wCard - 24 : C.w
-  const tam = vertical ? 36 : horizontal ? 32 : 31
-  const tamDet = vertical ? 26 : 23
+  const tam = vertical ? 36 : horizontal ? 36 : 31
+  const tamDet = vertical ? 26 : horizontal ? 26 : 23
   const lineas = [
     { icono: (a) => <Icono nombre="peligro" alto={a} color={COLORES.ambar} claro="#141a2c" />, texto: 'Costos estimados · no es una prueba real', detalle: 'Precios publicados × tokens supuestos. No hubo llamadas a las APIs.' },
-    { icono: (a) => <Icono nombre="corona" alto={a} color={COLORES.oro} extra={{ R: '#e5383b', B: '#4f7cff' }} />, texto: 'Comparado con modelos insignia', detalle: 'GPT-6 Astra y Claude Opus 5.5' },
+    { icono: (a) => <Bandera alto={a} />, texto: 'Comparado con modelos insignia', detalle: 'GPT-6 Astra y Claude Opus 5.5: modelos de gama alta de cada empresa' },
     { icono: (a) => <Moneda alto={a} />, texto: 'Hay modelos de lenguaje más baratos', detalle: `p. ej. ${precioMasBarato()}` },
     { icono: (a) => <Tachado alto={a} />, texto: 'No mide aciertos', detalle: 'Aquí solo se compara el costo; los sellos que se vieron son la respuesta correcta de cada ejemplo.' },
   ]

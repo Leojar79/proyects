@@ -18,7 +18,9 @@ const TEXTO_AUDIO = {
   cargando: 'cargando la voz…',
   listo: 'con voz (audio/voz.m4a)',
   bloqueado: 'el navegador bloqueó el audio: pulsa reproducir otra vez',
-  'sin-audio': 'sin voz (solo se oye con npm run dev y audio/voz.m4a)',
+  'sin-audio': import.meta.env.DEV
+    ? 'sin voz: falta audio/voz.m4a o este navegador no reproduce AAC (prueba en Chrome, Safari o Firefox)'
+    : 'sin voz (solo se oye con npm run dev y audio/voz.m4a)',
 }
 
 export function ControlesSim({ t, duracion, setT, reproduciendo, alternar, formato, setFormato, subs, setSubs, secciones, publicable, audioEstado }) {
