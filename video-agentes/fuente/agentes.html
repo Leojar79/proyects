@@ -196,6 +196,33 @@ function stepFrame(t,num,title,body){
     </div></div>
    <div class="abs" style="left:80px;right:80px;top:700px;${up(t,.45,.45,140)}">${body}</div>`}
 
+
+// ===== backgrounds (choose with #bg=name) =====
+const BG=(location.hash.match(/bg=(\w+)/)||[])[1]||'verde';
+const BGS={
+ purpura:(T,tc,beat)=>{let b=`<div class="abs" style="inset:0;background:radial-gradient(90% 60% at 50% 40%,rgba(${tc},${.30+beat*.08}) 0%,rgba(${tc},.06) 55%,transparent 80%),#0b0714"></div>`;
+  for(let k=0;k<4;k++){const x=540+Math.sin(T*.5+k*1.7)*380,y=960+Math.cos(T*.4+k*2.1)*700;
+   b+=`<div class="abs" style="left:${x-350}px;top:${y-350}px;width:700px;height:700px;border-radius:50%;background:rgba(${k%2?tc:'124,77,255'},.22);filter:blur(120px)"></div>`}
+  return b},
+ // warm Claude orange with a slowly rotating sunburst
+ naranja:(T,tc,beat)=>{const rot=T*6;
+  return `<div class="abs" style="inset:0;background:radial-gradient(70% 45% at 50% 42%,#f08a5d 0%,#d0603c 45%,#7a2a17 100%)"></div>
+  <div class="abs" style="left:-900px;top:-500px;width:2880px;height:2880px;transform:rotate(${rot}deg);background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,235,210,${.10+beat*.05}) 0deg 6deg,transparent 6deg 15deg)"></div>
+  <div class="abs" style="inset:0;background:radial-gradient(60% 40% at 50% 42%,transparent 0%,rgba(40,10,4,.55) 100%)"></div>
+  <div class="abs" style="inset:0;opacity:.18;background-image:radial-gradient(rgba(0,0,0,.6) 1.5px,transparent 1.6px);background-size:14px 14px"></div>`},
+ // deep WhatsApp green with drifting chat bubbles
+ verde:(T,tc,beat)=>{let b=`<div class="abs" style="inset:0;background:linear-gradient(170deg,#0d3b26 0%,#072217 55%,#03110b 100%)"></div>
+  <div class="abs" style="inset:-300px;background:repeating-linear-gradient(135deg,rgba(37,211,102,.05) 0 40px,transparent 40px 110px);transform:translateX(${(T*40)%155}px)"></div>`;
+  for(let k=0;k<14;k++){const sz=90+rnd(k)*160,x=rnd(k+1)*1080-sz/2,y=((rnd(k+2)*2300-T*(50+rnd(k+3)*70))%2300+2300)%2300-200,left=k%2;
+   b+=`<div class="abs" style="left:${x}px;top:${y}px;width:${sz}px;height:${sz*.62}px;border:${3+rnd(k+4)*3}px solid rgba(37,211,102,${.12+rnd(k+5)*.15});border-radius:${sz*.2}px ${sz*.2}px ${left?sz*.2:4}px ${left?4:sz*.2}px;transform:rotate(${(rnd(k+6)-.5)*20}deg)"></div>`}
+  return b+`<div class="abs" style="inset:0;background:radial-gradient(70% 50% at 50% 45%,rgba(37,211,102,${.10+beat*.05}),transparent 70%)"></div>`},
+ // black with giant outlined marquee words (kinetic type backdrop)
+ tinta:(T,tc,beat,sc)=>{const W=['AGENTES','CLAUDE','WHATSAPP','IA','AGENTES','META','MCP','AGENTES'];let b=`<div class="abs" style="inset:0;background:#060606"></div>`;
+  for(let k=0;k<8;k++){const dir=k%2?1:-1,txt=(W[k]+' · ').repeat(6),off=((T*(70+k*12)*dir)%1400+1400)%1400;
+   const hot=k===3;b+=`<div class="abs" style="left:${-off}px;top:${k*250-40}px;white-space:nowrap;font-weight:900;font-size:230px;letter-spacing:-.02em;line-height:1;color:${hot?`rgba(${tc},.16)`:'transparent'};-webkit-text-stroke:3px rgba(255,255,255,${hot?0:.07})">${txt}</div>`}
+  return b+`<div class="abs" style="inset:0;background:radial-gradient(65% 45% at 50% 45%,rgba(6,6,6,.82) 0%,rgba(6,6,6,.4) 70%,transparent 100%)"></div>`},
+};
+
 // ===== timeline =====
 let starts=[],acc=0;for(const s of S){starts.push(acc);acc+=s.d}
 window.TOTAL=acc;
@@ -209,12 +236,7 @@ window.render=(T)=>{
   const prev=S[Math.max(0,i-1)].tint, tp=eo(P(t,0,.5));
   const tc=sc.tint.map((v,j)=>Math.round(lerp(prev[j],v,i?tp:1)));
   const beat=Math.pow(1-((T*2)%1),3); // 120 bpm pulse
-  let b=`<div class="abs" style="inset:0;background:radial-gradient(90% 60% at 50% 40%,rgba(${tc},${.30+beat*.08}) 0%,rgba(${tc},.06) 55%,transparent 80%),#0b0714"></div>`;
-  for(let k=0;k<4;k++){const x=540+Math.sin(T*.5+k*1.7)*380,y=960+Math.cos(T*.4+k*2.1)*700;
-    b+=`<div class="abs" style="left:${x-350}px;top:${y-350}px;width:700px;height:700px;border-radius:50%;background:rgba(${k%2?tc:'124,77,255'},.22);filter:blur(120px)"></div>`}
-  b+=`<div class="abs" style="inset:-200px;background-image:linear-gradient(rgba(255,255,255,.045) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.045) 2px,transparent 2px);background-size:120px 120px;transform:translateY(${(T*60)%120}px) perspective(900px) rotateX(${8}deg)"></div>`;
-  for(let k=0;k<26;k++){const x=rnd(k)*1080,y=(rnd(k+40)*1920-T*(40+rnd(k+80)*90))%1920;const yy=y<0?y+1920:y;
-    b+=`<div class="abs" style="left:${x}px;top:${yy}px;width:${4+rnd(k+3)*6}px;height:${4+rnd(k+3)*6}px;border-radius:50%;background:#fff;opacity:${.15+rnd(k+7)*.35}"></div>`}
+  let b=(BGS[BG]||BGS.purpura)(T,tc,beat,sc,t);
   bg.innerHTML=b;
   st.innerHTML=sc.r(t);
   // scene in/out: zoom-through
