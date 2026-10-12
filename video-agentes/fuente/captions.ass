@@ -10,87 +10,90 @@ Style: Cap,Inter Display Black,74,&H00FFFFFF,&H00FFFFFF,&H0066D325,&H00000000,1,
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:01.15,0:00:02.04,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LOS CHATBOTS DE
-Dialogue: 0,0:00:02.04,0:00:02.98,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WHATSAPP ACABAN DE
-Dialogue: 0,0:00:02.98,0:00:03.88,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MORIR Y MIENTRAS
-Dialogue: 0,0:00:03.88,0:00:04.44,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ME TOMO ESTE
-Dialogue: 0,0:00:04.44,0:00:05.18,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CAFÉ TE CUENTO
-Dialogue: 0,0:00:05.18,0:00:06.24,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}POR QUÉ.
-Dialogue: 0,0:00:06.24,0:00:07.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE AHORA CREA
-Dialogue: 0,0:00:07.76,0:00:08.50,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AGENTES DE IA
-Dialogue: 0,0:00:08.50,0:00:09.74,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PARA WHATSAPP.
-Dialogue: 0,0:00:09.74,0:00:10.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}¿CÓMO LO HIZO?
-Dialogue: 0,0:00:10.76,0:00:12.00,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTA SEMANA META
-Dialogue: 0,0:00:12.00,0:00:12.96,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LANZÓ UNA HERRAMIENTA
-Dialogue: 0,0:00:12.96,0:00:14.40,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LLAMADA WHATSAPP BUSINESS
-Dialogue: 0,0:00:14.40,0:00:16.06,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MCP QUE CONECTA
-Dialogue: 0,0:00:16.06,0:00:17.30,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}A CLAUDE DIRECTAMENTE
-Dialogue: 0,0:00:17.30,0:00:18.82,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CON WHATSAPP.
-Dialogue: 0,0:00:18.82,0:00:19.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTO ANTES ERA
-Dialogue: 0,0:00:19.76,0:00:20.18,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UN DOLOR DE
-Dialogue: 0,0:00:20.18,0:00:21.08,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CABEZA.
-Dialogue: 0,0:00:21.08,0:00:21.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PANELES,
-Dialogue: 0,0:00:21.76,0:00:22.84,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PERMISOS,
-Dialogue: 0,0:00:22.84,0:00:24.46,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WEBHOOKS O CONTRATAR
-Dialogue: 0,0:00:24.46,0:00:25.30,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}FREELANCE COMO YO
-Dialogue: 0,0:00:25.30,0:00:25.82,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PARA QUE TE
-Dialogue: 0,0:00:25.82,0:00:26.48,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AYUDARA A CONSTRUIR
-Dialogue: 0,0:00:26.48,0:00:27.58,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}EL AGENTE.
-Dialogue: 0,0:00:27.58,0:00:28.12,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y AHORA ¿CÓMO
-Dialogue: 0,0:00:28.12,0:00:29.02,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VA A FUNCIONAR?
-Dialogue: 0,0:00:29.02,0:00:30.22,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SIMPLEMENTE ABRES CLAUDE
-Dialogue: 0,0:00:30.22,0:00:30.96,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LE ESCRIBES
-Dialogue: 0,0:00:30.96,0:00:32.36,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}"CREA MI AGENTE
-Dialogue: 0,0:00:32.36,0:00:32.92,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}DE IA EN
-Dialogue: 0,0:00:32.92,0:00:34.58,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WHATSAPP" Y LISTO.
-Dialogue: 0,0:00:34.58,0:00:35.16,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}¿CÓMO LO HACE
-Dialogue: 0,0:00:35.16,0:00:36.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}EN CUATRO PASOS?
-Dialogue: 0,0:00:36.76,0:00:38.28,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UNO CONECTAS EL
-Dialogue: 0,0:00:38.28,0:00:39.68,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MCP A CLAUDE E
-Dialogue: 0,0:00:39.68,0:00:40.26,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}INGRESAS A TU
-Dialogue: 0,0:00:40.26,0:00:41.56,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CUENTA DE META,
-Dialogue: 0,0:00:41.56,0:00:42.72,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}DOS CLAUDE CREA
-Dialogue: 0,0:00:42.72,0:00:43.98,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TU CUENTA Y
-Dialogue: 0,0:00:43.98,0:00:44.70,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VERIFICA TU NÚMERO
-Dialogue: 0,0:00:44.70,0:00:45.22,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CON UN CÓDIGO
-Dialogue: 0,0:00:45.22,0:00:46.70,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}QUE TE ENVÍA,
-Dialogue: 0,0:00:46.84,0:00:48.01,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TRES SE CONECTA
-Dialogue: 0,0:00:48.01,0:00:48.45,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CON LA API
-Dialogue: 0,0:00:48.45,0:00:49.29,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}OFICIAL DE META
-Dialogue: 0,0:00:49.29,0:00:50.29,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y REVISA QUE
-Dialogue: 0,0:00:50.29,0:00:50.93,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}NO FALTE NADA
-Dialogue: 0,0:00:50.93,0:00:52.31,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y CUATRO MANDA
-Dialogue: 0,0:00:52.31,0:00:53.05,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}EL PRIMER MENSAJE
-Dialogue: 0,0:00:53.05,0:00:54.19,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LISTO,
-Dialogue: 0,0:00:54.19,0:00:54.83,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TU AGENTE YA
-Dialogue: 0,0:00:54.83,0:00:55.95,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTÁ CONECTADO
-Dialogue: 0,0:00:55.95,0:00:56.37,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LO QUE MÁS
-Dialogue: 0,0:00:56.37,0:00:56.85,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ME VOLÓ LA
-Dialogue: 0,0:00:56.85,0:00:57.51,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CABEZA SON LAS
-Dialogue: 0,0:00:57.51,0:00:58.65,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PLANTILLAS.
-Dialogue: 0,0:00:58.65,0:01:00.55,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE LAS CREA
-Dialogue: 0,0:01:00.55,0:01:01.49,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LAS ENVÍA
-Dialogue: 0,0:01:01.49,0:01:02.35,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}A META.
-Dialogue: 0,0:01:02.35,0:01:02.77,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y SI POR
-Dialogue: 0,0:01:02.77,0:01:03.81,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ALGUNA RAZÓN META
-Dialogue: 0,0:01:03.81,0:01:04.47,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LAS LLEGA A
-Dialogue: 0,0:01:04.47,0:01:05.47,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}RECHAZAR,
-Dialogue: 0,0:01:05.47,0:01:06.33,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE LAS CORRIGE
-Dialogue: 0,0:01:06.33,0:01:07.25,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SOLITO Y LAS
-Dialogue: 0,0:01:07.25,0:01:08.67,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VUELVE A ENVIAR.
-Dialogue: 0,0:01:08.77,0:01:10.07,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CERO CÓDIGO,
-Dialogue: 0,0:01:10.07,0:01:11.77,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CERO FREELANCE Y
-Dialogue: 0,0:01:11.77,0:01:12.69,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UN AGENTE CONTESTANDO
-Dialogue: 0,0:01:12.69,0:01:13.83,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}24/7.
-Dialogue: 0,0:01:14.33,0:01:14.79,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SI USTED QUIERE
-Dialogue: 0,0:01:14.79,0:01:15.47,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}APRENDER A HACER
-Dialogue: 0,0:01:15.47,0:01:16.09,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTO,
-Dialogue: 0,0:01:16.09,0:01:16.83,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESCRÍBAME QUE YO
-Dialogue: 0,0:01:16.83,0:01:17.41,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LE AYUDO.
-Dialogue: 0,0:01:17.41,0:01:17.95,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y SI QUIERE
-Dialogue: 0,0:01:17.95,0:01:18.89,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}APRENDER O QUIERE
-Dialogue: 0,0:01:18.89,0:01:19.93,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MÁS INFORMACIÓN SOBRE
-Dialogue: 0,0:01:19.93,0:01:20.67,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}IA,
-Dialogue: 0,0:01:20.67,0:01:21.47,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESCRÍBAME TAMBIÉN QUE
-Dialogue: 0,0:01:21.47,0:01:21.95,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}YO TAMBIÉN LE
-Dialogue: 0,0:01:21.95,0:01:22.87,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AYUDO.
+Dialogue: 0,0:00:00.73,0:00:01.50,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LOS CHATBOTS DE
+Dialogue: 0,0:00:01.50,0:00:02.32,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WHATSAPP ACABAN DE
+Dialogue: 0,0:00:02.32,0:00:02.78,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MORIR Y MIENTRAS
+Dialogue: 0,0:00:02.78,0:00:03.27,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ME TOMO ESTE
+Dialogue: 0,0:00:03.27,0:00:03.91,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CAFÉ TE CUENTO
+Dialogue: 0,0:00:03.91,0:00:04.29,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}POR QUÉ.
+Dialogue: 0,0:00:04.29,0:00:05.27,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE AHORA CREA
+Dialogue: 0,0:00:05.27,0:00:05.91,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AGENTES DE IA
+Dialogue: 0,0:00:05.91,0:00:06.56,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PARA WHATSAPP.
+Dialogue: 0,0:00:06.56,0:00:07.07,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y ¿CÓMO LO
+Dialogue: 0,0:00:07.07,0:00:07.43,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}HIZO?
+Dialogue: 0,0:00:07.43,0:00:08.44,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTA SEMANA META
+Dialogue: 0,0:00:08.44,0:00:09.27,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LANZÓ UNA HERRAMIENTA
+Dialogue: 0,0:00:09.27,0:00:10.51,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LLAMADA WHATSAPP BUSINESS
+Dialogue: 0,0:00:10.51,0:00:11.76,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MCP QUE CONECTA
+Dialogue: 0,0:00:11.76,0:00:12.83,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}A CLAUDE DIRECTAMENTE
+Dialogue: 0,0:00:12.83,0:00:13.77,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CON WHATSAPP.
+Dialogue: 0,0:00:13.77,0:00:14.57,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTO ANTES ERA
+Dialogue: 0,0:00:14.57,0:00:14.94,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UN DOLOR DE
+Dialogue: 0,0:00:14.94,0:00:15.42,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CABEZA.
+Dialogue: 0,0:00:15.42,0:00:16.01,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PANELES,
+Dialogue: 0,0:00:16.01,0:00:16.72,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PERMISOS,
+Dialogue: 0,0:00:16.72,0:00:17.93,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WEBHOOKS O CONTRATAR
+Dialogue: 0,0:00:17.93,0:00:18.66,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}FREELANCE COMO YO
+Dialogue: 0,0:00:18.66,0:00:19.10,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PARA QUE TE
+Dialogue: 0,0:00:19.10,0:00:19.67,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AYUDARA A CONSTRUIR
+Dialogue: 0,0:00:19.67,0:00:20.18,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}EL AGENTE.
+Dialogue: 0,0:00:20.18,0:00:20.64,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y AHORA ¿CÓMO
+Dialogue: 0,0:00:20.64,0:00:21.42,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VA A FUNCIONAR?
+Dialogue: 0,0:00:21.42,0:00:22.46,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SIMPLEMENTE ABRES CLAUDE
+Dialogue: 0,0:00:22.46,0:00:23.10,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LE ESCRIBES
+Dialogue: 0,0:00:23.10,0:00:23.98,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}"CREA MI AGENTE
+Dialogue: 0,0:00:23.98,0:00:24.46,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}DE IA EN
+Dialogue: 0,0:00:24.46,0:00:25.44,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}WHATSAPP" Y LISTO.
+Dialogue: 0,0:00:25.44,0:00:25.96,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y ¿CÓMO LO
+Dialogue: 0,0:00:25.96,0:00:26.67,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}HACE EN CUATRO
+Dialogue: 0,0:00:26.67,0:00:27.14,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PASOS?
+Dialogue: 0,0:00:27.14,0:00:28.01,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UNO CONECTAS EL
+Dialogue: 0,0:00:28.01,0:00:29.00,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MCP A CLAUDE E
+Dialogue: 0,0:00:29.00,0:00:29.50,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}INGRESAS A TU
+Dialogue: 0,0:00:29.50,0:00:30.00,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CUENTA DE META,
+Dialogue: 0,0:00:30.00,0:00:30.88,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}DOS CLAUDE CREA
+Dialogue: 0,0:00:30.88,0:00:31.59,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TU CUENTA Y
+Dialogue: 0,0:00:31.59,0:00:32.21,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VERIFICA TU NÚMERO
+Dialogue: 0,0:00:32.21,0:00:32.66,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CON UN CÓDIGO
+Dialogue: 0,0:00:32.66,0:00:33.30,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}QUE TE ENVÍA,
+Dialogue: 0,0:00:33.30,0:00:33.51,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TRES EL CONECTA
+Dialogue: 0,0:00:33.51,0:00:34.41,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SE CONECTA CON
+Dialogue: 0,0:00:34.41,0:00:35.03,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LA API OFICIAL
+Dialogue: 0,0:00:35.03,0:00:35.68,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}DE META Y
+Dialogue: 0,0:00:35.68,0:00:36.21,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}REVISA QUE NO
+Dialogue: 0,0:00:36.21,0:00:36.87,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}FALTE NADA Y
+Dialogue: 0,0:00:36.87,0:00:37.67,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CUATRO MANDA EL
+Dialogue: 0,0:00:37.67,0:00:38.55,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}PRIMER MENSAJE Y
+Dialogue: 0,0:00:38.55,0:00:38.96,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LISTO,
+Dialogue: 0,0:00:38.96,0:00:39.42,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}TU AGENTE YA
+Dialogue: 0,0:00:39.42,0:00:40.04,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTÁ CONECTADO
+Dialogue: 0,0:00:40.04,0:00:40.43,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LO QUE
+Dialogue: 0,0:00:40.43,0:00:40.93,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MÁS ME VOLÓ
+Dialogue: 0,0:00:40.93,0:00:41.49,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LA CABEZA SON
+Dialogue: 0,0:00:41.49,0:00:42.17,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LAS PLANTILLAS.
+Dialogue: 0,0:00:42.17,0:00:43.07,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE LAS CREA
+Dialogue: 0,0:00:43.07,0:00:43.78,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y LAS ENVÍA
+Dialogue: 0,0:00:43.78,0:00:44.20,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}A META.
+Dialogue: 0,0:00:44.20,0:00:44.56,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y SI POR
+Dialogue: 0,0:00:44.56,0:00:45.46,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ALGUNA RAZÓN META
+Dialogue: 0,0:00:45.46,0:00:46.03,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LAS LLEGA A
+Dialogue: 0,0:00:46.03,0:00:46.61,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}RECHAZAR,
+Dialogue: 0,0:00:46.61,0:00:47.36,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CLAUDE LAS CORRIGE
+Dialogue: 0,0:00:47.36,0:00:48.15,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SOLITO Y LAS
+Dialogue: 0,0:00:48.15,0:00:48.70,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}VUELVE A ENVIAR.
+Dialogue: 0,0:00:48.70,0:00:49.60,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CERO CÓDIGO,
+Dialogue: 0,0:00:49.60,0:00:50.48,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}CERO FREELANCE Y
+Dialogue: 0,0:00:50.48,0:00:51.28,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}UN AGENTE CONTESTANDO
+Dialogue: 0,0:00:51.28,0:00:51.98,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}24/7.
+Dialogue: 0,0:00:51.98,0:00:52.32,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}SI USTED QUIERE
+Dialogue: 0,0:00:52.32,0:00:52.91,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}APRENDER A HACER
+Dialogue: 0,0:00:52.91,0:00:53.45,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESTO,
+Dialogue: 0,0:00:53.45,0:00:54.08,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESCRÍBAME QUE YO
+Dialogue: 0,0:00:54.08,0:00:54.44,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}LE AYUDO.
+Dialogue: 0,0:00:54.44,0:00:54.91,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}Y SI QUIERE
+Dialogue: 0,0:00:54.91,0:00:55.72,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}APRENDER O QUIERE
+Dialogue: 0,0:00:55.72,0:00:56.62,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}MÁS INFORMACIÓN SOBRE
+Dialogue: 0,0:00:56.62,0:00:57.15,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}IA,
+Dialogue: 0,0:00:57.15,0:00:57.84,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}ESCRÍBAME TAMBIÉN QUE
+Dialogue: 0,0:00:57.84,0:00:58.26,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}YO TAMBIÉN LE
+Dialogue: 0,0:00:58.26,0:00:59.13,Cap,,0,0,0,,{\pos(540,1540)\c&H0B1F12&\fad(40,0)}AYUDO.
