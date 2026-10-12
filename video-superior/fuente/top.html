@@ -1,0 +1,228 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:960px;overflow:hidden;font-family:Inter,sans-serif;color:#fff;
+ background:radial-gradient(120% 90% at 50% 0%,#3a1f63 0%,#1d1033 55%,#120a20 100%)}
+#win{position:absolute;left:40px;top:44px;width:1000px;height:876px;border-radius:40px;
+ background:linear-gradient(180deg,#1a1d24,#111318);border:2px solid rgba(255,255,255,.09);
+ box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+#bar{height:58px;display:flex;align-items:center;gap:12px;padding-left:28px;border-bottom:1px solid rgba(255,255,255,.06)}
+#bar i{width:15px;height:15px;border-radius:50%;background:#3a3d46;display:block}
+#stage{position:absolute;left:0;top:58px;right:0;bottom:0;padding:44px 56px}
+.lab{font-size:22px;letter-spacing:.18em;font-weight:700;color:#8c90a0;text-align:center;text-transform:uppercase}
+.card{background:#1e2129;border:1.5px solid rgba(255,255,255,.08);border-radius:26px;padding:30px 34px}
+.row{display:flex;align-items:center}
+.c{display:flex;align-items:center;justify-content:center}
+.pill{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:10px 22px;font-weight:700;font-size:26px}
+.g{color:#2fe07a}.mut{color:#9aa0ad}
+.abs{position:absolute}
+</style></head>
+<body>
+<div id="win"><div id="bar"><i></i><i></i><i></i></div><div id="stage"></div></div>
+<script>
+// ---------- helpers ----------
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const P=(t,a,d=0.45)=>clamp((t-a)/d);
+const eo=x=>1-Math.pow(1-x,3);
+const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const up=(t,a,d=0.45)=>{const p=P(t,a,d);return `opacity:${eo(p)};transform:translateY(${(1-eo(p))*34}px)`};
+const pop=(t,a,d=0.5)=>{const p=P(t,a,d);return `opacity:${clamp(p*2)};transform:scale(${0.6+0.4*back(p)})`};
+const typed=(s,t,a,cps=32)=>s.slice(0,Math.max(0,Math.floor((t-a)*cps)));
+const caret=(t)=>Math.floor(t*2.5)%2?'<span style="opacity:.9">|</span>':'<span style="opacity:0">|</span>';
+
+const claude=(s=90)=>{let r='';for(let i=0;i<12;i++){const a=i*30+(i%2?8:0);const L=i%3===0?44:i%3===1?38:41;
+ r+=`<rect x="47" y="${50-L}" width="9" height="${L}" rx="4.5" transform="rotate(${a} 50 50)" fill="#D97757"/>`}
+ return `<svg width="${s}" height="${s}" viewBox="0 0 100 100">${r}</svg>`};
+const claudeTile=(s=130)=>`<div class="c" style="width:${s}px;height:${s}px;border-radius:${s*.26}px;background:#26211f;border:1.5px solid rgba(217,119,87,.35)">${claude(s*.62)}</div>`;
+const wa=(s=110)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#25D366"/>
+ <path d="M50 21a28 28 0 0 0-24 42.5L22 78l15-3.8A28 28 0 1 0 50 21z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
+ <path d="M40 36c1.5-1.6 3.5-1.6 4.3.3l2.4 5.6c.5 1.2 0 2.3-.9 3.1l-1.6 1.4c1.6 3.6 4.4 6.5 8 8.2l1.5-1.6c.8-.9 2-1.2 3.1-.7l5.6 2.5c1.8.8 1.8 2.9.2 4.4-2.7 2.6-6.6 3.2-10.2 1.6C45 57.6 39.6 52 37.3 45.4c-1.2-3.4-.2-7 2.7-9.4z" fill="#fff"/></svg>`;
+const waTile=(s=130)=>`<div class="c" style="width:${s}px;height:${s}px;border-radius:${s*.26}px;background:#16261d;border:1.5px solid rgba(37,211,102,.35)">${wa(s*.66)}</div>`;
+const meta=(w=90,col='#0866FF')=>`<svg width="${w}" height="${w*.55}" viewBox="0 0 100 55"><path d="M8 40c0-16 8-30 18-30 9 0 15 10 24 24s13 18 20 18c8 0 14-6 14-18 0-16-7-26-16-26-8 0-14 8-18 15-4-7-10-15-18-15" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const check=(s=44,col='#2fe07a')=>`<svg width="${s}" height="${s}" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="${col}"/><path d="M14 25l7 7 13-15" fill="none" stroke="#0d1a12" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const xmark=(s=44)=>`<svg width="${s}" height="${s}" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#ff5d5d"/><path d="M16 16l16 16M32 16L16 32" stroke="#2a0d0d" stroke-width="5" stroke-linecap="round"/></svg>`;
+const spin=(t,s=40,col='#9aa0ad')=>`<svg width="${s}" height="${s}" viewBox="0 0 48 48" style="transform:rotate(${t*400}deg)"><circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="5"/><path d="M24 6a18 18 0 0 1 18 18" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round"/></svg>`;
+const cursor=(x,y,press=0)=>`<svg class="abs" style="left:${x}px;top:${y}px;transform:scale(${1-press*.15});transform-origin:0 0;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))" width="46" height="56" viewBox="0 0 24 30"><path d="M2 2l0 22 6-5.5 4 9 4-1.8-4-8.7 8.2-.3z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+const ok=(t,a,txt,s=44)=>`<div class="row" style="gap:16px;${pop(t,a)}">${check(s)}<span style="font-size:32px;font-weight:700" class="g">${txt}</span></div>`;
+const step=(n,txt)=>`<div class="lab abs" style="top:40px;left:0;right:0">Paso ${n} · ${txt}</div>`;
+const lerp=(a,b,p)=>a+(b-a)*p;
+
+// ---------- scenes ----------
+const S=[
+{n:'01_gancho',d:3.6,r:t=>{
+  const strike=eo(P(t,1.3,.5)), dead=P(t,1.9,.4);
+  return `<div class="c" style="flex-direction:column;height:100%;gap:56px">
+   <div class="row" style="gap:46px">
+     <div style="${pop(t,0)}">${claudeTile(170)}</div>
+     <div style="${pop(t,.25)};font-size:64px;font-weight:300;color:#777">+</div>
+     <div style="${pop(t,.4)}">${waTile(170)}</div>
+   </div>
+   <div style="${up(t,.7)};position:relative">
+     <div class="card row" style="gap:26px;padding:28px 46px;transform:translateX(${Math.sin(dead*40)*(1-dead)*12}px);
+       border-color:${dead>0?'rgba(255,93,93,.5)':'rgba(255,255,255,.08)'};opacity:${1-dead*.45}">
+       <svg width="64" height="56" viewBox="0 0 64 56"><rect x="2" y="2" width="60" height="42" rx="12" fill="#3a3e48"/><path d="M14 44l-4 10 14-10" fill="#3a3e48"/><circle cx="20" cy="23" r="4.5" fill="#cfd3dc"/><circle cx="32" cy="23" r="4.5" fill="#cfd3dc"/><circle cx="44" cy="23" r="4.5" fill="#cfd3dc"/></svg>
+       <span style="font-size:58px;font-weight:800;letter-spacing:.04em;color:#cfd3dc">CHATBOT</span>
+     </div>
+     <div class="abs" style="left:-14px;top:50%;height:9px;border-radius:9px;background:#ff5d5d;width:${strike*110}%;transform:rotate(-6deg);box-shadow:0 0 18px rgba(255,93,93,.7)"></div>
+   </div></div>`}},
+
+{n:'02_que_es',d:5,r:t=>{
+  const flow=(t*1.6)%1;
+  return `<div class="c" style="flex-direction:column;height:100%;gap:40px">
+   <div class="row" style="gap:30px">
+     <div style="${pop(t,0)}">${claudeTile(130)}</div>
+     <div style="${up(t,.3)};width:150px;height:8px;border-radius:8px;background:linear-gradient(90deg,rgba(47,224,122,.15) ${flow*100-30}%,#2fe07a ${flow*100}%,rgba(47,224,122,.15) ${flow*100+30}%)"></div>
+     <div style="${pop(t,.2)}">${waTile(130)}</div>
+   </div>
+   <div class="card" style="${up(t,.7)};width:820px;text-align:center;padding:42px 30px;background:linear-gradient(180deg,#1f2a24,#1b1f26);border-color:rgba(47,224,122,.25)">
+     <div style="${up(t,.9)}" class="pill g" ><span style="font-size:22px;letter-spacing:.16em;background:rgba(47,224,122,.12);padding:8px 18px;border-radius:999px">NUEVO · MCP OFICIAL</span></div>
+     <div style="${up(t,1.2)};font-size:72px;font-weight:800;line-height:1.05;margin-top:24px">WhatsApp Business<br><span class="g">MCP</span></div>
+     <div style="${up(t,1.9)};margin-top:26px" class="row c"><span style="margin-right:14px">${meta(64)}</span><span class="mut" style="font-size:30px;font-weight:600">Lanzado por Meta · sept. 2026</span></div>
+     <div style="margin:30px auto 0;width:80%;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden"><div style="height:100%;width:${eo(P(t,2.2,2.2))*100}%;background:#2fe07a"></div></div>
+   </div></div>`}},
+
+{n:'03_conectar',d:4.6,r:t=>{
+  const c1=t>1.25, c2=t>2.85;
+  const cx=t<1.25?lerp(880,745,eo(P(t,.5,.7))):t<2.85?lerp(745,470,eo(P(t,1.6,.9))):470;
+  const cy=t<1.25?lerp(420,145,eo(P(t,.5,.7))):t<2.85?lerp(145,290,eo(P(t,1.6,.9))):290;
+  const press=(t>1.1&&t<1.35)||(t>2.7&&t<2.95)?1:0;
+  return `${step(1,'Conectar')}
+   <div class="card" style="${up(t,0)};position:relative">
+     <div style="font-size:26px;font-weight:700" class="mut">Claude · Conectores</div>
+     <div class="row" style="gap:24px;margin-top:28px;padding:22px;border-radius:20px;background:#252934">
+       ${wa(76)}<div style="flex:1"><div style="font-size:34px;font-weight:700">WhatsApp Business MCP</div><div class="mut" style="font-size:24px;margin-top:4px">por Meta</div></div>
+       <div class="pill" style="background:${c1?'#2b2f3a':'#fff'};color:${c1?'#9aa0ad':'#111'}">${c1?'Añadido':'+ Añadir'}</div>
+     </div>
+     <div style="margin-top:30px;${up(t,1.4)}">
+       <div class="row c" style="gap:18px;height:100px;border-radius:22px;background:${c2?'#16281e':'#0866FF'};border:2px solid ${c2?'rgba(47,224,122,.4)':'transparent'}">
+         ${c2?check(48)+'<span style="font-size:34px;font-weight:800" class="g">Conectado a Meta</span>':meta(70,'#fff')+'<span style="font-size:34px;font-weight:800">Iniciar sesión con Meta</span>'}
+       </div>
+     </div>
+   ${t>.5&&t<3.6?cursor(cx,cy,press):''}</div>`}},
+
+{n:'04_crear_cuenta',d:4.8,r:t=>{
+  const q='Créame la cuenta de WhatsApp Business para mi negocio';
+  const s=typed(q,t,.2,34);
+  return `${step(2,'Crear la cuenta')}
+   <div style="margin-top:40px;display:flex;flex-direction:column;gap:26px">
+    <div style="align-self:flex-end;max-width:760px;background:#2d3140;border-radius:28px 28px 8px 28px;padding:24px 30px;font-size:34px;font-weight:500;line-height:1.3;min-height:90px">${s}${s.length<q.length?caret(t):''}</div>
+    <div class="row" style="gap:20px;${up(t,1.9)}">${claude(64)}<span style="font-size:32px" class="mut">${t<3.1?'Creando cuenta en Meta…':'Hecho. Tu cuenta está lista.'}</span>${t<3.1?spin(t,38):''}</div>
+    <div class="card" style="${up(t,3.1)};border-color:rgba(47,224,122,.3)">
+      <div class="row" style="gap:20px">${meta(76)}<div style="flex:1"><div style="font-size:34px;font-weight:800">Cuenta Meta Business</div>
+      <div class="row" style="gap:10px;margin-top:8px"><i style="width:14px;height:14px;border-radius:50%;background:#2fe07a;display:block"></i><span style="font-size:26px" class="g">Creada</span></div></div>${check(54)}</div>
+    </div>
+   </div>`}},
+
+{n:'05_verificar_numero',d:5,r:t=>{
+  const code='482197';
+  let boxes='';for(let i=0;i<6;i++){const on=t>1.6+i*.22;const done=t>3.2;
+   boxes+=`<div class="c" style="width:104px;height:124px;border-radius:20px;font-size:58px;font-weight:800;background:#252934;
+    border:2.5px solid ${done?'#2fe07a':on?'#7aa8ff':'rgba(255,255,255,.1)'};${on?'':'color:transparent'}">${code[i]}</div>`}
+  return `${step(3,'Verificar número')}
+   <div class="card" style="${up(t,0)};margin-top:40px">
+     <div class="mut" style="font-size:26px;font-weight:600">Número de teléfono</div>
+     <div style="margin-top:12px;font-size:46px;font-weight:700;letter-spacing:.04em">${typed('+34 6•• ••• •••',t,.3,14)}</div>
+   </div>
+   <div style="${up(t,1.2)};margin-top:30px">
+     <div class="row" style="gap:12px;font-size:28px;font-weight:600" class="mut"><span class="mut">Código enviado por SMS</span></div>
+     <div class="row" style="gap:18px;margin-top:20px;justify-content:center">${boxes}</div>
+   </div>
+   <div class="c" style="margin-top:36px">${ok(t,3.3,'Número verificado',52)}</div>`}},
+
+{n:'06_api_oficial',d:3.8,r:t=>{
+  const lp=eo(P(t,.7,1.1));
+  return `${step(4,'Conectar a la API')}
+   <div class="row c" style="gap:0;margin-top:120px">
+     <div class="card" style="${up(t,0)};text-align:center;width:300px;padding:30px 20px">${wa(80)}<div style="font-size:30px;font-weight:700;margin-top:16px">+34 6•• •••</div></div>
+     <div style="${up(t,.4)};width:200px;height:8px;background:rgba(255,255,255,.1);position:relative;border-radius:8px">
+       <div style="height:100%;width:${lp*100}%;background:#2fe07a;border-radius:8px;box-shadow:0 0 16px #2fe07a"></div></div>
+     <div class="card" style="${up(t,.2)};text-align:center;width:330px;padding:30px 20px;border-color:${lp>=1?'rgba(47,224,122,.45)':'rgba(255,255,255,.08)'}">${meta(96)}<div style="font-size:30px;font-weight:700;margin-top:16px">Cloud API oficial</div></div>
+   </div>
+   <div class="c" style="margin-top:70px">${ok(t,1.9,'API oficial conectada',56)}</div>`}},
+
+{n:'07_pendientes',d:4.6,r:t=>{
+  const items=['Términos de servicio','Método de pago','Verificación del negocio'];
+  const rows=items.map((s,i)=>{const a=.3+i*.25, dn=1.3+i*.8;
+   return `<div class="row" style="${up(t,a)};gap:24px;padding:28px 30px;border-radius:22px;background:#21252e;border:1.5px solid ${t>dn?'rgba(47,224,122,.3)':'rgba(255,255,255,.06)'}">
+    <span style="flex:1;font-size:36px;font-weight:600">${s}</span>${t>dn?check(48):spin(t,44,'#7aa8ff')}</div>`}).join('');
+  return `${step(5,'Revisar pendientes')}
+   <div class="row c" style="gap:16px;margin-top:34px;${up(t,0)}">${claude(54)}<span style="font-size:32px;font-weight:600" class="mut">Comprobando tu cuenta…</span></div>
+   <div style="display:flex;flex-direction:column;gap:22px;margin-top:36px">${rows}</div>
+   <div class="c" style="margin-top:36px">${ok(t,3.9,'Todo en orden',48)}</div>`}},
+
+{n:'08_primer_mensaje',d:4.8,r:t=>{
+  const tick=t>1.7?'#53bdeb':'#8696a0';
+  return `${step(6,'Primer mensaje')}
+   <div style="${up(t,0)};margin:34px auto 0;width:720px;border-radius:30px;overflow:hidden;border:1.5px solid rgba(255,255,255,.08)">
+     <div class="row" style="gap:18px;padding:22px 28px;background:#1f2c34">${wa(56)}<div><div style="font-size:30px;font-weight:700">Cliente</div><div style="font-size:22px;color:#8696a0">en línea</div></div>
+       <div class="pill" style="margin-left:auto;font-size:20px;padding:8px 16px;background:rgba(47,224,122,.12);${pop(t,.3)}"><span class="g">Webhook ✓</span></div></div>
+     <div style="height:440px;background:#0b141a;padding:30px;display:flex;flex-direction:column;gap:20px">
+       <div style="${up(t,.8)};align-self:flex-end;max-width:520px;background:#005c4b;border-radius:22px 22px 6px 22px;padding:20px 24px;font-size:32px;line-height:1.3">
+         ¡Hola! Soy el asistente de tu negocio. ¿En qué te puedo ayudar?
+         <div style="text-align:right;font-size:20px;color:#9fc7bd;margin-top:6px">10:24 <span style="color:${tick};font-weight:800">✓✓</span></div></div>
+       <div style="${up(t,2.6)};align-self:flex-start;background:#202c33;border-radius:22px 22px 22px 6px;padding:20px 24px;font-size:32px">Quiero hacer un pedido</div>
+     </div>
+   </div>
+   <div class="c" style="margin-top:28px">${ok(t,3.4,'Tu agente ya está activo',46)}</div>`}},
+
+{n:'09_plantillas',d:9,r:t=>{
+  const st=[[0,'Creando…','#9aa0ad','rgba(255,255,255,.08)'],[1.4,'Enviada a Meta','#7aa8ff','rgba(122,168,255,.14)'],[2.6,'En revisión','#ffb547','rgba(255,181,71,.14)'],
+   [4.0,'Rechazada','#ff5d5d','rgba(255,93,93,.15)'],[5.4,'Corrigiendo…','#D97757','rgba(217,119,87,.15)'],[6.6,'Reenviada','#7aa8ff','rgba(122,168,255,.14)'],[7.7,'Aprobada','#2fe07a','rgba(47,224,122,.15)']];
+  let cur=st[0];for(const s of st)if(t>=s[0])cur=s;
+  const since=t-cur[0], bump=1+.12*Math.max(0,1-since*4);
+  const fixed=t>5.9;
+  const body=fixed?'¡Hola {{1}}! Gracias por escribirnos. ¿En qué podemos ayudarte hoy?':'¡Hola {{1}}! Gracias por escribirnos {{2}}{{3}}';
+  const showReason=t>4.0&&t<5.9;
+  const dots=st.map((s,i)=>`<div style="width:${t>=s[0]?22:16}px;height:${t>=s[0]?22:16}px;border-radius:50%;background:${t>=s[0]?s[2]:'rgba(255,255,255,.12)'}"></div>`).join('<div style="flex:1;height:3px;background:rgba(255,255,255,.1)"></div>');
+  return `<div class="lab abs" style="top:40px;left:0;right:0">Plantillas de mensaje</div>
+   <div class="card" style="${up(t,0)};margin-top:36px;padding:36px">
+     <div class="row"><span class="mut" style="font-size:24px;font-weight:700;letter-spacing:.12em">BIENVENIDA · MARKETING</span>
+       <span class="pill" style="margin-left:auto;background:${cur[3]};color:${cur[2]};transform:scale(${bump})">${cur[1]==='Corrigiendo…'?claude(30):''}${cur[1]}${cur[1]==='Aprobada'?' ✓':''}</span></div>
+     <div style="margin-top:26px;background:#252934;border-radius:20px;padding:30px;font-size:38px;font-weight:600;line-height:1.35;
+       outline:${fixed&&t<7?'3px solid rgba(217,119,87,.6)':'none'}">${body}</div>
+     <div style="height:70px;margin-top:20px">${showReason?`<div class="row" style="gap:14px;${up(t,4.1,.3)}">${xmark(38)}<span style="font-size:28px;color:#ff8a8a;font-weight:600">Motivo: variables seguidas sin texto</span></div>`:''}
+       ${t>7.7?`<div class="row" style="gap:14px;${up(t,7.8,.3)}">${check(38)}<span style="font-size:28px;font-weight:600" class="g">Lista para enviar a tus clientes</span></div>`:''}</div>
+   </div>
+   <div class="row" style="${up(t,.3)};gap:10px;margin:44px 30px 0">${dots}</div>`}},
+
+{n:'10_antes_ahora',d:5.6,r:t=>{
+  const L=['Business Manager','Consola developer','Docs de la API','Freelancer · 300 €'];
+  const strike=eo(P(t,2.2,.6));
+  const left=L.map((s,i)=>`<div style="${up(t,.2+i*.3)};position:relative;font-size:30px;font-weight:600;padding:20px 22px;border-radius:16px;background:#252229;color:${strike>0?'#8a7f86':'#e6e6ea'}">${s}
+    <div class="abs" style="left:14px;top:50%;height:4px;background:#ff5d5d;width:${strike*85}%"></div></div>`).join('');
+  return `<div class="row" style="gap:30px;height:100%;align-items:stretch">
+    <div class="card" style="flex:1;${up(t,0)};border-color:rgba(255,93,93,.2)"><div class="lab" style="color:#ff7a7a;text-align:left">Antes</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:26px">${left}</div>
+      <div style="${up(t,2.5)};margin-top:24px;font-size:28px;color:#ff8a8a;font-weight:700">Semanas · un infierno</div></div>
+    <div class="card c" style="flex:1;flex-direction:column;${up(t,2.9)};border-color:rgba(47,224,122,.3);background:linear-gradient(180deg,#1c2a22,#1b1f26)">
+      <div class="lab g" style="color:#2fe07a">Ahora</div>
+      <div style="margin-top:40px;${pop(t,3.2)}">${claudeTile(150)}</div>
+      <div style="${up(t,3.5)};margin-top:36px;font-size:44px;font-weight:800;text-align:center;line-height:1.15">Una<br>conversación</div>
+      <div style="${up(t,3.9)};margin-top:18px;font-size:28px;font-weight:700" class="g">Minutos · tú solo</div></div>
+  </div>`}},
+
+{n:'11_cta',d:4.2,r:t=>{
+  const w=typed('WHATSAPP',t,.9,9);
+  const heart=t>2.4?1+.25*Math.max(0,Math.sin((t-2.4)*9))*Math.max(0,1-(t-2.4)*1.5):1;
+  return `<div class="c" style="flex-direction:column;height:100%;gap:40px">
+   <div style="${up(t,0)};font-size:60px;font-weight:800">Comenta</div>
+   <div class="row" style="${up(t,.3)};gap:22px;width:820px;padding:24px 26px 24px 40px;border-radius:999px;background:#252934;border:2px solid rgba(255,255,255,.1)">
+     <span style="flex:1;font-size:64px;font-weight:900;letter-spacing:.06em;color:#2fe07a">${w}${w.length<8?caret(t):''}</span>
+     <div class="c" style="width:96px;height:96px;border-radius:50%;background:${t>2.1?'#7c4dff':'#3a3e48'}"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z" fill="#fff"/></svg></div>
+   </div>
+   <div class="row" style="gap:20px;${up(t,2.3)}"><svg style="transform:scale(${heart})" width="56" height="50" viewBox="0 0 24 22"><path d="M12 21S2 14.5 2 7.5A5 5 0 0 1 12 5a5 5 0 0 1 10 2.5C22 14.5 12 21 12 21z" fill="#ff4d6d"/></svg>
+     <span style="font-size:38px;font-weight:600" class="mut">y te envío la guía paso a paso</span></div>
+  </div>`}},
+];
+
+let starts=[],acc=0;for(const s of S){starts.push(acc);acc+=s.d}
+window.TOTAL=acc; window.SCENES=S.map((s,i)=>({n:s.n,start:starts[i],d:s.d}));
+const st=document.getElementById('stage');
+window.render=(T)=>{let i=S.length-1;for(let k=0;k<S.length;k++){if(T<starts[k]+S[k].d){i=k;break}}
+  const t=T-starts[i], d=S[i].d;
+  st.innerHTML=`<div style="height:100%;display:flex;flex-direction:column;justify-content:center;padding-top:${/^(01|02|10|11)/.test(S[i].n)?0:40}px">${S[i].r(t)}</div>`;
+  const fi=clamp(t/.18), fo=clamp((d-t)/.18);
+  st.style.opacity=Math.min(fi,fo);};
+render(0);
+</script></body></html>
