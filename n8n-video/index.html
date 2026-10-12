@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>n8n – Leads Automáticos (demo de ejecución)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#14141c;font-family:Inter,'Noto Color Emoji',sans-serif;color:#eef0fa}
+#app{position:relative;width:1920px;height:1080px;overflow:hidden;background:#171720}
+#dots{position:absolute;inset:0;background-image:radial-gradient(circle,#383850 1.7px,transparent 2px)}
+#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(8,8,14,.55) 100%);z-index:5}
+#world{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0}
+#world>*{position:absolute}
+svg{display:block}
+
+/* ---------- nodes ---------- */
+.node{width:104px;height:104px}
+.box{position:absolute;inset:0;border-radius:24px;border:3px solid #3d3d56;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.box svg{width:62px;height:62px}
+.box .emo{font-size:58px;line-height:1}
+.badge{position:absolute;right:-14px;top:-14px;width:36px;height:36px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:800;font-size:20px;background:#1c1c28;border:3px solid #34d399;color:#34d399}
+.badge.run{border:5px solid rgba(255,154,60,.3);border-top-color:#ffb066;border-right-color:#ff9a3c;background:#1c1c28;box-shadow:0 0 14px rgba(255,154,60,.6)}
+.badge.ok{background:#22c07a;color:#fff;border-color:#171720}
+.badge.gray{background:#8d93ab;color:#fff;border-color:#171720}
+.lbl{position:absolute;left:-78px;top:120px;width:260px;text-align:center}
+.lbl b{display:block;font-size:22px;line-height:1.2;font-weight:700;color:#f4f5ff}
+.lbl span{display:block;margin-top:4px;font-size:17px;color:#9a9db8;font-weight:500}
+.port{position:absolute;width:14px;height:14px;border-radius:50%;background:#171720;border:3px solid #6a6a88}
+.port.in{left:-9px;top:45px}
+.port.out{right:-9px}
+.bolt{position:absolute;left:-30px;top:30px;width:36px;height:44px;border-radius:18px 0 0 18px;background:#2a2230;border:3px solid #ff9a3c;border-right:none;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tag{padding:9px 18px;border-radius:999px;background:#2a2230;border:2px solid #ff9a3c;color:#ffc58a;font-weight:600;font-size:19px;white-space:nowrap;transform:translateX(-50%)}
+
+/* ---------- wires ---------- */
+.pill{padding:5px 16px;border-radius:999px;font-weight:800;font-size:19px;transform:translate(-50%,-50%);color:#06210f}
+.pill.si{background:#34d399}
+.pill.no{background:#fb6a7a;color:#2a0509}
+.items{padding:3px 10px;border-radius:8px;background:#1f1f2c;border:1px solid #3d3d56;color:#b8bad4;font-size:15px;font-weight:600;transform:translate(-50%,-50%);white-space:nowrap}
+.pulse{width:20px;height:20px;border-radius:50%;margin:-10px 0 0 -10px;background:radial-gradient(circle,#fff 0 30%,#ff8a70 60%,#ff6d5a 100%);box-shadow:0 0 18px 7px rgba(255,109,90,.65)}
+
+/* ---------- panels ---------- */
+.panel{width:450px;background:#1d1d2a;border:1.5px solid #41415c;border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.02);overflow:hidden;transform-origin:50% 100%}
+.ph{display:flex;align-items:center;gap:10px;padding:13px 18px;background:#252536;border-bottom:1.5px solid #34344c}
+.pi svg{width:24px;height:24px}
+.pi{display:flex;font-size:22px}
+.pt{font-weight:700;font-size:18px;color:#e9ebfa;flex:1}
+.pc{font-size:14px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(52,211,153,.16);color:#4ee0a8}
+.pb{padding:16px 18px 18px;font-size:18px;line-height:1.45}
+.kv{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed #33334a}
+.kv:last-child{border-bottom:none}
+.kv i{font-style:normal;width:92px;flex:none;color:#8f93b2;font-weight:600;font-size:16px;padding-top:2px}
+.kv span{color:#f1f2ff;font-weight:600}
+pre{font-family:'DejaVu Sans Mono','Liberation Mono',monospace;font-size:18px;line-height:1.55;white-space:pre;color:#cfd2ee}
+pre .k{color:#7fa8ff}pre .s{color:#8fe08a}pre .p{color:#9a9db8}pre .c{display:inline-block;width:9px;height:19px;background:#ff6d5a;vertical-align:-3px;margin-left:2px}
+.chip{display:inline-block;padding:3px 12px;border-radius:8px;font-size:16px;font-weight:700}
+.res{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;font-weight:800;font-size:22px;margin-top:10px}
+.res.t{background:rgba(52,211,153,.14);color:#4ee0a8;border:1.5px solid rgba(52,211,153,.5)}
+.res.f{background:rgba(251,106,122,.14);color:#ff8794;border:1.5px solid rgba(251,106,122,.5)}
+.sheet{width:100%;border-collapse:collapse;font-size:16px}
+.sheet th{background:#f1f3f4;color:#444;font-weight:600;text-align:left;padding:7px 9px;border:1px solid #d4d7db}
+.sheet td{background:#fff;color:#1e2330;padding:7px 9px;border:1px solid #d4d7db;font-weight:500;white-space:nowrap}
+.sheet td.n{background:#f1f3f4;color:#777;width:28px;text-align:center}
+.slack{display:flex;gap:12px}
+.av{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#ff6d5a,#e8336d);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex:none}
+.sl-h{font-weight:800;font-size:17px}.sl-h small{font-weight:600;color:#8f93b2;font-size:13px;margin-left:6px}
+.sl-h em{font-style:normal;background:#3a3a55;border-radius:4px;padding:1px 5px;font-size:11px;margin-left:6px;color:#cfd2ee;font-weight:700}
+.sl-l{font-size:18px;font-weight:500;color:#eef0fa;line-height:1.5}
+
+.mail{width:310px;height:88px;border-radius:16px;background:#fff;color:#1e2330;display:flex;gap:12px;align-items:center;padding:12px 14px;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+.mail .mi svg{width:42px;height:42px}
+.mail b{display:block;font-size:15px;font-weight:700}
+.mail span{display:block;font-size:14px;color:#555;margin-top:3px;font-weight:500;line-height:1.25}
+
+/* ---------- screen-space UI ---------- */
+#hdr{position:absolute;left:0;top:0;width:1920px;height:64px;background:#1c1c28;border-bottom:1.5px solid #30304a;z-index:20;display:flex;align-items:center;padding:0 22px;gap:22px}
+#hdr .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:28px;letter-spacing:-.5px}
+#hdr .logo svg{width:44px;height:34px}
+#hdr .crumb{font-size:18px;color:#9a9db8;font-weight:500}
+#hdr .crumb b{color:#f4f5ff;font-weight:700}
+#hdr .tabs{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:#14141c;border-radius:12px;padding:5px}
+#hdr .tabs div{padding:7px 22px;border-radius:9px;font-size:17px;font-weight:600;color:#9a9db8}
+#hdr .tabs div.on{background:#2d2d44;color:#fff}
+#hdr .right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:17px;font-weight:600}
+.tg{width:48px;height:26px;border-radius:13px;background:#22c07a;position:relative}
+.tg:after{content:'';position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.btn{padding:8px 20px;border-radius:10px;border:1.5px solid #46465f;color:#e9ebfa}
+.btn.pr{background:#ff6d5a;border-color:#ff6d5a;color:#fff}
+#side{position:absolute;left:0;top:64px;width:62px;bottom:0;background:#1c1c28;border-right:1.5px solid #30304a;z-index:19;display:flex;flex-direction:column;align-items:center;gap:20px;padding-top:24px}
+#side div{width:30px;height:30px;border-radius:9px;border:2.5px solid #4a4a66;opacity:.8}
+#side div:nth-child(2n){border-radius:50%}
+#status{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:18;padding:10px 22px;border-radius:999px;font-size:19px;font-weight:700;display:flex;align-items:center;gap:12px;background:#262636;border:2px solid #ff9a3c;color:#ffc58a;white-space:nowrap}
+#status.ok{border-color:#34d399;color:#4ee0a8}
+#status.idle{border-color:#555570;color:#9a9db8}
+#status .dot{width:14px;height:14px;border-radius:50%;background:#ff9a3c}
+#cap{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);z-index:18;display:flex;align-items:center;gap:20px;padding:16px 34px 16px 18px;border-radius:26px;background:rgba(24,24,36,.94);border:2px solid #3d3d58;box-shadow:0 14px 44px rgba(0,0,0,.55);white-space:nowrap}
+#cap .num{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ff6d5a,#e8336d);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;flex:none}
+#cap b{display:block;font-size:30px;font-weight:800;letter-spacing:-.3px}
+#cap span{display:block;font-size:22px;color:#a9acc8;font-weight:500;margin-top:2px}
+#prog{position:absolute;left:0;bottom:0;height:6px;background:linear-gradient(90deg,#ff6d5a,#e8336d,#8b5cf6);z-index:30}
+#confetti{position:absolute;inset:0;z-index:25;pointer-events:none}
+
+#intro{position:absolute;inset:0;z-index:40;background:radial-gradient(ellipse at 50% 45%,rgba(40,24,52,.9),rgba(14,14,22,.96));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#intro .big{display:flex;align-items:center;gap:26px;font-size:150px;font-weight:800;letter-spacing:-4px}
+#intro .big svg{width:190px;height:150px}
+#intro h1{font-size:88px;font-weight:800;letter-spacing:-2px;margin-top:14px}
+#intro h2{font-size:88px;font-weight:800;letter-spacing:-2px;background:linear-gradient(90deg,#ff4fa3,#ff8a3c);-webkit-background-clip:text;background-clip:text;color:transparent}
+#intro h2 span{-webkit-text-fill-color:initial}
+#intro p{margin-top:44px;font-size:30px;color:#b4b7d6;font-weight:500;max-width:1100px;line-height:1.4}
+#intro p b{color:#fff}
+#intro .chipf{margin-top:30px;padding:10px 26px;border-radius:999px;border:2px solid #4a4a6a;font-size:24px;font-weight:700;color:#e9ebfa;background:rgba(255,255,255,.04)}
+
+#fin{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:22;pointer-events:none}
+#title2{position:absolute;left:0;right:0;top:92px;text-align:center;font-size:70px;font-weight:800;letter-spacing:-2px}
+#title2 em{font-style:normal;background:linear-gradient(90deg,#ff4fa3,#ff8a3c);-webkit-background-clip:text;background-clip:text;color:transparent}
+#title2 em span{-webkit-text-fill-color:initial}
+#title2 small{display:block;font-size:26px;font-weight:600;color:#a9acc8;letter-spacing:0;margin-top:6px}
+.card{position:absolute;top:748px;height:296px;border-radius:26px;background:rgba(27,27,40,.96);border:2px solid #3d3d58;box-shadow:0 18px 50px rgba(0,0,0,.55);padding:22px 30px}
+.card h3{display:flex;align-items:center;gap:12px;font-size:28px;font-weight:800;margin-bottom:10px}
+.card h3 .ck{width:34px;height:34px;border-radius:50%;background:#22c07a;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+#cardL{left:300px;width:700px;border-color:rgba(52,211,153,.55)}
+#cardR{left:1030px;width:590px}
+#cardL .slack{margin-top:2px}
+#cardL .sl-l{font-size:20px;line-height:1.42}
+#cardR ul{list-style:none;font-size:25px;font-weight:600;line-height:1}
+#cardR li{display:flex;align-items:center;gap:14px;margin-top:15px}
+#cardR li i{width:32px;height:32px;border-radius:50%;background:#22c07a;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:19px;color:#fff;flex:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="dots"></div>
+  <div id="world"></div>
+  <div id="vignette"></div>
+
+  <div id="hdr">
+    <div class="logo"><svg viewBox="0 0 64 50" fill="none" stroke="#ea4b71" stroke-width="6"><circle cx="9" cy="25" r="6"/><circle cx="31" cy="25" r="6"/><circle cx="52" cy="9" r="6"/><circle cx="52" cy="41" r="6"/><path d="M15 25h10M36 22l11-11M36 28l11 11"/></svg><span>n8n</span></div>
+    <div class="crumb">Personal / <b>Leads Automáticos</b></div>
+    <div class="tabs"><div class="on">Editor</div><div>Ejecuciones</div></div>
+    <div class="right"><span style="color:#9a9db8">Active</span><div class="tg"></div><div class="btn">Share</div><div class="btn pr">Save</div></div>
+  </div>
+  <div id="side"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <div id="status"></div>
+  <canvas id="confetti" width="1920" height="1080"></canvas>
+  <div id="fin">
+    <div id="title2"></div>
+    <div class="card" id="cardL"></div>
+    <div class="card" id="cardR"></div>
+  </div>
+  <div id="cap"><div class="num"></div><div><b></b><span></span></div></div>
+  <div id="intro">
+    <div class="big"><svg viewBox="0 0 64 50" fill="none" stroke="#ea4b71" stroke-width="6"><circle cx="9" cy="25" r="6"/><circle cx="31" cy="25" r="6"/><circle cx="52" cy="9" r="6"/><circle cx="52" cy="41" r="6"/><path d="M15 25h10M36 22l11-11M36 28l11 11"/></svg><span>n8n</span></div>
+    <h1>Automatiza todo</h1>
+    <h2>sin límites <span>🚀</span></h2>
+    <p><b>Objetivo del flujo:</b> procesar nuevos correos, extraer información con IA, guardarla en una base de datos, notificar al equipo y crear una tarea.</p>
+    <div class="chipf">Flujo: Leads Automáticos</div>
+  </div>
+  <div id="prog"></div>
+</div>
+
+<script>
+/* =========================================================
+   Utilidades
+   ========================================================= */
+const T = 35;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
+const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const win=(t,a,b,d=0.3)=>Math.min(ease(seg(t,a,a+d)),1-ease(seg(t,b-d,b)));
+const $=s=>document.querySelector(s);
+const world=$('#world');
+function el(tag,cls,html,style){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;if(style)Object.assign(e.style,style);return e}
+
+/* =========================================================
+   Iconos (SVG en línea)
+   ========================================================= */
+const ICON={
+ gmail:'<svg viewBox="0 0 48 48"><path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"/><path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"/><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/><path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"/><path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0C43.076,8,45,9.924,45,12.298z"/></svg>',
+ filter:'<svg viewBox="0 0 24 24" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg>',
+ openai:'<svg viewBox="-26 -26 52 52" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round">'+[0,1,2,3,4,5].map(i=>`<rect x="-5.2" y="-23" width="10.4" height="23" rx="5.2" transform="rotate(${i*60})"/>`).join('')+'</svg>',
+ pencil:'<svg viewBox="0 0 24 24" fill="rgba(255,255,255,.92)" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>',
+ sheets:'<svg viewBox="0 0 48 48"><path fill="#43a047" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z"/><path fill="#c8e6c9" d="M40 13L30 13 30 3z"/><path fill="#2e7d32" d="M30 13L40 23 40 13z"/><path fill="#e8f5e9" d="M31,23H17h-2v2v2v2v2v2v2v2h18v-2v-2v-2v-2v-2v-2v-2H31z M17,25h4v2h-4V25z M17,29h4v2h-4V29z M17,33h4v2h-4V33z M31,35h-8v-2h8V35z M31,31h-8v-2h8V31z M31,27h-8v-2h8V27z"/></svg>',
+ notion:'<svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="6" fill="#fff" stroke="#111" stroke-width="2.6"/><text x="24" y="35" text-anchor="middle" font-family="Liberation Serif,DejaVu Serif,serif" font-weight="800" font-size="30" fill="#111">N</text></svg>',
+ slack:'<svg viewBox="0 0 100 100"><rect x="56" y="6" width="17" height="44" rx="8.5" fill="#36c5f0"/><rect x="50" y="56" width="44" height="17" rx="8.5" fill="#2eb67d"/><rect x="27" y="50" width="17" height="44" rx="8.5" fill="#ecb22e"/><rect x="6" y="27" width="44" height="17" rx="8.5" fill="#e01e5a"/><circle cx="35" cy="15" r="8.5" fill="#36c5f0"/><circle cx="85" cy="35" r="8.5" fill="#2eb67d"/><circle cx="65" cy="85" r="8.5" fill="#ecb22e"/><circle cx="15" cy="65" r="8.5" fill="#e01e5a"/></svg>',
+ trash:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>',
+};
+
+/* =========================================================
+   Nodos
+   ========================================================= */
+const X0=360, DX=300, Y=520;
+const N=[
+ {name:'Nuevo correo',sub:'Gmail Trigger',tile:'#ffffff',icon:ICON.gmail,trigger:true},
+ {name:'Filtrar correos',sub:'IF',tile:'linear-gradient(145deg,#2fb86a,#1d8a4e)',icon:ICON.filter,two:true},
+ {name:'Extraer información con IA',sub:'OpenAI',tile:'linear-gradient(145deg,#19b88f,#0e8c6c)',icon:ICON.openai},
+ {name:'Formatear datos',sub:'Set',tile:'linear-gradient(145deg,#4a85ff,#2859e0)',icon:ICON.pencil},
+ {name:'Guardar en Sheets',sub:'Google Sheets',tile:'#ffffff',icon:ICON.sheets},
+ {name:'Crear tarea',sub:'Notion',tile:'#ffffff',icon:ICON.notion},
+ {name:'Notificar al equipo',sub:'Slack',tile:'#ffffff',icon:ICON.slack},
+ {name:'Fin',sub:'Éxito',tile:'linear-gradient(145deg,#4a3410,#2b1d08)',emoji:'🏆',gold:true},
+ {name:'Correo ignorado',sub:'No hacer nada',tile:'linear-gradient(145deg,#6a6cf5,#4547d8)',icon:ICON.trash},
+];
+N.forEach((n,i)=>{ n.x=i<8?X0+i*DX:X0+2*DX; n.y=i<8?Y:850; });
+// run windows [inicio, fin] de cada nodo
+const RUNS=[[[4.0,4.9],[26.2,26.7]],[[5.9,7.0],[27.2,27.9]],[[8.0,10.6]],[[11.5,12.5]],[[13.3,14.9]],[[15.9,17.2]],[[18.2,20.8]],[[21.8,22.6]],[[28.6,29.1]]];
+
+N.forEach((n,i)=>{
+  const d=el('div','node',null,{left:(n.x-52)+'px',top:(n.y-52)+'px'});
+  const box=el('div','box',n.emoji?`<span class="emo">${n.emoji}</span>`:n.icon,{background:n.tile});
+  d.appendChild(box);
+  if(i>0) d.appendChild(el('div','port in'));
+  if(n.two){ d.appendChild(el('div','port out',null,{top:'25px'})); d.appendChild(el('div','port out',null,{top:'65px'})); }
+  else if(i<7) d.appendChild(el('div','port out',null,{top:'45px'}));
+  if(n.trigger) d.appendChild(el('div','bolt','⚡'));
+  const badge=el('div','badge'); d.appendChild(badge);
+  d.appendChild(el('div','lbl',`<b>${n.name}</b><span>${n.sub}</span>`));
+  n.box=box; n.badge=badge; n.dom=d;
+  world.appendChild(d);
+});
+
+/* =========================================================
+   Conexiones
+   ========================================================= */
+const svgNS='http://www.w3.org/2000/svg';
+const wiresSvg=document.createElementNS(svgNS,'svg');
+wiresSvg.setAttribute('width','1');wiresSvg.setAttribute('height','1');wiresSvg.style.overflow='visible';wiresSvg.style.position='absolute';wiresSvg.style.left='0';wiresSvg.style.top='0';
+world.insertBefore(wiresSvg,world.firstChild);
+function bez(x1,y1,x2,y2){const dx=Math.min(110,Math.abs(x2-x1)/2);return `M${x1} ${y1} C${x1+dx} ${y1},${x2-dx} ${y2},${x2} ${y2}`}
+const WIRES=[
+ {a:0,b:1,py:0,pulses:[[5.1,5.9,'ok'],[26.7,27.2,'ok']],itemsAt:.5},
+ {a:1,b:2,py:-20,pulses:[[7.2,8.0,'ok']],itemsAt:.62},
+ {a:1,b:8,py:20,pulses:[[27.9,28.6,'no']],itemsAt:.55,no:true},
+ {a:2,b:3,pulses:[[10.7,11.5,'ok']],itemsAt:.5},
+ {a:3,b:4,pulses:[[12.6,13.3,'ok']],itemsAt:.5},
+ {a:4,b:5,pulses:[[15.0,15.9,'ok']],itemsAt:.5},
+ {a:5,b:6,pulses:[[17.4,18.2,'ok']],itemsAt:.5},
+ {a:6,b:7,pulses:[[21.0,21.8,'ok']],itemsAt:.5},
+];
+WIRES.forEach(w=>{
+  const A=N[w.a],B=N[w.b];
+  const x1=A.x+52,y1=A.y+(w.py||0),x2=B.x-52,y2=B.y;
+  const dd=bez(x1,y1,x2,y2);
+  const base=document.createElementNS(svgNS,'path');base.setAttribute('d',dd);base.setAttribute('fill','none');base.setAttribute('stroke','#5a5a78');base.setAttribute('stroke-width','4');base.setAttribute('stroke-linecap','round');
+  const fill=document.createElementNS(svgNS,'path');fill.setAttribute('d',dd);fill.setAttribute('fill','none');fill.setAttribute('stroke',w.no?'#fb6a7a':'#34d399');fill.setAttribute('stroke-width','5');fill.setAttribute('stroke-linecap','round');
+  wiresSvg.appendChild(base);wiresSvg.appendChild(fill);
+  w.path=base;w.fill=fill;w.len=base.getTotalLength();
+  fill.setAttribute('stroke-dasharray',`0 ${w.len+10}`);
+  w.trail=[0,1,2,3,4].map(k=>{const p=el('div','pulse',null,{display:'none',transform:`scale(${1-k*.16})`,opacity:String(1-k*.2)});world.appendChild(p);return p});
+  const mid=base.getPointAtLength(w.len*w.itemsAt);
+  w.itemsEl=el('div','items','1 item',{left:mid.x+'px',top:(mid.y+(w.b===8?0:-24))+'px',opacity:0,transform:'translate(-50%,-50%)'});
+  if(w.b===8) w.itemsEl.style.left=(mid.x+52)+'px';
+  world.appendChild(w.itemsEl);
+});
+// pastillas Sí / No
+(function(){
+  const w1=WIRES[1],wf=WIRES[2];
+  const p1=w1.path.getPointAtLength(w1.len*.2), p2=wf.path.getPointAtLength(wf.len*.2);
+  world.appendChild(el('div','pill si','Sí',{left:p1.x+'px',top:(p1.y-30)+'px'}));
+  world.appendChild(el('div','pill no','No',{left:'785px',top:'548px'}));
+})();
+
+/* =========================================================
+   Paneles de datos (salida de cada nodo)
+   ========================================================= */
+const shell=(icon,title,count,body)=>`<div class="ph"><span class="pi">${icon}</span><span class="pt">${title}</span>${count?`<span class="pc">${count}</span>`:''}</div><div class="pb">${body}</div>`;
+const kv=(k,v)=>`<div class="kv"><i>${k}</i><span>${v}</span></div>`;
+
+const JSON_SEGS=[['p','{\n  '],['k','"nombre"'],['p',': '],['s','"Juan Pérez"'],['p',',\n  '],['k','"empresa"'],['p',': '],['s','"TechSolution"'],['p',',\n  '],['k','"interes"'],['p',': '],['s','"Automatización de procesos"'],['p','\n}']];
+const JSON_LEN=JSON_SEGS.reduce((a,s)=>a+s[1].length,0);
+function jsonTyped(p){
+  let n=Math.floor(JSON_LEN*p),out='';
+  for(const [c,s] of JSON_SEGS){ if(n<=0)break; const part=s.slice(0,n); n-=s.length; out+=`<span class="${c}">${part.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`; }
+  return out+(p<1?'<span class="c"></span>':'');
+}
+const stag=(t,a,step,k)=>clamp((t-(a+k*step))/0.25); // aparición escalonada
+
+const PANELS=[
+ {n:0,a:4.3,b:5.9,r:t=>shell(ICON.gmail,'Nuevo correo · Gmail Trigger','1 item',
+   kv('De','juan.perez@techsolution.com')+kv('Asunto','Consulta sobre automatización de procesos')+kv('Mensaje','«Hola, soy Juan de TechSolution. Nos interesa automatizar nuestros procesos…»'))},
+ {n:1,a:6.2,b:8.0,r:t=>shell(ICON.filter,'Filtrar correos · IF','1 item',
+   `<div class="kv"><i>Condición</i><span>¿El correo es de un cliente potencial?</span></div>`+
+   `<div class="kv"><i>Evaluación</i><span>Menciona «automatizar» y pide información</span></div>`+
+   `<div class="res t" style="opacity:${ease((t-6.7)/.3)}"><span style="font-size:26px">✔</span> true → sigue por la rama «Sí»</div>`)},
+ {n:2,a:8.3,b:11.5,r:t=>shell(ICON.openai.replace('stroke="#fff"','stroke="#10a37f"'),'Extraer información con IA · OpenAI',t>10.6?'1 item':'',
+   `<div style="font-size:16px;color:#8f93b2;font-weight:600;margin-bottom:8px">${t<10.5?'Analizando el correo…':'Datos clave extraídos'}</div><pre>${jsonTyped(seg(t,8.7,10.4))}</pre>`)},
+ {n:3,a:11.8,b:13.3,r:t=>shell(ICON.pencil.replace(/#fff/g,'#4a85ff').replace('rgba(255,255,255,.92)','#4a85ff'),'Formatear datos · Set','1 item',
+   [['Nombre','Juan Pérez'],['Empresa','TechSolution'],['Interés','Automatización de procesos'],['Estado','Nuevo lead']].map((r,k)=>`<div style="opacity:${stag(t,11.9,.28,k)};transform:translateY(${(1-stag(t,11.9,.28,k))*8}px)">${kv(r[0],r[1])}</div>`).join(''))},
+ {n:4,a:13.6,b:15.9,r:t=>{
+   const p=ease(seg(t,14.0,14.7));
+   return shell(ICON.sheets,'Guardar en Sheets · Leads','1 item',
+   `<table class="sheet"><tr><th></th><th>Nombre</th><th>Empresa</th><th>Interés</th></tr>
+    <tr><td class="n">2</td><td>Ana López</td><td>DataCorp</td><td>CRM</td></tr>
+    <tr><td class="n">3</td><td>Carlos Ruiz</td><td>LogiPlus</td><td>Reportes</td></tr>
+    <tr style="opacity:${p};transform:translateY(${(1-p)*-22}px)"><td class="n" style="background:#c8f1d9;color:#1d6b43;font-weight:700">4</td><td style="background:#c8f1d9;font-weight:700">Juan Pérez</td><td style="background:#c8f1d9;font-weight:700">TechSolution</td><td style="background:#c8f1d9;font-weight:700">Automatización</td></tr></table>
+    <div style="margin-top:10px;font-size:16px;color:#4ee0a8;font-weight:700;opacity:${p}">✔ Fila añadida al final de la hoja</div>`)}},
+ {n:5,a:16.2,b:18.2,r:t=>shell(ICON.notion,'Crear tarea · Notion','1 item',
+   `<div style="font-size:22px;font-weight:800;margin-bottom:10px;opacity:${stag(t,16.3,.25,0)}">📝 Seguimiento: Juan Pérez — TechSolution</div>`+
+   [['Estado','<span class="chip" style="background:#3b3f5c;color:#cfd6ff">Por hacer</span>'],['Interés','<span class="chip" style="background:#4a3b66;color:#e1cfff">Automatización de procesos</span>'],['Asignado','Equipo comercial'],['Vence','Mañana']].map((r,k)=>`<div style="opacity:${stag(t,16.5,.25,k)}">${kv(r[0],r[1])}</div>`).join(''))},
+ {n:6,a:18.5,b:21.8,r:t=>{
+   const L=['<b>Nuevo lead recibido 🎉</b>','Nombre: Juan Pérez','Empresa: TechSolution','Interés: Automatización de procesos','Tarea creada en Notion ✅','Registrado en Google Sheets ✅'];
+   return shell(ICON.slack,'# nuevos-leads · Slack','1 item',
+   `<div class="slack"><div class="av">n8n</div><div><div class="sl-h">n8n Bot<em>APP</em><small>10:42</small></div>`+
+   L.map((l,k)=>`<div class="sl-l" style="opacity:${stag(t,18.9,.4,k)};transform:translateY(${(1-stag(t,18.9,.4,k))*8}px)">${l}</div>`).join('')+`</div></div>`)}},
+ {n:7,a:22.2,b:25.0,r:t=>shell('🏆','Fin · Éxito','',
+   `<div style="text-align:center;padding:6px 0 2px"><div style="font-size:56px;line-height:1.1">🏆</div><div style="font-size:30px;font-weight:800;margin-top:6px;color:#ffd166">¡Éxito!</div><div style="font-size:20px;color:#cfd2ee;font-weight:600;margin-top:6px">Lead procesado y equipo notificado</div></div>`)},
+ {n:1,a:27.4,b:29.4,r:t=>shell(ICON.filter,'Filtrar correos · IF','1 item',
+   `<div class="kv"><i>Correo</i><span>🔥 50% de descuento solo hoy</span></div>`+
+   `<div class="res f" style="opacity:${ease((t-27.8)/.3)}"><span style="font-size:26px">✖</span> false → rama «No»</div>`)},
+];
+PANELS.forEach(p=>{
+  const n=N[p.n];
+  p.dom=el('div','panel',null,{left:(n.x-225)+'px',top:(n.y-98)+'px',opacity:0});
+  p.last='';
+  world.appendChild(p.dom);
+});
+
+/* ---------- tarjetas de correo entrante ---------- */
+const MAILS=[
+ {a:3.0,b:4.0,html:`<div class="mi">${ICON.gmail}</div><div><b>juan.perez@techsolution.com</b><span>Consulta sobre automatización de procesos</span></div>`},
+ {a:25.5,b:26.2,html:`<div class="mi">${ICON.gmail}</div><div><b>promo@ofertas-tienda.com</b><span>🔥 50% de descuento solo hoy</span></div>`},
+];
+MAILS.forEach(m=>{ m.dom=el('div','mail',m.html,{top:(Y-44)+'px',opacity:0}); world.appendChild(m.dom); });
+// etiqueta "escuchando" sobre el trigger
+const listen=el('div','tag','⚡ Escuchando nuevos correos…',{left:N[0].x+'px',top:(N[0].y-104)+'px',opacity:0});
+world.appendChild(listen);
+
+/* =========================================================
+   Cámara
+   ========================================================= */
+const OV=[1410,700,.76];
+const CAM=[[0,...OV],[2.2,...OV],[3.0,360,410,1.25],[5.1,360,410,1.25],[5.9,660,410,1.25],[7.2,660,410,1.25],[8.0,960,410,1.25],[10.7,960,410,1.25],[11.5,1260,410,1.25],[12.6,1260,410,1.25],[13.3,1560,410,1.25],[15.0,1560,410,1.25],[15.9,1860,410,1.25],[17.4,1860,410,1.25],[18.2,2160,410,1.25],[21.0,2160,410,1.25],[21.8,2460,410,1.25],[24.4,2460,410,1.25],[25.4,660,620,1.0],[29.4,660,620,1.0],[30.6,...OV],[T,...OV]];
+function camAt(t){
+  for(let i=0;i<CAM.length-1;i++){const a=CAM[i],b=CAM[i+1];
+    if(t>=a[0]&&t<=b[0]){const p=ease((t-a[0])/(b[0]-a[0]));return[lerp(a[1],b[1],p),lerp(a[2],b[2],p),lerp(a[3],b[3],p)]}}
+  return CAM[CAM.length-1].slice(1);
+}
+
+/* =========================================================
+   Subtítulos, estado y tarjetas finales
+   ========================================================= */
+const CAPS=[
+ {a:3.0,b:5.4,n:'1',t:'Gmail Trigger · Nuevo correo',s:'Llega un correo nuevo y se dispara el flujo'},
+ {a:5.4,b:8.0,n:'2',t:'IF · Filtrar correos',s:'Solo pasan los correos de clientes potenciales'},
+ {a:8.0,b:11.5,n:'3',t:'OpenAI · Extraer información con IA',s:'Analiza el correo y extrae nombre, empresa e interés'},
+ {a:11.5,b:13.3,n:'4',t:'Set · Formatear datos',s:'Estructura la información para guardarla'},
+ {a:13.3,b:15.9,n:'5',t:'Google Sheets · Guardar en Sheets',s:'Registra el lead en la base de datos'},
+ {a:15.9,b:18.2,n:'6',t:'Notion · Crear tarea',s:'Crea una tarea de seguimiento'},
+ {a:18.2,b:21.8,n:'7',t:'Slack · Notificar al equipo',s:'Envía un mensaje con los detalles del nuevo lead'},
+ {a:21.8,b:25.0,n:'8',t:'Fin · Éxito',s:'Lead procesado y equipo notificado'},
+ {a:25.4,b:29.6,n:'No',t:'Rama «No» · Correo ignorado',s:'Si el correo no cumple el criterio, no se hace nada'},
+];
+const cap=$('#cap'),capNum=cap.querySelector('.num'),capT=cap.querySelector('b'),capS=cap.querySelector('span');
+const status=$('#status');
+$('#title2').innerHTML='<em>Automatiza todo sin límites <span>🚀</span></em><small>Flujo «Leads Automáticos» · ejecución completada</small>';
+$('#cardL').innerHTML=`<h3><span class="ck">✓</span>Resultado final</h3><div class="slack"><div class="av">n8n</div><div><div class="sl-h">n8n Bot<em>APP</em><small>#nuevos-leads</small></div>
+ <div class="sl-l"><b>Nuevo lead recibido 🎉</b></div><div class="sl-l">Nombre: Juan Pérez · Empresa: TechSolution</div><div class="sl-l">Interés: Automatización de procesos</div><div class="sl-l">Tarea creada en Notion ✅ · Registrado en Google Sheets ✅</div></div></div>`;
+$('#cardR').innerHTML=`<h3>Con n8n tú ganas</h3><ul><li><i>✓</i>Ahorras tiempo</li><li><i>✓</i>Reduces tareas manuales</li><li><i>✓</i>Conectas tus herramientas favoritas</li><li><i>✓</i>Escalas tu negocio</li></ul>`;
+
+/* ---------- confeti ---------- */
+const cv=$('#confetti'),cx=cv.getContext('2d');
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rng(42),PCOL=['#ff6d5a','#ffd166','#34d399','#4a85ff','#c084fc','#ff4fa3','#ffffff'];
+const PARTS=Array.from({length:150},()=>({ang:-Math.PI/2+(R()-.5)*2.6,sp:500+R()*1000,rot:R()*6.28,vr:(R()-.5)*14,sz:8+R()*10,c:PCOL[Math.floor(R()*PCOL.length)],w:.5+R()}));
+function drawConfetti(t){
+  cx.clearRect(0,0,1920,1080);
+  const tau=t-22.4; if(tau<0||tau>4)return;
+  for(const p of PARTS){
+    const k=(1-Math.exp(-2.2*tau))/2.2;
+    const x=960+Math.cos(p.ang)*p.sp*k, y=470+Math.sin(p.ang)*p.sp*k+0.5*1500*tau*tau*0.55;
+    cx.save();cx.globalAlpha=1-seg(tau,2.6,3.9);cx.translate(x,y);cx.rotate(p.rot+p.vr*tau);cx.fillStyle=p.c;cx.fillRect(-p.sz/2,-p.sz*p.w/2,p.sz,p.sz*p.w);cx.restore();
+  }
+}
+
+/* =========================================================
+   RENDER (determinista: todo depende de t)
+   ========================================================= */
+window.__T=T;
+window.__render=function(t){
+  // cámara
+  const [cxw,cyw,z]=camAt(t);
+  world.style.transform=`translate(${960-cxw*z}px,${540-cyw*z}px) scale(${z})`;
+  const dots=$('#dots'); dots.style.backgroundSize=`${28*z}px ${28*z}px`; dots.style.backgroundPosition=`${960-cxw*z}px ${540-cyw*z}px`;
+
+  // nodos
+  N.forEach((n,i)=>{
+    const runs=RUNS[i]; let running=false; for(const [a,b] of runs) if(t>=a&&t<b) running=true;
+    const done=!running&&t>=runs[0][1];
+    const b=n.badge, bx=n.box;
+    if(running){
+      b.style.display='flex';b.className='badge run';b.textContent='';b.style.transform=`rotate(${t*540}deg)`;
+      bx.style.borderColor='#ff9a3c';bx.style.boxShadow='0 0 0 5px rgba(255,154,60,.22),0 0 36px rgba(255,154,60,.55),0 8px 24px rgba(0,0,0,.45)';
+    }else if(done){
+      b.style.display='flex';b.className='badge '+(i===8?'gray':'ok');b.textContent='✓';b.style.transform='none';
+      const col=i===8?'#8d93ab':(n.gold?'#ffd166':'#34d399');
+      const age=Math.max(...runs.map(r=>t>=r[1]?t-r[1]:-1));
+      const glow=Math.max(0,1-age/1.2);
+      bx.style.borderColor=col;bx.style.boxShadow=`0 0 0 ${4*glow}px ${i===8?'rgba(141,147,171,.25)':'rgba(52,211,153,.25)'},0 0 ${14+30*glow}px ${i===8?'rgba(141,147,171,.35)':'rgba(52,211,153,'+(.25+.4*glow)+')'},0 8px 24px rgba(0,0,0,.45)`;
+    }else{
+      b.style.display='none';bx.style.borderColor='#3d3d56';bx.style.boxShadow='0 8px 24px rgba(0,0,0,.45)';
+    }
+  });
+  // trigger en espera
+  listen.style.opacity=win(t,0.4,4.0,.4)*(0.75+0.25*Math.sin(t*6));
+  listen.style.transform=`translateX(-50%) translateY(${Math.sin(t*4)*3}px)`;
+
+  // conexiones
+  WIRES.forEach(w=>{
+    const P=w.pulses; const p0=P[0];
+    const fillP=ease(seg(t,p0[0],p0[1]));
+    w.fill.setAttribute('stroke-dasharray',`${w.len*fillP} ${w.len+10}`);
+    w.itemsEl.style.opacity=ease(seg(t,p0[1],p0[1]+.3));
+    let act=null; for(const p of P) if(t>=p[0]&&t<=p[1]) act=p;
+    w.trail.forEach((d,k)=>{
+      if(!act){d.style.display='none';return}
+      const p=ease((t-act[0])/(act[1]-act[0]));
+      const pk=clamp(p-k*.045); const pt=w.path.getPointAtLength(w.len*pk);
+      d.style.display='block';d.style.left=pt.x+'px';d.style.top=pt.y+'px';
+    });
+  });
+
+  // paneles
+  PANELS.forEach(p=>{
+    const o=win(t,p.a,p.b,.35);
+    if(o<=0.001){p.dom.style.opacity=0;return}
+    const html=p.r(t); if(html!==p.last){p.dom.innerHTML=html;p.last=html}
+    p.dom.style.opacity=o;
+    p.dom.style.transform=`translateY(calc(-100% - ${(1-o)*18}px)) scale(${.95+.05*o})`;
+  });
+
+  // correos entrantes
+  MAILS.forEach(m=>{
+    const g=N[0]; const p=ease(seg(t,m.a,m.b));
+    if(t<m.a||t>m.b){m.dom.style.opacity=0;return}
+    const x=lerp(g.x-640,g.x-30,p);
+    const sc=1-.55*ease(seg(t,m.b-.3,m.b));
+    m.dom.style.left=(x-155)+'px';
+    m.dom.style.opacity=Math.min(seg(t,m.a,m.a+.25),1-seg(t,m.b-.2,m.b));
+    m.dom.style.transform=`scale(${sc})`;
+  });
+
+  // subtítulo
+  let c=null; for(const k of CAPS) if(t>=k.a&&t<k.b) c=k;
+  if(c){ if(capT.textContent!==c.t){capNum.textContent=c.n;capT.textContent=c.t;capS.textContent=c.s}
+    cap.style.opacity=win(t,c.a,c.b,.3); cap.style.transform=`translateX(-50%) translateY(${(1-win(t,c.a,c.b,.3))*14}px)`;
+  } else cap.style.opacity=0;
+
+  // chip de estado
+  const running=(t>=3.0&&t<22.6)||(t>=25.5&&t<29.1);
+  const finished=(t>=22.6&&t<25.5)||t>=29.1;
+  if(t<2.6||t>30.3){status.style.opacity=0}
+  else{
+    status.style.opacity=1;
+    if(running){status.className='';status.innerHTML='<span class="dot" style="opacity:'+(0.55+0.45*Math.sin(t*9))+'"></span>Ejecutando flujo…'}
+    else if(finished){status.className='ok';status.innerHTML='✔ Ejecución exitosa'}
+    else{status.className='idle';status.innerHTML='Esperando eventos'}
+  }
+
+  // introducción
+  const intro=$('#intro');
+  const io=Math.min(seg(t,0,.5),1-seg(t,2.2,3.0));
+  intro.style.opacity=io; intro.style.display=io<=0.001&&t>1?'none':'flex';
+  intro.style.transform=`scale(${1+.06*seg(t,2.2,3.0)})`;
+
+  // resultado final
+  const fo=ease(seg(t,30.5,31.4));
+  $('#title2').style.opacity=ease(seg(t,30.8,31.6));
+  $('#title2').style.transform=`translateY(${(1-ease(seg(t,30.8,31.6)))*-20}px)`;
+  const cl=$('#cardL'),cr=$('#cardR');
+  cl.style.opacity=fo;cl.style.transform=`translateY(${(1-fo)*40}px)`;
+  const fo2=ease(seg(t,30.9,31.8));
+  cr.style.opacity=fo2;cr.style.transform=`translateY(${(1-fo2)*40}px)`;
+
+  $('#prog').style.width=(t/T*1920)+'px';
+  drawConfetti(t);
+};
+window.__render(0);
+</script>
+</body>
+</html>
