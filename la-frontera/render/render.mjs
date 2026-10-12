@@ -13,7 +13,8 @@
 //
 //   --composicion  juego (por defecto: index.html, con corridas del benchmark) o sim (sim.html: la
 //                  simulación ilustrativa sincronizada con la voz grabada; dura lo que dice sim/voz.json).
-//   --audio        Audio que se mezcla con el video. Con sim, por defecto audio/voz.m4a (obligatorio).
+//   --audio        Audio que se mezcla con el video. Con sim, por defecto audio/mezcla.m4a (voz + música,
+//                  de sim/mezclar.sh) y, si no existe, audio/voz.m4a.
 //   --formato      vertical (por defecto), feed, horizontal o todos (en paralelo, un navegador por formato).
 //   --run          Corrida de public/runs/ (solo juego; por defecto latest; si no existe, demo).
 //   --subtitulos   Dibuja los subtítulos dentro del video (juego: shared/guion.js; sim: frases de sim/voz.json).
@@ -65,7 +66,7 @@ const COMPOSICIONES = {
     pagina: 'sim.html',
     prefijo: 'la-frontera-simulacion',
     duracion: () => JSON.parse(readFileSync(join(RAIZ, 'sim', 'voz.json'), 'utf8')).duracion,
-    audio: join(RAIZ, 'audio', 'voz.m4a'),
+    audio: existsSync(join(RAIZ, 'audio', 'mezcla.m4a')) ? join(RAIZ, 'audio', 'mezcla.m4a') : join(RAIZ, 'audio', 'voz.m4a'),
   },
 }
 const ALIAS_COMPOSICION = { juego: 'juego', principal: 'juego', sim: 'sim', simulacion: 'sim', 'simulación': 'sim' }

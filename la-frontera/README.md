@@ -294,6 +294,22 @@ npm run subtitulos:sim      # solo out/subtitulos-simulacion.srt
 de `src/sim/tiempos.js` (cada elemento entra cuando la voz lo nombra). `npm test` comprueba que cada
 momento caiga dentro de su sección y que el `.srt` coincida con las frases.
 
+
+### Voz más clara y música de fondo
+
+1. `bash sim/limpiar-voz.sh <tu-grabacion.m4a> [inicio_s] [duracion_s]` → `audio/voz-clara.wav`.
+   Recorta, quita "barro" de los graves, da presencia y brillo a la voz y la normaliza. No usa
+   filtro de ruido (con una grabación limpia la deja "ahogada").
+2. `python3 sim/musica.py` → `audio/musica.wav`: música chiptune **original**, generada con código
+   (sin samples ni derechos de terceros), sincronizada con las secciones de `sim/voz.json`
+   (sello del gancho, tarjetas, monedas, GAME OVER, "miles de viajeros" y acorde final).
+3. `bash sim/mezclar.sh` → `audio/mezcla.m4a`: la música baja sola cuando hablas (unos 9 dB),
+   queda unos 16 dB por debajo de la voz, y todo sale a -14 LUFS con pico de -1 dB (estándar de redes).
+   Ajustes: `MUSICA_DB=-9 bash sim/mezclar.sh` (música más baja) o `RATIO=10` (baja más al hablar).
+4. `npm run video:sim -- --formato todos` usa `audio/mezcla.m4a` automáticamente.
+
+La carpeta `audio/` no se sube al repositorio.
+
 ## El flujo completo, en resumen
 
 1. Fija `JUEGO` (presupuesto y vidas) y `PUBLICACION.divulgacion` en `shared/config.js`.
