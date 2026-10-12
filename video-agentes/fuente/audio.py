@@ -1,6 +1,6 @@
 """Synthesize a 120 BPM beat plus SFX synced to the composition's events.
 
-usage: python3 audio.py <meta.json> <out.wav>
+usage: python3 audio.py <meta.json> <out.wav> [music_gain fx_gain]
 meta.json comes from render.cjs: {"total": secs, "sfx": [[t, type], ...]}
 """
 import json
@@ -113,13 +113,13 @@ def place(buf, x, t, g=1.0):
         buf[s:e] += x[: e - s] * g
 
 
-def main(meta_path, out_path):
+def main(meta_path, out_path, music_gain=0.6, fx_gain=0.75):
     meta = json.load(open(meta_path))
     total = meta["total"]
     n = int((total + 0.5) * SR)
     music = np.zeros(n)
     duck = np.ones(n)
-    beat_start = 3.6 + 0.9  # the drop lands on the logo collision
+    beat_start = meta.get("beat_start", 3.6 + 0.9)  # the drop lands on the logo collision
     bpm_t = 0.5
     roots = [55.0, 43.65, 65.41, 49.0]  # A F C G
     t = beat_start
@@ -160,7 +160,7 @@ def main(meta_path, out_path):
         off = -0.25 if kind == "whoosh" else 0.0
         place(fx, sfx(kind), t0 + off, gains[kind])
 
-    mix = music * 0.6 + fx * 0.75
+    mix = music * music_gain + fx * fx_gain
     mix = np.tanh(mix * 1.4) / np.tanh(1.4)
     mix = mix / np.max(np.abs(mix)) * 0.89
     stereo = np.stack([mix, mix], axis=1)
@@ -172,4 +172,4 @@ def main(meta_path, out_path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], *map(float, sys.argv[3:5]))

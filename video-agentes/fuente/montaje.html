@@ -1,0 +1,256 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:960px;overflow:hidden;background:#0b0714;font-family:"Inter Display",Inter,sans-serif;color:#fff}
+#bg{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0}
+#stage{position:absolute;inset:0}
+#flash{position:absolute;inset:0;pointer-events:none}
+#prog{position:absolute;left:0;top:0;height:10px;background:linear-gradient(90deg,#D97757,#ffb36b,#25D366)}
+.abs{position:absolute}
+.c{display:flex;align-items:center;justify-content:center}
+.col{display:flex;flex-direction:column;align-items:center}
+.row{display:flex;align-items:center}
+.big{font-weight:900;letter-spacing:-.03em;line-height:.92;text-transform:uppercase}
+.card{background:rgba(24,22,34,.92);border:2px solid rgba(255,255,255,.1);border-radius:40px;box-shadow:0 40px 90px rgba(0,0,0,.55)}
+.g{color:#2fe07a}.o{color:#ff8a5c}.mut{color:#a7a3b8}
+.pill{display:inline-flex;align-items:center;gap:14px;border-radius:999px;padding:16px 34px;font-weight:800;font-size:40px}
+.grad{background:linear-gradient(90deg,#ff8a5c,#ffd36b 45%,#2fe07a);-webkit-background-clip:text;background-clip:text;color:transparent}
+</style></head>
+<body>
+<div id="bg"></div>
+<div id="fit" style="position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;transform:translate(540px,480px) scale(.66) translate(-540px,-900px)"><div id="cam"><div id="stage"></div></div></div>
+<div id="flash"></div>
+<div id="prog"></div>
+<script>
+window.PLAN=[{"n": "hook", "d": 5.3, "warp": [[0.0, 0.0], [1.1, 1.4], [1.75, 3.05], [2.4, 3.4]]}, {"n": "collide", "d": 4.35, "warp": [[0.0, 0.0], [0.9, 0.94], [1.3, 1.3], [1.5, 2.46], [2.2, 3.42]]}, {"n": "mcp", "d": 9.1, "warp": [[0.0, 0.0], [1.1, 3.75], [2.1, 4.85], [2.8, 5.85]]}, {"n": "antes", "d": 8.75, "warp": [[0.0, 0.0], [0.3, 2.25], [1.4, 5.75], [2.6, 7.45]]}, {"n": "ahora", "d": 9.15, "warp": [[0.0, 0.0], [0.2, 0.18], [0.8, 3.0], [2.35, 5.9], [2.8, 6.2]]}, {"n": "paso1", "d": 4.85, "warp": [[0.0, 0.0], [1.3, 2.95], [2.1, 3.95]]}, {"n": "paso2", "d": 5.3, "warp": [[0.0, 0.0], [0.7, 1.0], [1.0, 2.6], [2.0, 3.8], [2.5, 4.2]]}, {"n": "paso3", "d": 4.59, "warp": [[0.0, 0.0], [1.0, 1.59], [1.6, 3.19], [2.2, 3.79]]}, {"n": "paso4", "d": 4.45, "warp": [[0.0, 0.0], [0.9, 1.1], [2.0, 2.9]]}, {"n": "plantillas", "d": 12.85, "warp": [[0.0, 0.0], [0.15, 1.55], [0.5, 2.75], [2.3, 8.65], [3.6, 10.05], [4.6, 11.75], [5.1, 12.15]]}, {"n": "resultado", "d": 5.55, "warp": [[0.0, 0.0], [0.2, 0.1], [0.8, 1.4], [1.4, 3.3], [2.4, 4.4]]}, {"n": "cta", "d": 11.05, "warp": [[0.0, 0.0], [0.2, 0.35], [0.8, 0.85], [2.0, 1.85], [2.2, 1.95], [2.6, 2.55]]}];
+// ===== helpers =====
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const P=(t,a,d=.4)=>clamp((t-a)/d);
+const eo=x=>1-Math.pow(1-x,3);
+const eo5=x=>1-Math.pow(1-x,5);
+const back=(x,c=2.2)=>1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);
+const elastic=x=>x<=0?0:x>=1?1:Math.pow(2,-10*x)*Math.sin((x*10-.75)*(2*Math.PI)/3)+1;
+const lerp=(a,b,p)=>a+(b-a)*p;
+const rnd=(i)=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+// entrance styles
+const slam=(t,a,d=.32)=>{const p=P(t,a,d);return `opacity:${clamp(p*3)};transform:scale(${lerp(2.6,1,eo5(p))});filter:blur(${(1-p)*14}px)`};
+const pop=(t,a,d=.5)=>{const p=P(t,a,d);return `opacity:${clamp(p*3)};transform:scale(${p<=0?0:back(p)})`};
+const up=(t,a,d=.45,dy=80)=>{const p=P(t,a,d);return `opacity:${eo(p)};transform:translateY(${(1-eo(p))*dy}px)`};
+const fromX=(t,a,dx,d=.5)=>{const p=P(t,a,d);return `opacity:${clamp(p*2)};transform:translateX(${(1-eo5(p))*dx}px) rotate(${(1-eo(p))*dx/40}deg)`};
+const stamp=(t,a,rot=-12)=>{const p=P(t,a,.28);return `opacity:${clamp(p*3)};transform:rotate(${rot}deg) scale(${lerp(3,1,eo5(p))})`};
+const typed=(s,t,a,cps=30)=>s.slice(0,Math.max(0,Math.floor((t-a)*cps)));
+const caret=t=>`<span style="opacity:${Math.floor(t*2.6)%2}">|</span>`;
+const words=(txt,t,a,gap=.12,size=150,cls='')=>txt.split(' ').map((w,i)=>`<span class="${cls}" style="display:inline-block;margin:0 .12em;${slam(t,a+i*gap,.28)}">${w}</span>`).join('');
+
+// ===== icons =====
+const claude=(s=90)=>{let r='';for(let i=0;i<12;i++){const a=i*30+(i%2?8:0);const L=i%3===0?44:i%3===1?38:41;
+ r+=`<rect x="47" y="${50-L}" width="9" height="${L}" rx="4.5" transform="rotate(${a} 50 50)" fill="#D97757"/>`}
+ return `<svg width="${s}" height="${s}" viewBox="0 0 100 100">${r}</svg>`};
+const claudeTile=(s=240,rot=0)=>`<div class="c" style="width:${s}px;height:${s}px;border-radius:${s*.27}px;background:linear-gradient(160deg,#3a2a24,#1f1715);border:3px solid rgba(217,119,87,.55);box-shadow:0 0 80px rgba(217,119,87,.45)"><div style="transform:rotate(${rot}deg)">${claude(s*.64)}</div></div>`;
+const wa=(s=110)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#25D366"/>
+ <path d="M50 21a28 28 0 0 0-24 42.5L22 78l15-3.8A28 28 0 1 0 50 21z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
+ <path d="M40 36c1.5-1.6 3.5-1.6 4.3.3l2.4 5.6c.5 1.2 0 2.3-.9 3.1l-1.6 1.4c1.6 3.6 4.4 6.5 8 8.2l1.5-1.6c.8-.9 2-1.2 3.1-.7l5.6 2.5c1.8.8 1.8 2.9.2 4.4-2.7 2.6-6.6 3.2-10.2 1.6C45 57.6 39.6 52 37.3 45.4c-1.2-3.4-.2-7 2.7-9.4z" fill="#fff"/></svg>`;
+const waTile=(s=240)=>`<div class="c" style="width:${s}px;height:${s}px;border-radius:${s*.27}px;background:linear-gradient(160deg,#173a26,#0f2117);border:3px solid rgba(37,211,102,.55);box-shadow:0 0 80px rgba(37,211,102,.45)">${wa(s*.68)}</div>`;
+const meta=(w=90,col='#2f7bff')=>`<svg width="${w}" height="${w*.55}" viewBox="0 0 100 55"><path d="M8 40c0-16 8-30 18-30 9 0 15 10 24 24s13 18 20 18c8 0 14-6 14-18 0-16-7-26-16-26-8 0-14 8-18 15-4-7-10-15-18-15" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const check=(s=60,col='#2fe07a')=>`<svg width="${s}" height="${s}" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="${col}"/><path d="M14 25l7 7 13-15" fill="none" stroke="#0d1a12" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const spin=(t,s=56,col='#7aa8ff')=>`<svg width="${s}" height="${s}" viewBox="0 0 48 48" style="transform:rotate(${t*500}deg)"><circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="5"/><path d="M24 6a18 18 0 0 1 18 18" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round"/></svg>`;
+const burst=(t,a,cx,cy,col='#ffd36b',n=14,R=420)=>{const p=P(t,a,.7);if(p<=0||p>=1)return'';let s='';
+ for(let i=0;i<n;i++){const ang=i/n*Math.PI*2+rnd(i)*.3, r=eo(p)*R*(0.7+rnd(i+9)*.5);
+  s+=`<div class="abs" style="left:${cx+Math.cos(ang)*r}px;top:${cy+Math.sin(ang)*r}px;width:${26*(1-p)+4}px;height:${26*(1-p)+4}px;border-radius:${i%2?'50%':'6px'};background:${i%3?col:'#fff'};transform:translate(-50%,-50%) rotate(${p*300}deg);opacity:${1-p}"></div>`}
+ s+=`<div class="abs" style="left:${cx}px;top:${cy}px;width:${eo(p)*R*2.2}px;height:${eo(p)*R*2.2}px;border-radius:50%;border:${10*(1-p)}px solid ${col};transform:translate(-50%,-50%);opacity:${1-p}"></div>`;return s};
+const confetti=(t,a)=>{const p=t-a;if(p<0)return'';let s='';const cols=['#2fe07a','#ffd36b','#ff8a5c','#7aa8ff','#fff','#c58bff'];
+ for(let i=0;i<70;i++){const x=rnd(i)*1080, vy=380+rnd(i+3)*500, y=-60+vy*p+ (rnd(i+5)*-300), sway=Math.sin(p*4+i)*40;
+  s+=`<div class="abs" style="left:${x+sway}px;top:${y}px;width:${14+rnd(i+7)*12}px;height:${24+rnd(i+8)*14}px;background:${cols[i%6]};border-radius:4px;transform:rotate(${p*400*(rnd(i+2)-.5)+i*20}deg)"></div>`}
+ return s};
+const label=(txt,t,a=0,col='#ffd36b')=>`<div style="${up(t,a,.35,40)}"><span class="pill" style="background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);font-size:34px;letter-spacing:.14em;color:${col}">${txt}</span></div>`;
+
+// ===== scenes =====
+// each: n, d, accent (bg tint), r(t) -> html, fx: [[t,type]], shake: [t..]
+const S=[
+{n:'hook',d:3.6,tint:[255,93,93],fx:[[0,'hit'],[.55,'hit'],[1.1,'hit'],[1.75,'glitch'],[2.4,'whoosh']],shake:[0,.55,1.1,1.75],flash:[1.75],
+ r:t=>{const dead=P(t,1.75,.5);const gl=t>1.75&&t<2.2;
+  return `<div class="col abs" style="left:0;right:0;top:470px;gap:10px">
+   <div class="big" style="font-size:150px;${slam(t,0)}">OLVÍDATE</div>
+   <div class="big mut" style="font-size:110px;${slam(t,.55)}">DE LOS</div>
+   <div style="position:relative;margin-top:20px;${slam(t,1.1)}">
+     <div class="big" style="font-size:190px;color:${dead>0?'#ff5d5d':'#fff'};transform:translateX(${gl?(rnd(Math.floor(t*30))-.5)*60:0}px);
+       text-shadow:${gl?'12px 0 #00e5ff,-12px 0 #ff2e63':'none'}">CHAT<br>BOTS</div>
+     <div class="abs" style="left:-40px;top:46%;height:28px;border-radius:20px;background:#ff3b3b;width:${eo5(P(t,1.75,.25))*115}%;transform:rotate(-10deg);box-shadow:0 0 40px #ff3b3b"></div>
+   </div></div>
+   <div class="abs c" style="left:0;right:0;top:1450px;${up(t,2.3,.4)}"><span class="pill" style="background:#ff3b3b;font-size:44px">están muertos ☠</span></div>`}},
+
+{n:'collide',d:4.4,tint:[217,119,87],fx:[[0,'whoosh'],[.9,'boom'],[1.5,'hit'],[2.2,'pop']],shake:[.9],flash:[.9],
+ r:t=>{const p=eo5(P(t,0,.9));const hit=t>.9;
+  const bounce=hit?Math.sin((t-.9)*18)*Math.exp(-(t-.9)*5)*30:0;
+  return `<div class="abs" style="left:${lerp(-300,290-bounce,p)}px;top:520px;transform:translate(-50%,0) rotate(${lerp(-40,0,p)}deg)">${claudeTile(260,t*40)}</div>
+   <div class="abs" style="left:${lerp(1380,790+bounce,p)}px;top:520px;transform:translate(-50%,0) rotate(${lerp(40,0,p)}deg)">${waTile(260)}</div>
+   ${burst(t,.9,540,650,'#ffd36b',18,520)}
+   <div class="col abs" style="left:0;right:0;top:960px;gap:24px">
+     <div class="big mut" style="font-size:80px;${up(t,1.3,.35)}">Claude ahora crea</div>
+     <div class="big grad" style="font-size:168px;padding:0 20px;${slam(t,1.5,.35)}">AGENTES<br>DE IA</div>
+     <div style="${up(t,2.2,.4)}" class="row"><span class="pill" style="background:#25D366;color:#06210f;font-size:46px">${wa(56)} en WhatsApp</span></div>
+   </div>`}},
+
+{n:'mcp',d:4.6,tint:[47,123,255],fx:[[0,'hit'],[1.1,'stamp'],[2.1,'pop'],[2.8,'tick']],shake:[0,1.1],flash:[],
+ r:t=>`<div class="col abs" style="left:0;right:0;top:330px">
+   <div class="big" style="font-size:220px;color:#ffd36b;${slam(t,0,.3)};text-shadow:0 0 60px rgba(255,211,107,.5)">¿CÓMO?</div>
+   <div class="card col" style="margin-top:80px;width:900px;padding:56px 40px;${stamp(t,1.1,-4)};border-color:rgba(47,224,122,.45);background:linear-gradient(180deg,#14281c,#17151f)">
+     <span class="pill" style="background:rgba(47,224,122,.15);color:#2fe07a;font-size:32px;letter-spacing:.16em">NUEVO · OFICIAL</span>
+     <div class="big" style="font-size:104px;margin-top:30px;text-align:center;text-transform:none;letter-spacing:-.02em">WhatsApp Business</div>
+     <div class="big g" style="font-size:210px;margin-top:6px">MCP</div>
+   </div>
+   <div class="row" style="gap:22px;margin-top:60px;${up(t,2.1)}">${meta(120)}<span style="font-size:52px;font-weight:800">Lo lanzó Meta</span></div>
+   <div style="margin-top:26px;${up(t,2.8)}"><span class="pill" style="background:rgba(255,255,255,.08);font-size:40px">15 · septiembre · 2026</span></div>
+ </div>`},
+
+{n:'antes',d:4,tint:[255,59,59],fx:[[0,'hit'],[.3,'pop'],[.5,'pop'],[.7,'pop'],[.9,'pop'],[1.1,'pop'],[1.4,'pop'],[2.6,'glitch']],shake:[0,2.6],flash:[],
+ r:t=>{const items=[['Business Manager',90,560,-8],['Consola developer',520,700,6],['Docs de la API',140,900,5],['Webhooks',600,1040,-7],['Tokens y permisos',70,1190,-4],['Freelancer · 300 €',420,1340,8]];
+  const jit=(i)=>t>1.6?`translate(${Math.sin(t*23+i)*8}px,${Math.cos(t*19+i*2)*8}px)`:'';
+  return `<div class="col abs" style="left:0;right:0;top:250px"><div class="big" style="font-size:200px;color:#ff5d5d;${slam(t,0)}">ANTES</div></div>
+   ${items.map((it,i)=>`<div class="abs" style="left:${it[1]}px;top:${it[2]}px;${pop(t,.3+i*.2,.4)}"><div class="card" style="padding:30px 40px;font-size:46px;font-weight:800;transform:rotate(${it[3]}deg) ${jit(i)};border-color:rgba(255,93,93,.35);white-space:nowrap">${it[0]}</div></div>`).join('')}
+   <div class="abs c" style="left:0;right:0;top:1560px;${slam(t,2.6,.3)}"><span class="big" style="font-size:96px;color:#ff5d5d">= SEMANAS</span></div>`}},
+
+{n:'ahora',d:4.4,tint:[47,224,122],fx:[[0,'whoosh'],[.2,'hit'],[.8,'type'],[2.8,'ding']],shake:[.2],flash:[.15],
+ r:t=>{const q='Claude, crea mi agente de WhatsApp';const s=typed(q,t,.8,22);
+  return `<div class="col abs" style="left:0;right:0;top:330px"><div class="big g" style="font-size:220px;${slam(t,.2)};text-shadow:0 0 70px rgba(47,224,122,.55)">AHORA</div>
+   <div class="big" style="font-size:72px;margin-top:30px;${up(t,.5)}">una sola conversación</div></div>
+   <div class="abs" style="left:90px;right:90px;top:900px;${up(t,.6)}">
+     <div class="card" style="padding:44px;font-size:56px;font-weight:700;line-height:1.25;min-height:250px;border-radius:44px 44px 12px 44px;background:#2b2840">${s}${s.length<q.length?caret(t):''}</div>
+     <div class="row" style="gap:24px;margin-top:40px;${up(t,2.6)}">${claude(90)}<span style="font-size:50px;font-weight:700" class="o">¡Vamos! Empiezo ya.</span></div>
+   </div>`}},
+
+{n:'paso1',d:3.4,tint:[217,119,87],fx:[[0,'whoosh'],[.15,'hit'],[1.3,'click'],[2.1,'ding']],shake:[.15],flash:[],
+ r:t=>stepFrame(t,'01','Conecta el MCP',`
+   <div class="card" style="padding:44px">
+     <div class="row" style="gap:28px">${wa(110)}<div style="flex:1"><div style="font-size:50px;font-weight:800">WhatsApp Business MCP</div><div class="mut" style="font-size:36px">por Meta</div></div></div>
+     <div class="c row" style="margin-top:44px;height:150px;border-radius:30px;gap:24px;font-size:50px;font-weight:900;
+       background:${t>2.1?'#16331f':'#1f6bff'};transform:scale(${t>1.3&&t<1.5?.94:1});border:3px solid ${t>2.1?'#2fe07a':'transparent'}">
+       ${t>2.1?check(70)+'<span class="g">Conectado</span>':meta(90,'#fff')+'Iniciar sesión con Meta'}</div>
+   </div>`)},
+
+{n:'paso2',d:3.8,tint:[122,168,255],fx:[[0,'whoosh'],[.15,'hit'],[1,'tick'],[1.2,'tick'],[1.4,'tick'],[1.6,'tick'],[1.8,'tick'],[2,'tick'],[2.5,'ding']],shake:[.15],flash:[],
+ r:t=>{const code='482197';let b='';for(let i=0;i<6;i++){const on=t>1+i*.2,dn=t>2.5;
+   b+=`<div class="c" style="width:132px;height:170px;border-radius:26px;font-size:90px;font-weight:900;background:#25223a;border:4px solid ${dn?'#2fe07a':on?'#7aa8ff':'rgba(255,255,255,.12)'};transform:scale(${on&&t<1.15+i*.2?1.15:1})">${on?code[i]:''}</div>`}
+  return stepFrame(t,'02','Crea la cuenta y verifica tu número',`
+   <div class="card" style="padding:44px">
+     <div class="row" style="gap:20px">${meta(90)}<span style="font-size:46px;font-weight:800">Cuenta Meta Business</span><span style="margin-left:auto">${t>.7?check(64):spin(t)}</span></div>
+     <div style="margin-top:40px;font-size:40px" class="mut">Código por SMS</div>
+     <div class="row" style="gap:14px;margin-top:22px;justify-content:center">${b}</div>
+   </div>`)}},
+
+{n:'paso3',d:3.8,tint:[47,224,122],fx:[[0,'whoosh'],[.15,'hit'],[1,'ding'],[1.6,'ding'],[2.2,'ding']],shake:[.15],flash:[],
+ r:t=>{const it=['API oficial conectada','Términos aceptados','Pago y verificación'];
+  return stepFrame(t,'03','Conecta la API oficial',`
+   <div class="col" style="gap:26px;align-items:stretch">${it.map((s,i)=>`<div class="card row" style="padding:40px 44px;gap:24px;${fromX(t,.3+i*.15,i%2?600:-600)};border-color:${t>1+i*.6?'rgba(47,224,122,.5)':'rgba(255,255,255,.1)'}">
+     <span style="flex:1;font-size:52px;font-weight:800">${s}</span>${t>1+i*.6?`<span style="${pop(t,1+i*.6,.4)}">${check(76)}</span>`:spin(t,70)}</div>`).join('')}</div>`)}},
+
+{n:'paso4',d:3.8,tint:[37,211,102],fx:[[0,'whoosh'],[.15,'hit'],[.9,'pop'],[2,'pop']],shake:[.15],flash:[],
+ r:t=>stepFrame(t,'04','Envía el primer mensaje',`
+   <div style="margin:0 auto;width:760px;border-radius:60px;overflow:hidden;border:6px solid #2b2b35;box-shadow:0 40px 100px rgba(0,0,0,.6)">
+     <div class="row" style="gap:22px;padding:30px 36px;background:#1f2c34">${wa(80)}<div><div style="font-size:42px;font-weight:800">Tu negocio</div><div style="font-size:30px;color:#8696a0">agente activo · 24/7</div></div></div>
+     <div style="height:560px;background:#0b141a;padding:36px;display:flex;flex-direction:column;gap:26px">
+       <div style="${pop(t,.9,.45)};transform-origin:right;align-self:flex-end;max-width:560px;background:#005c4b;border-radius:30px 30px 8px 30px;padding:28px 32px;font-size:44px;line-height:1.25">¡Hola! ¿En qué te puedo ayudar? <span style="font-size:28px;color:${t>1.5?'#53bdeb':'#8696a0'}">✓✓</span></div>
+       <div style="${pop(t,2,.45)};transform-origin:left;align-self:flex-start;background:#202c33;border-radius:30px 30px 30px 8px;padding:28px 32px;font-size:44px">Quiero hacer un pedido</div>
+     </div></div>`)},
+
+{n:'plantillas',d:6.6,tint:[255,181,71],fx:[[0,'whoosh'],[.15,'hit'],[1.2,'tick'],[2.3,'stamp'],[3.6,'type'],[4.6,'stamp'],[4.7,'win']],shake:[.15,2.3,4.6],flash:[4.6],
+ r:t=>{const fixed=t>3.6;
+  return `<div class="col abs" style="left:0;right:0;top:250px">${label('LO MÁS LOCO',t,0)}
+    <div class="big" style="font-size:130px;margin-top:30px;${slam(t,.15)}">PLANTILLAS</div>
+    <div style="font-size:52px;font-weight:700;margin-top:18px;${up(t,.5)}" class="mut">Claude las crea y las manda a Meta</div></div>
+   <div class="abs" style="left:80px;right:80px;top:760px;${up(t,.6)}"><div class="card" style="padding:50px;position:relative">
+     <div class="mut" style="font-size:32px;font-weight:800;letter-spacing:.14em">BIENVENIDA</div>
+     <div style="margin-top:22px;font-size:58px;font-weight:700;line-height:1.3;${fixed&&t<4.6?'color:#ffd36b':''}">${fixed?'¡Hola {{1}}! Gracias por escribirnos. ¿En qué te ayudamos?':'¡Hola {{1}}! Gracias {{2}}{{3}}'}</div>
+     <div class="row" style="gap:20px;margin-top:36px;height:70px">${t<2.3?spin(t,60,'#ffb547')+'<span style="font-size:44px;font-weight:800;color:#ffb547">En revisión…</span>':t<3.6?'':t<4.6?claude(64)+'<span style="font-size:44px;font-weight:800" class="o">Corrigiendo y reenviando…</span>':''}</div>
+     ${t>2.3&&t<3.6?`<div class="abs c" style="inset:0;${stamp(t,2.3,-14)}"><div style="border:12px solid #ff3b3b;border-radius:30px;padding:16px 50px;font-size:120px;font-weight:900;color:#ff3b3b;background:rgba(40,8,8,.75)">RECHAZADA</div></div>`:''}
+     ${t>4.6?`<div class="abs c" style="inset:0;${stamp(t,4.6,-10)}"><div style="border:12px solid #2fe07a;border-radius:30px;padding:16px 50px;font-size:120px;font-weight:900;color:#2fe07a;background:rgba(6,34,16,.8)">APROBADA</div></div>`:''}
+   </div></div>
+   <div class="abs" style="left:0;right:0;top:1480px;text-align:center;font-size:50px;font-weight:800;${up(t,5.1)}">Si Meta la rechaza, <span class="g">la arregla sola</span></div>
+   ${confetti(t,4.6)}`}},
+
+{n:'resultado',d:4.2,tint:[197,139,255],fx:[[0,'whoosh'],[.2,'hit'],[.8,'hit'],[1.4,'hit'],[2.4,'win']],shake:[.2,.8,1.4],flash:[],
+ r:t=>{const n=Math.floor(eo(P(t,1.4,.8))*24);
+  return `<div class="col abs" style="left:0;right:0;top:300px;gap:50px">${label('RESULTADO',t,0,'#c58bff')}
+   ${[['0','líneas de código','#ffd36b',.2],['0 €','de freelancer','#ff8a5c',.8],[n+'/7','tu agente atiende','#2fe07a',1.4]].map(r=>`
+   <div class="col" style="${slam(t,r[3],.32)}"><div class="big" style="font-size:230px;color:${r[2]};text-shadow:0 0 60px ${r[2]}66">${r[0]}</div><div style="font-size:56px;font-weight:800;margin-top:-6px">${r[1]}</div></div>`).join('')}
+  </div>`}},
+
+{n:'cta',d:4.6,tint:[37,211,102],fx:[[0,'whoosh'],[.2,'hit'],[.8,'type'],[2,'pop'],[2.2,'win']],shake:[.2],flash:[],
+ r:t=>{const q='Hola, quiero aprender';const w=typed(q,t,.8,16);
+  return `<div class="col abs" style="left:0;right:0;top:330px">
+   <div class="big" style="font-size:118px;text-align:center;${slam(t,.2)}">¿QUIERES<br><span class="g">APRENDER?</span></div>
+   <div class="row" style="margin-top:70px;width:940px;padding:30px 30px 30px 50px;border-radius:999px;background:#1f2c34;border:4px solid ${t>2?'#25D366':'rgba(255,255,255,.15)'};${up(t,.5)};box-shadow:${t>2?'0 0 80px rgba(37,211,102,.5)':'none'}">
+     <span style="flex:1;font-size:58px;font-weight:700">${w}${w.length<q.length?caret(t):''}</span>
+     <div class="c" style="width:130px;height:130px;border-radius:50%;background:${t>2?'#25D366':'#3a4a52'};transform:scale(${t>2&&t<2.2?1.2:1})"><svg width="62" height="62" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z" fill="#fff"/></svg></div>
+   </div>
+   <div class="big" style="font-size:150px;margin-top:80px;${slam(t,2.2,.3)}">ESCRÍBEME</div>
+   <div style="font-size:72px;font-weight:900;margin-top:24px;${up(t,2.6)}"><span class="grad">y yo te ayudo</span></div>
+  </div>${burst(t,2,540,820,'#25D366',16,560)}`}},
+];
+function stepFrame(t,num,title,body){
+  return `<div class="abs" style="left:0;right:0;top:250px" >
+    <div class="row c" style="gap:30px">
+      <div class="big" style="font-size:230px;color:transparent;-webkit-text-stroke:5px #ffd36b;${slam(t,.15,.3)}">${num}</div>
+      <div style="${fromX(t,.3,500)};max-width:600px;font-size:66px;font-weight:900;line-height:1.05">${title}</div>
+    </div></div>
+   <div class="abs" style="left:80px;right:80px;top:700px;${up(t,.45,.45,140)}">${body}</div>`}
+
+
+// ===== backgrounds (choose with #bg=name) =====
+const BG=(location.hash.match(/bg=(\w+)/)||[])[1]||'verde';
+const BGS={
+ purpura:(T,tc,beat)=>{let b=`<div class="abs" style="inset:0;background:radial-gradient(90% 60% at 50% 40%,rgba(${tc},${.30+beat*.08}) 0%,rgba(${tc},.06) 55%,transparent 80%),#0b0714"></div>`;
+  for(let k=0;k<4;k++){const x=540+Math.sin(T*.5+k*1.7)*380,y=960+Math.cos(T*.4+k*2.1)*700;
+   b+=`<div class="abs" style="left:${x-350}px;top:${y-350}px;width:700px;height:700px;border-radius:50%;background:rgba(${k%2?tc:'124,77,255'},.22);filter:blur(120px)"></div>`}
+  return b},
+ // warm Claude orange with a slowly rotating sunburst
+ naranja:(T,tc,beat)=>{const rot=T*6;
+  return `<div class="abs" style="inset:0;background:radial-gradient(70% 45% at 50% 42%,#f08a5d 0%,#d0603c 45%,#7a2a17 100%)"></div>
+  <div class="abs" style="left:-900px;top:-500px;width:2880px;height:2880px;transform:rotate(${rot}deg);background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,235,210,${.10+beat*.05}) 0deg 6deg,transparent 6deg 15deg)"></div>
+  <div class="abs" style="inset:0;background:radial-gradient(60% 40% at 50% 42%,transparent 0%,rgba(40,10,4,.55) 100%)"></div>
+  <div class="abs" style="inset:0;opacity:.18;background-image:radial-gradient(rgba(0,0,0,.6) 1.5px,transparent 1.6px);background-size:14px 14px"></div>`},
+ // deep WhatsApp green with drifting chat bubbles
+ verde:(T,tc,beat)=>{let b=`<div class="abs" style="inset:0;background:linear-gradient(170deg,#0d3b26 0%,#072217 55%,#03110b 100%)"></div>
+  <div class="abs" style="inset:-300px;background:repeating-linear-gradient(135deg,rgba(37,211,102,.05) 0 40px,transparent 40px 110px);transform:translateX(${(T*40)%155}px)"></div>`;
+  for(let k=0;k<14;k++){const sz=90+rnd(k)*160,x=rnd(k+1)*1080-sz/2,y=((rnd(k+2)*2300-T*(50+rnd(k+3)*70))%2300+2300)%2300-200,left=k%2;
+   b+=`<div class="abs" style="left:${x}px;top:${y}px;width:${sz}px;height:${sz*.62}px;border:${3+rnd(k+4)*3}px solid rgba(37,211,102,${.12+rnd(k+5)*.15});border-radius:${sz*.2}px ${sz*.2}px ${left?sz*.2:4}px ${left?4:sz*.2}px;transform:rotate(${(rnd(k+6)-.5)*20}deg)"></div>`}
+  return b+`<div class="abs" style="inset:0;background:radial-gradient(70% 50% at 50% 45%,rgba(37,211,102,${.10+beat*.05}),transparent 70%)"></div>`},
+ // black with giant outlined marquee words (kinetic type backdrop)
+ tinta:(T,tc,beat,sc)=>{const W=['AGENTES','CLAUDE','WHATSAPP','IA','AGENTES','META','MCP','AGENTES'];let b=`<div class="abs" style="inset:0;background:#060606"></div>`;
+  for(let k=0;k<8;k++){const dir=k%2?1:-1,txt=(W[k]+' · ').repeat(6),off=((T*(70+k*12)*dir)%1400+1400)%1400;
+   const hot=k===3;b+=`<div class="abs" style="left:${-off}px;top:${k*250-40}px;white-space:nowrap;font-weight:900;font-size:230px;letter-spacing:-.02em;line-height:1;color:${hot?`rgba(${tc},.16)`:'transparent'};-webkit-text-stroke:3px rgba(255,255,255,${hot?0:.07})">${txt}</div>`}
+  return b+`<div class="abs" style="inset:0;background:radial-gradient(65% 45% at 50% 45%,rgba(6,6,6,.82) 0%,rgba(6,6,6,.4) 70%,transparent 100%)"></div>`},
+};
+
+// ===== timeline (warped to the recorded voice) =====
+const fwd=(pts,o)=>{for(let k=1;k<pts.length;k++){const [o0,n0]=pts[k-1],[o1,n1]=pts[k];if(o<=o1)return n0+(o-o0)*(n1-n0)/(o1-o0)}const [ol,nl]=pts[pts.length-1];return nl+(o-ol)};
+const inv=(pts,n)=>{for(let k=1;k<pts.length;k++){const [o0,n0]=pts[k-1],[o1,n1]=pts[k];if(n<=n1)return o0+(n-n0)*(o1-o0)/(n1-n0)}const [ol,nl]=pts[pts.length-1];return ol+(n-nl)};
+for(const s of S){const p=PLAN.find(x=>x.n===s.n);s.d=p.d;s.warp=p.warp}
+let starts=[],acc=0;for(const s of S){starts.push(acc);acc+=s.d}
+window.TOTAL=acc;
+window.SCENES=S.map((s,i)=>({n:s.n,start:+starts[i].toFixed(3),d:s.d}));
+window.SFX=S.flatMap((s,i)=>s.fx.map(f=>[+(starts[i]+fwd(s.warp,f[0])).toFixed(3),f[1]]));
+const bg=document.getElementById('bg'),st=document.getElementById('stage'),cam=document.getElementById('cam'),fl=document.getElementById('flash'),pr=document.getElementById('prog');
+window.render=(T)=>{
+  let i=S.length-1;for(let k=0;k<S.length;k++){if(T<starts[k]+S[k].d){i=k;break}}
+  const sc=S[i],t=T-starts[i],d=sc.d,ti=inv(sc.warp,t);
+  const prev=S[Math.max(0,i-1)].tint, tp=eo(P(t,0,.5));
+  const tc=sc.tint.map((v,j)=>Math.round(lerp(prev[j],v,i?tp:1)));
+  const beat=Math.pow(1-((T*2)%1),3);
+  bg.innerHTML=(BGS[BG]||BGS.purpura)(T,tc,beat,sc,t);
+  st.innerHTML=sc.r(ti);
+  const pin=eo5(P(t,0,.3)), pout=P(t,d-.18,.18);
+  let shake=0;for(const s of sc.shake){const dt=ti-s;if(dt>=0&&dt<.35)shake=Math.max(shake,(1-dt/.35))}
+  const sx=(rnd(Math.floor(T*60))-.5)*40*shake, sy=(rnd(Math.floor(T*60)+99)-.5)*40*shake;
+  const zoom=lerp(1.25,1,pin)*lerp(1,.86,eo(pout))*(1+beat*.006);
+  cam.style.transform=`translate(${sx}px,${sy}px) scale(${zoom})`;
+  cam.style.opacity=Math.min(clamp(pin*1.6),1-pout);
+  cam.style.filter=`blur(${(1-pin)*10+pout*12}px)`;
+  let f=0;for(const s of sc.flash){const dt=ti-s;if(dt>=0&&dt<.25)f=Math.max(f,1-dt/.25)}
+  fl.style.background=`rgba(255,255,255,${f*.6})`;
+  pr.style.width=(T/acc*100)+'%';
+};
+render(0);
+</script></body></html>
