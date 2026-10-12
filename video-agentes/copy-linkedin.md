@@ -42,5 +42,5 @@ Para quien pregunte: el MCP es oficial de Meta y funciona con Claude. Por privad
 
 ## Ganchos alternativos (primeras 2 líneas)
 - "Yo cobraba por configurar esto. Ahora lo hace Claude en una conversación."
-- "Los chatbots de WhatsApp acaban de morir. Y lo digo siendo freelancer que vivía de ellos."
+- "Los chatbots de WhatsApp acaban de morir. Y lo digo siendo freelancer."
 - "Grabé mi primer video. La noticia lo valía."
