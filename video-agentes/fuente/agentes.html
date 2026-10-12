@@ -176,17 +176,17 @@ const S=[
    <div class="col" style="${slam(t,r[3],.32)}"><div class="big" style="font-size:230px;color:${r[2]};text-shadow:0 0 60px ${r[2]}66">${r[0]}</div><div style="font-size:56px;font-weight:800;margin-top:-6px">${r[1]}</div></div>`).join('')}
   </div>`}},
 
-{n:'cta',d:4.6,tint:[124,77,255],fx:[[0,'whoosh'],[.2,'hit'],[.8,'type'],[2,'pop'],[2.2,'win']],shake:[.2],flash:[],
- r:t=>{const w=typed('AGENTE',t,.8,7);const bob=Math.sin(t*7)*18;
-  return `<div class="col abs" style="left:0;right:0;top:420px">
-   <div class="big" style="font-size:150px;${slam(t,.2)}">COMENTA</div>
-   <div class="row" style="margin-top:60px;width:940px;padding:34px 34px 34px 60px;border-radius:999px;background:#211d33;border:4px solid ${t>2?'#7c4dff':'rgba(255,255,255,.15)'};${up(t,.5)};box-shadow:${t>2?'0 0 80px rgba(124,77,255,.6)':'none'}">
-     <span class="big g" style="flex:1;font-size:130px;letter-spacing:.02em">${w}${w.length<6?caret(t):''}</span>
-     <div class="c" style="width:150px;height:150px;border-radius:50%;background:${t>2?'#7c4dff':'#3a3550'};transform:scale(${t>2&&t<2.2?1.2:1})"><svg width="70" height="70" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z" fill="#fff"/></svg></div>
+{n:'cta',d:4.6,tint:[37,211,102],fx:[[0,'whoosh'],[.2,'hit'],[.8,'type'],[2,'pop'],[2.2,'win']],shake:[.2],flash:[],
+ r:t=>{const q='Hola, quiero aprender';const w=typed(q,t,.8,16);
+  return `<div class="col abs" style="left:0;right:0;top:330px">
+   <div class="big" style="font-size:118px;text-align:center;${slam(t,.2)}">¿QUIERES<br><span class="g">APRENDER?</span></div>
+   <div class="row" style="margin-top:70px;width:940px;padding:30px 30px 30px 50px;border-radius:999px;background:#1f2c34;border:4px solid ${t>2?'#25D366':'rgba(255,255,255,.15)'};${up(t,.5)};box-shadow:${t>2?'0 0 80px rgba(37,211,102,.5)':'none'}">
+     <span style="flex:1;font-size:58px;font-weight:700">${w}${w.length<q.length?caret(t):''}</span>
+     <div class="c" style="width:130px;height:130px;border-radius:50%;background:${t>2?'#25D366':'#3a4a52'};transform:scale(${t>2&&t<2.2?1.2:1})"><svg width="62" height="62" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z" fill="#fff"/></svg></div>
    </div>
-   <div style="font-size:60px;font-weight:800;margin-top:70px;text-align:center;line-height:1.2;${up(t,2.2)}">y te paso la guía<br><span class="grad">paso a paso</span></div>
-   <div style="margin-top:60px;transform:translateY(${bob}px);${up(t,2.6)}"><svg width="110" height="110" viewBox="0 0 24 24"><path d="M12 4v14M5 12l7 7 7-7" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </div>${burst(t,2,540,700,'#7c4dff',16,560)}`}},
+   <div class="big" style="font-size:150px;margin-top:80px;${slam(t,2.2,.3)}">ESCRÍBEME</div>
+   <div style="font-size:72px;font-weight:900;margin-top:24px;${up(t,2.6)}"><span class="grad">y yo te enseño</span></div>
+  </div>${burst(t,2,540,820,'#25D366',16,560)}`}},
 ];
 function stepFrame(t,num,title,body){
   return `<div class="abs" style="left:0;right:0;top:250px" >

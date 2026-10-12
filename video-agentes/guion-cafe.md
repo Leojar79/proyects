@@ -16,7 +16,7 @@ Duración: unos 50–60 s. Los tiempos son orientativos: después ajusto la anim
 | 9 | 04 Primer mensaje | "Y cuatro: manda el primer mensaje. Tu agente ya está contestando." | Cuatro dedos y señalas arriba |
 | 10 | PLANTILLAS: rechazada → aprobada | "Pero lo que más me voló la cabeza son las plantillas. Claude las crea, las manda a Meta… y si se las rechazan, las corrige solito y las vuelve a mandar." | Cara de sorpresa real en "si se las rechazan" |
 | 11 | 0 código · 0 € · 24/7 | "Cero código, cero freelancer y un agente atendiendo veinticuatro siete." | Brindas con la taza hacia la cámara |
-| 12 | COMENTA "AGENTE" | "Si quieres la guía paso a paso, comenta AGENTE y te la mando. Yo me voy a terminar mi café." | Señalas hacia abajo y terminas con un sorbo |
+| 12 | ¿QUIERES APRENDER? → ESCRÍBEME y yo te enseño | "¿Quieres aprender a hacerlo? Escríbeme y yo te enseño. Y si necesitas más información, escríbeme también, que yo te ayudo. Yo me voy a terminar mi café." | Te señalas a ti mismo en "yo te enseño" y terminas con un sorbo |
 
 ## Gancho alternativo (por ser tu primer vídeo)
 > "Este es mi primer video, así que voy con calma, con un café… pero la noticia no es nada calmada: los chatbots de WhatsApp acaban de morir."
@@ -34,5 +34,7 @@ Usar la autenticidad suele funcionar muy bien. Graba los dos ganchos y elegimos 
 - No lo memorices palabra por palabra: apréndete la idea de cada bloque y dilo a tu manera. Lo natural engancha más.
 - Habla un 10–20 % más animado de lo normal. En cámara se ve "normal".
 - Mira al lente, no a la pantalla.
+
+**Versión corta del cierre (si quieres que dure menos):** "¿Quieres aprender cómo? Escríbeme y yo te enseño."
 
 Cuando lo tengas, súbelo aquí. Yo coloco la animación arriba y tu vídeo abajo, sincronizo cada escena con tu voz y añado los subtítulos.
