@@ -9,10 +9,10 @@ await p.evaluate((face)=>{render(20);
  <div class="col abs" style="left:0;right:0;top:250px">
    <div class="row" style="gap:34px">${claudeTile(190)}<div style="font-size:90px;font-weight:300;color:#cfe">+</div>${waTile(190)}</div>
    <div style="margin-top:46px"><span class="pill" style="background:rgba(47,224,122,.16);color:#2fe07a;font-size:36px;letter-spacing:.14em;border:2px solid rgba(47,224,122,.4)">NUEVO · MCP OFICIAL DE META</span></div>
-   <div class="big" style="font-size:96px;margin-top:44px;text-align:center">CREA TU</div>
-   <div class="big grad" style="font-size:178px;text-align:center;padding:0 30px;filter:drop-shadow(0 8px 30px rgba(0,0,0,.45))">AGENTE<br>DE IA</div>
-   <div class="big" style="font-size:96px;text-align:center;margin-top:10px">EN WHATSAPP</div>
-   <div class="row" style="gap:18px;margin-top:40px"><span class="pill" style="background:#fff;color:#0b1f12;font-size:44px">0 código</span><span class="pill" style="background:#ffd36b;color:#2a1a00;font-size:44px">4 pasos</span><span class="pill" style="background:#25D366;color:#06210f;font-size:44px">24/7</span></div>
+   <div class="big" style="font-size:104px;margin-top:40px;text-align:center;letter-spacing:-.02em">AHORA CREA</div>
+   <div class="big grad" style="font-size:176px;text-align:center;padding:0 30px;filter:drop-shadow(0 8px 30px rgba(0,0,0,.45))">AGENTES<br>DE IA</div>
+   <div class="big" style="font-size:132px;text-align:center;margin-top:6px;color:#ff8a5c;text-shadow:0 0 50px rgba(217,119,87,.7)">CON CLAUDE</div>
+   <div class="row" style="gap:18px;margin-top:36px"><span class="pill" style="background:#25D366;color:#06210f;font-size:42px">${wa(48)} en WhatsApp</span><span class="pill" style="background:#fff;color:#0b1f12;font-size:42px">0 código</span></div>
  </div>
  <div class="abs" style="left:250px;top:1330px;width:580px;height:500px;border-radius:44px;overflow:hidden;border:8px solid #25D366;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:rotate(-3deg)">
    <img src="file://${face}" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%">
