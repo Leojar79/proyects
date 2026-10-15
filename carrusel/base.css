@@ -1,0 +1,12 @@
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1254px;height:1254px;overflow:hidden}
+body{font-family:'Inter',sans-serif;color:#0b1020;position:relative;
+ background:radial-gradient(circle at 85% 12%,#dbe9ff 0,transparent 45%),radial-gradient(circle at 5% 95%,#e3efff 0,transparent 40%),linear-gradient(160deg,#f7faff,#eaf2ff)}
+.dots{position:absolute;top:44px;right:44px;display:flex;gap:8px;align-items:center}
+.dots b{font-size:28px;font-weight:600;margin-right:14px}
+.dots i{width:34px;height:12px;border-radius:8px;background:#cfd8ea;display:block}
+.dots i.on{background:#0f62fe}
+.author{position:absolute;left:62px;bottom:40px;font-size:30px;font-weight:800}
+.author small{display:block;font-size:26px;font-weight:400;color:#4b5568;margin-top:2px}
+h1{font-weight:900;letter-spacing:-2.5px;line-height:.98}
+.blue{color:#0f62fe}.orange{color:#ff4a14}.green{color:#0e8a64}
