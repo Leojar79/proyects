@@ -20,6 +20,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--cream);color
 .stk{position:absolute;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:var(--paper);font-weight:900;text-transform:uppercase;white-space:nowrap}
 #ticker{position:absolute;left:0;right:0;top:70px;height:26px;background:var(--ink);color:var(--cream);overflow:hidden;z-index:30;font-size:11px;line-height:26px;white-space:nowrap}
 #ticker div{position:absolute;left:0;top:0}
+#fxA,#fxB{position:absolute;top:-60px;height:700px;width:120px;opacity:0;z-index:12;pointer-events:none}
 #bottom{position:absolute;left:0;right:0;top:580px;bottom:0;background:var(--ink);border-radius:30px 30px 0 0;z-index:20}
 #bottom i{position:absolute;left:50%;top:10px;width:46px;height:4px;margin-left:-23px;border-radius:4px;background:#3a3a3a}
 #guides{display:none;position:absolute;left:0;right:0;top:580px;bottom:0;z-index:25;align-items:center;justify-content:center;color:#ffffff66;font-size:13px}
@@ -119,6 +120,7 @@ body.guides #guides{display:flex}
     <div class="abs serif" id="s7b" style="left:28px;top:366px;width:484px;font-size:27px;line-height:1.1">y te diré cuál de los 3 te sirve y cómo implementarlo en tu vida cotidiana o en tu trabajo.</div>
   </div>
 
+  <div id="fxB"></div><div id="fxA"></div>
   <div id="bottom"><i></i></div>
   <div id="guides" class="mono">TU VIDEO AQUÍ</div>
 </div>
@@ -250,6 +252,16 @@ function render(t){
     const sk=P(l,3.4,.2);$('#s7send').style.transform=`scale(${1-.2*Math.sin(sk*Math.PI)})`;
     rise($('#s7b'),l,4.2,.6,14);
   }
+  applyFX(t);
+}
+const FXP=[[4.0, 0.065, 0.22, 0], [5.6, 0.13, 0.32, 1], [7.9, 0.1, 0.28, 0], [8.25, 0.065, 0.22, 0], [13.9, 0.07, 0.25, 1], [18.9, 0.1, 0.28, 0], [19.25, 0.065, 0.22, 0], [32.5, 0.1, 0.28, 0], [32.85, 0.065, 0.22, 0], [45.6, 0.1, 0.28, 0], [51.45, 0.065, 0.22, 0], [53.9, 0.065, 0.22, 0], [54.45, 0.065, 0.22, 0], [55.45, 0.065, 0.22, 0], [56.0, 0.13, 0.32, 1], [56.6, 0.1, 0.28, 0], [56.9, 0.065, 0.22, 0], [79.1, 0.1, 0.28, 0], [79.4, 0.065, 0.22, 0], [82.5, 0.04, 0.2, 0]];const FXB=[[7.9, "#FF4FA0"], [18.9, "#C6F432"], [32.5, "#7C5CFF"], [45.6, "#FF3B2F"], [56.6, "#7C5CFF"], [79.1, "#C6F432"]];
+function applyFX(t){
+  let z=1,sx=0,sy=0;
+  for(const e of FXP){const dt=t-e[0];if(dt<0||dt>1.2)continue;const k=Math.exp(-dt/e[2]);z+=e[1]*k;if(e[3]){sx+=7*Math.sin(dt*55)*Math.exp(-dt/.12);sy+=5*Math.cos(dt*47)*Math.exp(-dt/.12);}}
+  ['s1','s2','s3','s4','s5','s6','s7'].forEach(id=>{const el=$('#'+id);el.style.transformOrigin='50% 48%';el.style.transform=`translate(${sx}px,${sy}px) scale(${z})`;});
+  const A=$('#fxA'),B=$('#fxB');let on=false;
+  for(const e of FXB){const p=(t-e[0])/.5;if(p>=0&&p<=1){const x=-300+p*1150;A.style.background=e[1];B.style.background='#121212';A.style.transform=`translateX(${x}px) skewX(-18deg)`;B.style.transform=`translateX(${x-70}px) skewX(-18deg)`;A.style.opacity=B.style.opacity=1;on=true;break;}}
+  if(!on){A.style.opacity=0;B.style.opacity=0;}
 }
 const WARP=[[0.0, 0.0, 3.6], [3.6, 3.89, 4.01], [7.61, 7.9, 3.75], [11.36, 11.89, 1.81], [13.17, 13.94, 3.36], [16.53, 17.44, 1.46], [17.99, 18.9, 2.2], [20.19, 21.69, 1.66], [21.85, 23.64, 0.86], [22.71, 24.64, 4.01], [26.72, 29.54, 2.96], [29.68, 32.5, 2.25], [31.93, 35.39, 2.36], [34.29, 38.04, 1.31], [35.6, 39.59, 4.81], [40.41, 44.59, 1.01], [41.42, 45.6, 5.2], [46.62, 51.39, 2.01], [48.63, 53.79, 1.11], [49.74, 55.34, 1.26], [51.0, 56.6, 1.0], [52.0, 57.89, 2.46], [54.46, 60.54, 2.86], [57.32, 63.4, 3.8], [61.12, 67.34, 3.31], [64.43, 71.14, 7.96], [72.39, 79.1, 9.45], [81.84, 88.69, 1.81]];
 function warpT(t){for(let i=WARP.length-1;i>=0;i--){const w=WARP[i];if(t>=w[0])return w[1]+Math.min(t-w[0],w[2]);}return 0;}
