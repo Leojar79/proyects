@@ -1,4 +1,4 @@
-# Guion — "3 agentes de IA que parecen iguales" (47 s)
+# Guion — "3 agentes de IA que parecen iguales" (50 s)
 
 Formato 9:16 · 1080×1920 · tú vas en la mitad de abajo.
 
@@ -20,7 +20,7 @@ Formato 9:16 · 1080×1920 · tú vas en la mitad de abajo.
 **0:34 – 0:42 · Diferencias**
 > "Grok entra a tus apps como si fueras tú. Muse corre en una computadora privada solo para tus datos. Y Dots te pide permiso antes de decidir."
 
-**0:42 – 0:47 · Cierre**
-> "Comenta AGENTE y te cuento cuál te conviene a ti."
+**0:42 – 0:50 · Cierre**
+> "Dime cuál es tu necesidad y te diré cuál de los 3 te sirve y cómo implementarlo en tu vida cotidiana o en tu trabajo."
 
 Nota: los casos (informe, cena, lanzamiento) son ejemplos que puse yo para ilustrar lo que dice el video original.
