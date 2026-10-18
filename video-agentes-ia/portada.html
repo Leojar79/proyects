@@ -51,7 +51,7 @@ body.s #q{display:none}
   <div class="stk" id="p2">Grok Bot</div>
 </div>
 <script>
-const q=new URLSearchParams(location.search).get('f')||'v';document.body.className=q;
+const P=new URLSearchParams(location.search);document.body.className=P.get('f')||'v';if(P.get('p'))document.getElementById('person').src=P.get('p');
 </script>
 </body>
 </html>
