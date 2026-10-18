@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Portada</title>
+<style>
+:root{--cream:#F3ECDD;--ink:#121212;--pink:#FF4FA0;--lime:#C6F432;--violet:#7C5CFF;--red:#FF3B2F;--paper:#FFFDF7}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow:hidden;background:var(--cream);font-family:'Inter Display','Inter',sans-serif;color:var(--ink)}
+#c{position:relative;overflow:hidden;background:var(--cream);background-image:radial-gradient(rgba(18,18,18,.14) 1.3px,transparent 1.5px);background-size:14px 14px}
+.blk{position:absolute;font-weight:900;letter-spacing:-.055em;line-height:.84;text-transform:uppercase;white-space:nowrap}
+.stk{position:absolute;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);font-weight:900;text-transform:uppercase;white-space:nowrap;letter-spacing:-.02em}
+#person{position:absolute;filter:drop-shadow(10px 10px 0 var(--ink))}
+#key{position:absolute}
+/* vertical 9:16 */
+body.v,body.v #c{width:540px;height:960px}
+body.v #t1{left:24px;top:112px;font-size:76px;letter-spacing:-.03em}
+body.v #t2{left:24px;top:194px;font-size:76px;letter-spacing:-.03em}
+body.v #t3{left:22px;top:276px;font-size:132px;background:var(--ink);color:var(--lime);padding:14px 20px 22px;border-radius:6px;transform:rotate(-2deg);box-shadow:8px 8px 0 var(--pink)}
+body.v #sk{left:26px;top:46px;font-size:21px;padding:8px 16px;background:var(--pink);transform:rotate(-3deg)}
+body.v #p0{left:24px;top:640px;font-size:34px;padding:8px 18px;background:var(--pink);transform:rotate(-6deg);border-radius:99px}
+body.v #p1{left:24px;top:716px;font-size:34px;padding:8px 18px;background:var(--lime);transform:rotate(4deg);border-radius:99px}
+body.v #p2{left:24px;top:792px;font-size:34px;padding:8px 18px;background:var(--violet);color:#fff;transform:rotate(-4deg);border-radius:99px}
+body.v #person{left:150px;top:420px;width:420px}
+body.v #key{left:8px;top:440px;width:190px;transform:rotate(-18deg)}
+body.v #q{left:26px;top:870px;font-size:15px;letter-spacing:.06em}
+/* cuadrada 1:1 */
+body.s,body.s #c{width:540px;height:540px}
+body.s #t1{left:24px;top:84px;font-size:56px;letter-spacing:-.03em}
+body.s #t2{left:24px;top:144px;font-size:56px;letter-spacing:-.03em}
+body.s #t3{left:22px;top:206px;font-size:96px;background:var(--ink);color:var(--lime);padding:10px 16px 16px;border-radius:6px;transform:rotate(-2deg);box-shadow:7px 7px 0 var(--pink)}
+body.s #sk{left:26px;top:28px;font-size:18px;padding:6px 14px;background:var(--pink);transform:rotate(-3deg)}
+body.s #p0{left:24px;top:340px;font-size:26px;padding:6px 14px;background:var(--pink);transform:rotate(-6deg);border-radius:99px}
+body.s #p1{left:24px;top:398px;font-size:26px;padding:6px 14px;background:var(--lime);transform:rotate(4deg);border-radius:99px}
+body.s #p2{left:24px;top:456px;font-size:26px;padding:6px 14px;background:var(--violet);color:#fff;transform:rotate(-4deg);border-radius:99px}
+body.s #person{left:262px;top:262px;width:296px}
+body.s #key{left:150px;top:300px;width:120px;transform:rotate(-18deg);display:none}
+body.s #q{display:none}
+</style>
+</head>
+<body class="v">
+<div id="c">
+  <div class="stk" id="sk">3 agentes de IA</div>
+  <div class="blk" id="t1">A uno nunca</div>
+  <div class="blk" id="t2">le daría mis</div>
+  <div class="blk" id="t3">llaves</div>
+  <img id="person" src="cutout.png">
+  <svg id="key" viewBox="0 0 200 100"><g stroke="#121212" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"><circle cx="48" cy="50" r="34" fill="#FFC83D"/><circle cx="48" cy="50" r="12" fill="#F3ECDD"/><path d="M80 42h104v16h-14v18h-16V58h-12v14h-16V58H80z" fill="#FFC83D"/></g></svg>
+  <div class="stk" id="p0">Dots</div>
+  <div class="stk" id="p1">Muse</div>
+  <div class="stk" id="p2">Grok Bot</div>
+</div>
+<script>
+const q=new URLSearchParams(location.search).get('f')||'v';document.body.className=q;
+</script>
+</body>
+</html>
