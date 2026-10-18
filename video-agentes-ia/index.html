@@ -139,8 +139,8 @@ function slam(el,t,a,d=.45,s0=1.8){const k=P(t,a,d);const r=rot.get(el)||0;el.st
 function rise(el,t,a,d=.5,y=30){const k=P(t,a,d);const r=rot.get(el)||0;el.style.opacity=clamp(k*2.5);el.style.transform=`translateY(${(1-outC(k))*y}px) rotate(${r}deg)`}
 function slideX(el,t,a,d=.5,x=-560){const k=P(t,a,d);el.style.opacity=k>0?1:0;el.style.transform=`translateX(${(1-outC(k))*x}px)`}
 
-const T={s1:[0,5.4],s2:[5.2,13],s3:[12.8,20.6],s4:[20.4,28.2],s5:[28,34.6],s6:[34.4,41.8],s7:[41.6,50]};
-const TOTAL=50;
+const T={s1:[0,8.1],s2:[7.9,19.1],s3:[18.9,32.5],s4:[32.3,40.1],s5:[40,46.6],s6:[46.4,53.8],s7:[53.6,62]};
+const TOTAL=32.5;
 function scene(id,t){
   const [a,b]=T[id],el=$('#'+id);
   const on=t>=a&&t<b;
@@ -167,43 +167,45 @@ SV.innerHTML=html;
 
 function render(t){
   $('#tk').style.transform=`translateX(${-(t*46)%420}px)`;
-  // S1
+  // S1 (toma 1: 7.9 s)
   let l=scene('s1',t);
-  if(t<T.s1[1]){
-    ['#s1p0','#s1p1','#s1p2'].forEach((s,i)=>{const e=$(s);slam(e,l,.2+i*.25,.45,1.7);const f=Math.sin(t*2+i*2)*4;e.style.transform+=` translateY(${f}px)`});
-    const h=$('#s1h');slam(h,l,.9,.5,1.3);
-    const n=$('#s1n');const k=P(l,3.2,.45);n.style.opacity=k>0?1:0;n.style.transform=`rotate(${-10+(1-outB(k))*12}deg) scale(${2.4-1.4*outB(k)})`;
-    h.style.opacity=l<.9?0:(1-.55*P(l,3.4,.3));
-    rise($('#s1s'),l,4,.4,10);
+  if(t>=T.s1[0]&&t<T.s1[1]){
+    ['#s1p0','#s1p1','#s1p2'].forEach((s,i)=>{const e=$(s);slam(e,l,.3+i*.35,.45,1.7);const f=Math.sin(t*2+i*2)*4;e.style.transform+=` translateY(${f}px)`});
+    const h=$('#s1h');slam(h,l,4.0,.5,1.3);
+    const n=$('#s1n');const k=P(l,5.6,.45);n.style.opacity=k>0?1:0;n.style.transform=`rotate(${-10+(1-outB(k))*12}deg) scale(${2.4-1.4*outB(k)})`;
+    h.style.opacity=l<4.0?0:(1-.55*P(l,5.7,.3));
+    const sb=$('#s1s');sb.textContent=l<5.6?'CONTRATÉ A 3 EMPLEADOS DE IA':'A UNO NUNCA LE DARÍA MIS LLAVES';
+    rise(sb,l,l<5.6?1.0:6.4,.4,10);
   }
   // Agent scenes common
-  function agent(id,l,names,extraDelay){
+  function agent(id,l,aT,tT){
     wipe(id,t);
     const nm=$('#'+id+'n');const k=P(l,.35,.45);nm.style.opacity=k>0?1:0;nm.style.transform=`translateY(${(1-outB(k))*-60}px)`;nm.style.letterSpacing=(-.055-.04*(1-outC(k)))+'em';
-    slam($('#'+id+'a'),l,.7,.4,1.6);slam($('#'+id+'t'),l,.9,.4,1.5);
+    slam($('#'+id+'a'),l,aT,.4,1.6);slam($('#'+id+'t'),l,tT,.4,1.5);
   }
-  // S2
+  // S2 Dots (toma 2: 11 s)
   l=scene('s2',t);
   if(t>=T.s2[0]&&t<T.s2[1]){
-    agent('s2',l);rise($('#s2L'),l,1.0,.4,10);
-    const w=$('#s2w');const kin=P(l,1.1,.5),kout=P(l,3.2,.35);
+    agent('s2',l,1.6,2.9);rise($('#s2L'),l,4.0,.4,10);
+    const w=$('#s2w');const kin=P(l,4.0,.5),kout=P(l,5.8,.35);
     w.style.opacity=kin>0&&kout<1?1:0;w.style.transform=`scale(${(.7+.3*outB(kin))*(1-inOut(kout))}) rotate(${kout*-18}deg)`;
-    slam($('#s2c'),l,3.5,.4,1.8);
-    [0,1,2,3].forEach(i=>slideX($('#s2k'+i),l,1.1+i*.12,.5,260));
-    const tick=[2.0,2.9,4.3,5.5];
+    slam($('#s2c'),l,6.0,.4,1.8);
+    [0,1,2,3].forEach(i=>slideX($('#s2k'+i),l,4.0+i*.12,.5,260));
+    const tick=[4.9,5.4,7.2,8.7];
     [0,1,2,3].forEach(i=>{$('#s2c'+i).textContent=l>=tick[i]?'✓':'';$('#s2c'+i).style.background=l>=tick[i]?'#C6F432':'#FFFDF7'});
-    const zz=$('#s2z');zz.style.opacity=l>3.7?(.5+.5*Math.abs(Math.sin(t*3.5))):0;
-    zz.textContent=l>6.2?'✓ LISTO CUANDO VUELVES':'▶ SIGUE TRABAJANDO';
+    const zz=$('#s2z');zz.style.opacity=l>6.5?(.5+.5*Math.abs(Math.sin(t*3.5))):0;
+    zz.textContent=l>10.0?'✓ LISTO CUANDO VUELVES':'▶ SIGUE TRABAJANDO';
+    if(l>10.0)zz.style.opacity=1;
   }
-  // S3
+  // S3 Muse (toma 3: 13.6 s)
   l=scene('s3',t);
   if(t>=T.s3[0]&&t<T.s3[1]){
-    agent('s3',l);rise($('#s3L'),l,1.0,.4,10);
-    const b=$('#s3b');rise(b,l,1.1,.5,24);
+    agent('s3',l,1.6,2.9);rise($('#s3L'),l,4.0,.4,10);
+    const b=$('#s3b');rise(b,l,4.4,.5,24);
     const txt='Reserva cena el viernes y avísale a Ana';
-    const n=Math.floor(clamp((l-1.6)/2)*txt.length);b.textContent=txt.slice(0,n)+(n<txt.length&&Math.floor(t*3)%2?'|':'');
-    [0,1,2].forEach(i=>{const e=$('#s3k'+i);const k=P(l,3.9+i*.3,.55);const r=[-5,4,-3][i];e.style.opacity=k>0?1:0;const y=-(1-outB(k))*160;e.style.transform=`translateY(${y}px) rotate(${r+(1-k)*20}deg)`});
-    rise($('#s3d'),l,5.8,.4,10);
+    const n=Math.floor(clamp((l-4.8)/4.0)*txt.length);b.textContent=txt.slice(0,n)+(n<txt.length&&l>4.8&&Math.floor(t*3)%2?'|':'');
+    [0,1,2].forEach(i=>{const e=$('#s3k'+i);const k=P(l,10.7+i*.7,.55);const r=[-5,4,-3][i];e.style.opacity=k>0?1:0;const y=-(1-outB(k))*160;e.style.transform=`translateY(${y}px) rotate(${r+(1-k)*20}deg)`});
+    rise($('#s3d'),l,12.9,.4,10);
   }
   // S4
   l=scene('s4',t);
