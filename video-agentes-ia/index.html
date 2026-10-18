@@ -86,6 +86,7 @@ body.guides #guides{display:flex}
     <div class="stk mono" id="s4a" style="left:30px;top:108px;font-size:12px;padding:5px 10px;transform:rotate(-4deg)">XAI · ELON MUSK</div>
     <div class="stk" id="s4t" style="left:28px;top:276px;font-size:22px;padding:7px 16px;background:var(--ink);color:var(--paper);box-shadow:5px 5px 0 var(--lime)">Equipos</div>
     <div class="abs mono" id="s4L" style="left:30px;top:322px;font-size:12px;color:#fff;width:190px;line-height:1.3">CASO → LANZAR UN PRODUCTO</div>
+    <div class="abs mono" id="s4all" style="left:30px;top:430px;width:130px;font-size:13px;line-height:1.3;color:#fff">▶ TODOS TRABAJANDO A LA VEZ</div>
     <svg class="abs" id="s4g" style="left:0;top:0" width="540" height="580" viewBox="0 0 540 580"></svg>
   </div>
 
@@ -102,9 +103,9 @@ body.guides #guides{display:flex}
   <!-- 6 EJEMPLOS -->
   <div class="scene" id="s6">
     <div class="abs blk" id="s6h" style="left:28px;top:118px;font-size:62px">Por ejemplo<span style="color:var(--red)">:</span></div>
-    <div class="slab" id="s6r0" style="top:206px"><div class="nm blk" style="background:var(--violet);color:var(--paper)">Grok</div><div class="tx">Entra a tus apps como si fueras tú</div></div>
-    <div class="slab" id="s6r1" style="top:314px"><div class="nm blk" style="background:var(--lime)">Muse</div><div class="tx">Computadora privada solo para tus datos</div></div>
-    <div class="slab" id="s6r2" style="top:422px"><div class="nm blk" style="background:var(--pink)">Dots</div><div class="tx">Te pide permiso antes de decidir</div></div>
+    <div class="slab" id="s6r0" style="top:206px"><div class="nm blk" style="background:var(--violet);color:var(--paper)">Grok</div><div class="tx">Entra a tus apps como si fueras tú<div class="mono" style="font-size:11px;margin-top:5px;color:#7C5CFF">→ TIENE TUS LLAVES</div></div></div>
+    <div class="slab" id="s6r1" style="top:314px"><div class="nm blk" style="background:var(--lime)">Muse</div><div class="tx">Computadora privada solo para tus datos<div class="mono" style="font-size:11px;margin-top:5px;color:#5a7d00">→ TE LAS GUARDA EN UNA CAJA FUERTE</div></div></div>
+    <div class="slab" id="s6r2" style="top:422px"><div class="nm blk" style="background:var(--pink)">Dots</div><div class="tx">Te pide permiso antes de decidir<div class="mono" style="font-size:11px;margin-top:5px;color:#d6246f">→ TOCA LA PUERTA ANTES DE ENTRAR</div></div></div>
   </div>
 
   <!-- 7 CTA -->
@@ -139,8 +140,8 @@ function slam(el,t,a,d=.45,s0=1.8){const k=P(t,a,d);const r=rot.get(el)||0;el.st
 function rise(el,t,a,d=.5,y=30){const k=P(t,a,d);const r=rot.get(el)||0;el.style.opacity=clamp(k*2.5);el.style.transform=`translateY(${(1-outC(k))*y}px) rotate(${r}deg)`}
 function slideX(el,t,a,d=.5,x=-560){const k=P(t,a,d);el.style.opacity=k>0?1:0;el.style.transform=`translateX(${(1-outC(k))*x}px)`}
 
-const T={s1:[0,8.1],s2:[7.9,19.1],s3:[18.9,32.5],s4:[32.3,40.1],s5:[40,46.6],s6:[46.4,53.8],s7:[53.6,62]};
-const TOTAL=32.5;
+const T={s1:[0,8.1],s2:[7.9,19.1],s3:[18.9,32.7],s4:[32.5,45.8],s5:[45.6,56.8],s6:[56.6,79.3],s7:[79.1,90.5]};
+const TOTAL=90.5;
 function scene(id,t){
   const [a,b]=T[id],el=$('#'+id);
   const on=t>=a&&t<b;
@@ -207,44 +208,47 @@ function render(t){
     [0,1,2].forEach(i=>{const e=$('#s3k'+i);const k=P(l,10.7+i*.7,.55);const r=[-5,4,-3][i];e.style.opacity=k>0?1:0;const y=-(1-outB(k))*160;e.style.transform=`translateY(${y}px) rotate(${r+(1-k)*20}deg)`});
     rise($('#s3d'),l,12.9,.4,10);
   }
-  // S4
+  // S4 Grok (toma 4: 13.1 s)
   l=scene('s4',t);
   if(t>=T.s4[0]&&t<T.s4[1]){
-    agent('s4',l);rise($('#s4L'),l,1.0,.4,10);
-    const sc=P(l,.9,.4);$('#ct').style.opacity=sc;
+    agent('s4',l,1.2,3.8);rise($('#s4L'),l,5.6,.4,10);
+    $('#ct').style.opacity=P(l,5.7,.4);
     for(let i=0;i<5;i++){
-      const k=P(l,1.1+i*.25,.45);
+      const st=6.9+i*1.0,k=P(l,st,.45),p=AG[i];
       $('#nd'+i).style.opacity=k;$('#ln'+i).style.opacity=k;
-      const ph=((l*.55+i*.21)%1);const p=AG[i];
+      const ph=((Math.max(0,l-st)*.55+i*.21)%1);
       const pk=$('#pk'+i);pk.setAttribute('cx',CX+(p[0]-CX)*(1-ph));pk.setAttribute('cy',CY+(p[1]-CY)*(1-ph));pk.style.opacity=k;
       $('#nd'+i).style.transformOrigin=`${p[0]}px ${p[1]}px`;
       $('#nd'+i).style.transform=`scale(${.92+.08*Math.sin(t*5+i)+(1-outB(k))*-.5})`;
     }
+    rise($('#s4all'),l,12.0,.4,10);
     $('#s4g').style.opacity=1;
   }
-  // S5
+  // S5 lo que no pueden (toma 5: 11 s)
   l=scene('s5',t);
   if(t>=T.s5[0]&&t<T.s5[1]){
-    rise($('#s5a'),l,.1,.5,26);
-    $('#s5x').style.width=(P(l,1.8,.35)*100)+'%';
-    $('#s5a').style.opacity=l<.1?0:1-.45*P(l,2.1,.3);
-    rise($('#s5b'),l,2.2,.5,24);
-    [0,1,2,3].forEach(i=>slideX($('#s5r'+i),l,2.9+i*.45,.5,i%2?560:-560));
+    rise($('#s5a'),l,1.0,.5,26);
+    $('#s5x').style.width=(P(l,4.2,.5)*100)+'%';
+    $('#s5a').style.opacity=Math.min(clamp((l-1.0)*2.2),1-.45*P(l,4.8,.3));
+    rise($('#s5b'),l,5.85,.5,24);
+    const rt=[8.3,8.85,9.85,10.4];
+    [0,1,2,3].forEach(i=>slideX($('#s5r'+i),l,rt[i],.5,i%2?560:-560));
   }
-  // S6
+  // S6 las llaves (tomas 6+7: 22.45 s)
   l=scene('s6',t);
   if(t>=T.s6[0]&&t<T.s6[1]){
-    slam($('#s6h'),l,.1,.5,1.3);
-    [0,1,2].forEach(i=>slideX($('#s6r'+i),l,.8+i*2,.55,i%2?560:-560));
+    slam($('#s6h'),l,.3,.5,1.3);
+    const rt=[.9,7.9,16.0];
+    [0,1,2].forEach(i=>slideX($('#s6r'+i),l,rt[i],.55,i%2?560:-560));
   }
-  // S7
+  // S7 cierre (toma 8: 11.4 s)
   l=scene('s7',t);
   if(t>=T.s7[0]&&t<T.s7[1]){
-    slam($('#s7a'),l,.1,.5,1.4);
-    const box=$('#s7box');rise(box,l,.6,.5,30);
-    const w='Mi necesidad es…';const n=Math.floor(clamp((l-1.2)/1.6)*w.length);$('#s7t').textContent=w.slice(0,n)+(n<w.length&&Math.floor(t*3)%2?'|':'');
-    const sk=P(l,3.0,.2);$('#s7send').style.transform=`scale(${1-.2*Math.sin(sk*Math.PI)})`;
-    rise($('#s7b'),l,3.4,.6,14);
+    slam($('#s7a'),l,.3,.5,1.4);
+    rise($('#s7box'),l,1.0,.5,30);
+    const w='Mi necesidad es…';const n=Math.floor(clamp((l-1.4)/1.8)*w.length);$('#s7t').textContent=w.slice(0,n)+(n<w.length&&Math.floor(t*3)%2?'|':'');
+    const sk=P(l,3.4,.2);$('#s7send').style.transform=`scale(${1-.2*Math.sin(sk*Math.PI)})`;
+    rise($('#s7b'),l,4.2,.6,14);
   }
 }
 window.render=render;window.TOTAL=TOTAL;render(0);
