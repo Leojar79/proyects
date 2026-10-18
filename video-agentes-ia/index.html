@@ -2,127 +2,121 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Agentes IA</title>
+<title>Agentes IA v2</title>
 <style>
 :root{
-  --bg:#0A0C11; --ink:#F5F2EA; --mute:#8E93A3; --card:#151925; --line:#262C3D;
-  --dots:#4D8DFF; --muse:#2FD39A; --grok:#FFB02E; --bad:#FF5C6C;
+  --cream:#F3ECDD; --ink:#121212; --pink:#FF4FA0; --lime:#C6F432; --violet:#7C5CFF; --red:#FF3B2F; --paper:#FFFDF7;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:540px;height:960px;background:var(--bg);overflow:hidden;font-family:'Inter','Inter Display',sans-serif;color:var(--ink)}
-#stage{position:relative;width:540px;height:960px;overflow:hidden;background:
-  radial-gradient(420px 320px at 85% 8%,rgba(77,141,255,.16),transparent 70%),
-  radial-gradient(380px 300px at 5% 55%,rgba(47,211,154,.10),transparent 70%),var(--bg)}
-.grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:36px 36px;opacity:.22;mask-image:linear-gradient(#000 0,#000 52%,transparent 62%)}
-.scene{position:absolute;left:0;top:0;width:540px;height:580px;opacity:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--cream);color:var(--ink);font-family:'Inter Display','Inter',sans-serif}
+#stage{position:relative;width:540px;height:960px;overflow:hidden;background:var(--cream);
+  background-image:radial-gradient(rgba(18,18,18,.13) 1.2px,transparent 1.4px);background-size:14px 14px}
+.scene{position:absolute;left:0;top:0;width:540px;height:580px;display:none}
+.panel{position:absolute;left:0;top:0;width:540px;height:580px}
 .abs{position:absolute}
-.kicker{position:absolute;left:28px;top:30px;font-size:11px;letter-spacing:.22em;font-weight:700;color:var(--mute)}
-.prog{position:absolute;left:28px;right:28px;top:56px;height:3px;border-radius:3px;background:var(--line)}
-.prog i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--dots),var(--muse),var(--grok))}
-.hl{position:absolute;left:28px;right:28px;font-weight:800;letter-spacing:-.03em;line-height:1.04}
-.chip{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.02em}
-.card{position:absolute;background:var(--card);border:1px solid var(--line);border-radius:18px}
-.name{position:absolute;left:104px;top:86px;font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.sub{position:absolute;left:104px;top:140px;white-space:nowrap}
-.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden}
-.bar i{display:block;height:100%;width:0;border-radius:8px}
-.row{position:absolute;left:28px;right:28px;height:84px;display:flex;align-items:center;gap:14px;padding:0 16px;background:var(--card);border:1px solid var(--line);border-radius:18px}
-.row b{display:block;font-size:11px;letter-spacing:.16em;margin-bottom:4px}
-.row span{font-size:16px;font-weight:600;line-height:1.22}
-.tile{position:absolute;width:236px;height:104px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:18px;font-weight:700}
-#guides{display:none;position:absolute;left:0;right:0;top:580px;bottom:0;border-top:1px dashed #ffffff55;align-items:center;justify-content:center;color:#ffffff66;font-size:14px;letter-spacing:.2em}
+.blk{font-weight:900;letter-spacing:-.055em;line-height:.82;text-transform:uppercase}
+.mono{font-family:'DejaVu Sans Mono',monospace;font-weight:700;letter-spacing:.04em}
+.serif{font-family:'Bitstream Charter','Liberation Serif',serif;font-style:italic;font-weight:700;letter-spacing:-.02em}
+.stk{position:absolute;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:var(--paper);font-weight:900;text-transform:uppercase;white-space:nowrap}
+#ticker{position:absolute;left:0;right:0;top:70px;height:26px;background:var(--ink);color:var(--cream);overflow:hidden;z-index:30;font-size:11px;line-height:26px;white-space:nowrap}
+#ticker div{position:absolute;left:0;top:0}
+#bottom{position:absolute;left:0;right:0;top:580px;bottom:0;background:var(--ink);border-radius:30px 30px 0 0;z-index:20}
+#bottom i{position:absolute;left:50%;top:10px;width:46px;height:4px;margin-left:-23px;border-radius:4px;background:#3a3a3a}
+#guides{display:none;position:absolute;left:0;right:0;top:580px;bottom:0;z-index:25;align-items:center;justify-content:center;color:#ffffff66;font-size:13px}
 body.guides #guides{display:flex}
-#bottom{position:absolute;left:0;right:0;top:560px;bottom:0;background:linear-gradient(180deg,transparent,#06070b 34%)}
+.chk{width:22px;height:22px;border:3px solid var(--ink);border-radius:6px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex:none}
+.task{position:absolute;left:196px;width:316px;height:38px;display:flex;align-items:center;gap:10px;padding:0 10px;background:var(--paper);border:3px solid var(--ink);border-radius:12px;font-size:15px;font-weight:800;box-shadow:3px 3px 0 var(--ink)}
+.slab{position:absolute;left:28px;right:28px;height:94px;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);border-radius:16px;background:var(--paper);display:flex;align-items:center;overflow:hidden}
+.slab .nm{width:132px;height:100%;display:flex;align-items:center;justify-content:center;border-right:3px solid var(--ink);font-size:30px}
+.slab .tx{padding:0 14px;font-size:17px;font-weight:800;line-height:1.2;letter-spacing:-.01em}
+.bar4{position:absolute;left:0;right:0;height:64px;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);display:flex;align-items:center;font-size:54px;white-space:nowrap}
 </style>
 </head>
 <body>
 <div id="stage">
-  <div class="grid"></div>
-  <div id="bottom"></div>
-  <div class="kicker" id="kicker">AGENTES DE IA · COMPARATIVA</div>
-  <div class="prog"><i id="prog"></i></div>
+  <div id="ticker" class="mono"><div id="tk"></div></div>
 
   <!-- 1 HOOK -->
   <div class="scene" id="s1">
-    <div class="abs" id="s1icons" style="left:0;top:110px;width:540px;height:130px">
-      <div class="abs" data-i="0" style="left:60px;top:0"></div>
-      <div class="abs" data-i="1" style="left:210px;top:0"></div>
-      <div class="abs" data-i="2" style="left:360px;top:0"></div>
-    </div>
-    <div class="hl" id="s1a" style="top:290px;font-size:58px">Parecen<br>iguales.</div>
-    <div class="hl" id="s1b" style="top:290px;font-size:58px;color:var(--grok)">No lo<br>son.</div>
-    <div class="abs" id="s1c" style="left:28px;top:440px;font-size:17px;font-weight:600;color:var(--mute)">3 agentes de IA · 1 diferencia clave</div>
+    <div class="stk" id="s1p0" style="left:34px;top:130px;background:var(--pink);font-size:28px;padding:8px 18px;border-radius:99px">Dots</div>
+    <div class="stk" id="s1p1" style="left:196px;top:176px;background:var(--lime);font-size:28px;padding:8px 18px;border-radius:99px">Muse</div>
+    <div class="stk" id="s1p2" style="left:330px;top:122px;background:var(--violet);color:#fff;font-size:28px;padding:8px 18px;border-radius:99px">Grok Bot</div>
+    <div class="abs blk" id="s1h" style="left:24px;top:300px;font-size:92px;width:520px;white-space:nowrap">¿Iguales?</div>
+    <div class="abs" id="s1n" style="left:90px;top:286px;font-size:150px;color:var(--red);border:10px solid var(--red);padding:6px 26px 14px;border-radius:12px;font-weight:900;letter-spacing:-.05em;line-height:.85;background:rgba(243,236,221,.86)">NO.</div>
+    <div class="abs mono" id="s1s" style="left:28px;top:486px;font-size:13px">3 AGENTES DE IA &nbsp;/&nbsp; 1 DIFERENCIA CLAVE</div>
   </div>
 
   <!-- 2 DOTS -->
   <div class="scene" id="s2">
-    <div class="abs" data-i="0" id="s2ic" style="left:28px;top:80px"></div>
-    <div class="name" id="s2n">Dots</div>
-    <div class="sub" id="s2s"><span class="chip" style="background:#1d2a45;color:#9CC0FF">OpenAI</span> <span class="chip" style="background:var(--dots);color:#fff">Tu trabajo</span></div>
-    <div class="card" id="s2c" style="left:28px;right:28px;top:215px;height:270px;padding:20px">
-      <div style="font-size:11px;letter-spacing:.16em;color:var(--mute);font-weight:700">TAREA EN CURSO</div>
-      <div style="font-size:21px;font-weight:700;margin-top:8px;letter-spacing:-.01em">Preparando informe semanal</div>
-      <div class="bar" style="margin-top:18px"><i id="s2b" style="background:var(--dots)"></i></div>
-      <div id="s2p" style="margin-top:10px;font-size:13px;color:var(--mute);font-weight:600">0%</div>
-      <div id="s2x" style="margin-top:18px;display:flex;gap:10px;align-items:center;opacity:0">
-        <span class="chip" style="background:#3a1c24;color:#FF8795">✕ App cerrada</span>
-        <span style="font-size:14px;font-weight:700;color:#9CC0FF" id="s2y">sigue trabajando…</span>
-      </div>
-      <div id="s2z" style="margin-top:14px;font-size:15px;font-weight:700;color:var(--muse);opacity:0">✓ Listo cuando vuelves</div>
+    <div class="panel" id="s2P" style="background:var(--pink)"></div>
+    <div class="abs blk" id="s2n" style="left:22px;top:112px;font-size:176px">Dots</div>
+    <div class="stk mono" id="s2a" style="left:30px;top:108px;font-size:12px;padding:5px 10px;background:var(--paper);transform:rotate(-4deg);z-index:2">OPENAI</div>
+    <div class="stk" id="s2t" style="left:28px;top:276px;font-size:22px;padding:7px 16px;background:var(--ink);color:var(--pink);box-shadow:5px 5px 0 var(--paper)">Tu trabajo</div>
+    <div class="stk" id="s2w" style="left:28px;top:352px;width:152px;height:128px;border-radius:14px;padding:0;background:var(--paper);overflow:hidden">
+      <div style="height:26px;border-bottom:3px solid var(--ink);display:flex;gap:5px;align-items:center;padding-left:8px"><i style="width:9px;height:9px;border-radius:9px;background:var(--red)"></i><i style="width:9px;height:9px;border-radius:9px;background:#FFC700"></i><i style="width:9px;height:9px;border-radius:9px;background:var(--lime);border:1px solid var(--ink)"></i></div>
+      <div style="padding:10px;font-size:13px;line-height:1.2;font-weight:800;text-transform:none">Informe semanal<br><span style="font-weight:600;opacity:.6">trabajando…</span></div>
     </div>
+    <div class="stk mono" id="s2c" style="left:34px;top:486px;font-size:12px;padding:6px 10px;background:var(--red);color:#fff;transform:rotate(-3deg)">✕ APP CERRADA</div>
+    <div class="task" id="s2k0" style="top:352px"><span class="chk" id="s2c0"></span>Reunir datos</div>
+    <div class="task" id="s2k1" style="top:396px"><span class="chk" id="s2c1"></span>Redactar</div>
+    <div class="task" id="s2k2" style="top:440px"><span class="chk" id="s2c2"></span>Revisar</div>
+    <div class="task" id="s2k3" style="top:484px"><span class="chk" id="s2c3"></span>Enviar</div>
+    <div class="abs mono" id="s2z" style="left:196px;top:534px;font-size:13px;color:var(--ink)">▶ SIGUE TRABAJANDO</div>
   </div>
 
   <!-- 3 MUSE -->
   <div class="scene" id="s3">
-    <div class="abs" data-i="1" id="s3ic" style="left:28px;top:80px"></div>
-    <div class="name" id="s3n">Muse</div>
-    <div class="sub" id="s3s"><span class="chip" style="background:#10302a;color:#8CEBC8">Meta</span> <span class="chip" style="background:var(--muse);color:#04261c">Tu día a día</span></div>
-    <div class="card" id="s3c" style="left:28px;right:28px;top:215px;height:270px;padding:20px">
-      <div style="font-size:11px;letter-spacing:.16em;color:var(--mute);font-weight:700">LE PUEDES ESCRIBIR</div>
-      <div id="s3q" style="margin-top:12px;background:#1d2234;border-radius:14px 14px 14px 4px;padding:13px 15px;font-size:17px;font-weight:600;min-height:52px"></div>
-      <div style="display:flex;gap:10px;margin-top:22px">
-        <div class="chip" id="s3c0" style="background:#10302a;color:#8CEBC8;font-size:14px;padding:9px 14px">Agenda</div>
-        <div class="chip" id="s3c1" style="background:#10302a;color:#8CEBC8;font-size:14px;padding:9px 14px">Compras</div>
-        <div class="chip" id="s3c2" style="background:#10302a;color:#8CEBC8;font-size:14px;padding:9px 14px">Viajes</div>
-      </div>
-      <div id="s3d" style="margin-top:22px;font-size:15px;font-weight:700;color:var(--muse);opacity:0">✓ Hecho. Tu día, resuelto.</div>
-    </div>
+    <div class="panel" id="s3P" style="background:var(--lime)"></div>
+    <div class="abs blk" id="s3n" style="left:22px;top:112px;font-size:176px">Muse</div>
+    <div class="stk mono" id="s3a" style="left:30px;top:108px;font-size:12px;padding:5px 10px;transform:rotate(-4deg)">META</div>
+    <div class="stk" id="s3t" style="left:28px;top:276px;font-size:22px;padding:7px 16px;background:var(--ink);color:var(--lime);box-shadow:5px 5px 0 var(--paper)">Tu día a día</div>
+    <div class="stk" id="s3b" style="left:28px;top:346px;right:40px;border-radius:20px 20px 20px 4px;padding:14px 16px;font-size:18px;text-transform:none;line-height:1.15;min-height:60px;white-space:normal"></div>
+    <div class="stk" id="s3k0" style="left:30px;top:452px;font-size:24px;padding:9px 16px;border-radius:99px;background:var(--pink)">Agenda</div>
+    <div class="stk" id="s3k1" style="left:176px;top:470px;font-size:24px;padding:9px 16px;border-radius:99px;background:var(--paper)">Compras</div>
+    <div class="stk" id="s3k2" style="left:336px;top:448px;font-size:24px;padding:9px 16px;border-radius:99px;background:var(--violet);color:#fff">Viajes</div>
+    <div class="abs mono" id="s3d" style="left:30px;top:536px;font-size:13px">✓ LISTO. TU DÍA, RESUELTO.</div>
   </div>
 
   <!-- 4 GROK -->
   <div class="scene" id="s4">
-    <div class="abs" data-i="2" id="s4ic" style="left:28px;top:80px"></div>
-    <div class="name" id="s4n">Grok Bot</div>
-    <div class="sub" id="s4s"><span class="chip" style="background:#3a2a0d;color:#FFD083">xAI · Elon Musk</span> <span class="chip" style="background:var(--grok);color:#2b1c00">Equipos</span></div>
-    <div id="s4g"></div>
+    <div class="panel" id="s4P" style="background:var(--violet)"></div>
+    <div class="abs blk" id="s4n" style="left:22px;top:112px;font-size:176px;color:var(--paper)">Grok</div>
+    <div class="stk mono" id="s4a" style="left:30px;top:108px;font-size:12px;padding:5px 10px;transform:rotate(-4deg)">XAI · ELON MUSK</div>
+    <div class="stk" id="s4t" style="left:28px;top:276px;font-size:22px;padding:7px 16px;background:var(--ink);color:var(--paper);box-shadow:5px 5px 0 var(--lime)">Equipos</div>
+    <svg class="abs" id="s4g" style="left:0;top:0" width="540" height="580" viewBox="0 0 540 580"></svg>
   </div>
 
   <!-- 5 LO QUE NO PUEDEN -->
   <div class="scene" id="s5">
-    <div class="hl" id="s5a" style="top:90px;font-size:40px">Lo interesante no es lo que <span style="color:var(--dots)">hacen</span>…</div>
-    <div class="hl" id="s5b" style="top:90px;font-size:40px">…sino lo que <span style="color:var(--bad)">no pueden</span> hacer.</div>
-    <div class="tile" id="s5t0" style="left:28px;top:260px"></div>
-    <div class="tile" id="s5t1" style="left:276px;top:260px"></div>
-    <div class="tile" id="s5t2" style="left:28px;top:388px"></div>
-    <div class="tile" id="s5t3" style="left:276px;top:388px"></div>
+    <div class="abs serif" id="s5a" style="left:28px;top:122px;width:490px;font-size:42px;line-height:1.02">Lo interesante no es <span id="s5s" style="position:relative;display:inline-block">lo que hacen<i id="s5x" style="position:absolute;left:-4px;top:52%;height:6px;background:var(--red);width:0"></i></span></div>
+    <div class="abs serif" id="s5b" style="left:28px;top:208px;width:490px;font-size:42px;line-height:1.02;color:var(--red)">sino lo que no pueden hacer.</div>
+    <div class="bar4 blk" id="s5r0" style="top:268px;background:var(--pink)"><span style="padding-left:20px">Precio</span></div>
+    <div class="bar4 blk" id="s5r1" style="top:340px;background:var(--lime)"><span style="padding-left:20px">Privacidad</span></div>
+    <div class="bar4 blk" id="s5r2" style="top:412px;background:var(--violet);color:var(--paper)"><span style="padding-left:20px">Libertad</span></div>
+    <div class="bar4 blk" id="s5r3" style="top:484px;background:var(--ink);color:var(--cream)"><span style="padding-left:20px">Límites <b style="color:var(--red)">✕</b></span></div>
   </div>
 
   <!-- 6 EJEMPLOS -->
   <div class="scene" id="s6">
-    <div class="hl" style="top:90px;font-size:40px">Por ejemplo</div>
-    <div class="row" id="s6r0" style="top:170px"><div id="s6i0"></div><div><b style="color:var(--grok)">GROK BOT</b><span>Entra a tus apps como si fueras tú</span></div></div>
-    <div class="row" id="s6r1" style="top:278px"><div id="s6i1"></div><div><b style="color:var(--muse)">MUSE</b><span>Computadora privada solo para tus datos</span></div></div>
-    <div class="row" id="s6r2" style="top:386px"><div id="s6i2"></div><div><b style="color:var(--dots)">DOTS</b><span>Te pide permiso antes de decidir</span></div></div>
+    <div class="abs blk" id="s6h" style="left:28px;top:118px;font-size:62px">Por ejemplo<span style="color:var(--red)">:</span></div>
+    <div class="slab" id="s6r0" style="top:206px"><div class="nm blk" style="background:var(--violet);color:var(--paper)">Grok</div><div class="tx">Entra a tus apps como si fueras tú</div></div>
+    <div class="slab" id="s6r1" style="top:314px"><div class="nm blk" style="background:var(--lime)">Muse</div><div class="tx">Computadora privada solo para tus datos</div></div>
+    <div class="slab" id="s6r2" style="top:422px"><div class="nm blk" style="background:var(--pink)">Dots</div><div class="tx">Te pide permiso antes de decidir</div></div>
   </div>
 
   <!-- 7 CTA -->
   <div class="scene" id="s7">
-    <div class="hl" id="s7a" style="top:150px;font-size:62px">Comenta</div>
-    <div class="abs" id="s7k" style="left:28px;top:238px;padding:14px 26px;border-radius:20px;background:var(--dots);font-size:52px;font-weight:900;letter-spacing:.02em">AGENTE</div>
-    <div class="hl" id="s7b" style="top:350px;font-size:24px;font-weight:600;letter-spacing:-.01em;color:var(--mute)">y te cuento cuál te conviene a ti.</div>
+    <div class="abs blk" id="s7a" style="left:26px;top:140px;font-size:90px">Comenta</div>
+    <div class="stk" id="s7box" style="left:28px;top:262px;right:28px;height:86px;border-radius:99px;display:flex;align-items:center;gap:14px;padding:0 12px;background:var(--paper)">
+      <i style="width:52px;height:52px;border-radius:52px;background:var(--ink);flex:none"></i>
+      <span id="s7t" style="font-size:44px;letter-spacing:-.02em;flex:1;overflow:hidden"></span>
+      <i id="s7send" style="width:56px;height:56px;border-radius:56px;background:var(--pink);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:26px;font-style:normal;flex:none">↑</i>
+    </div>
+    <div class="abs serif" id="s7b" style="left:28px;top:384px;width:480px;font-size:34px;line-height:1.05">y te cuento cuál te conviene a ti.</div>
   </div>
 
-  <div id="guides">TU VIDEO AQUÍ</div>
+  <div id="bottom"><i></i></div>
+  <div id="guides" class="mono">TU VIDEO AQUÍ</div>
 </div>
 
 <script>
@@ -134,110 +128,118 @@ const outC=x=>1-Math.pow(1-x,3);
 const outB=x=>{const c=1.70158,c3=c+1;return 1+c3*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
 const inOut=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
 
-const ICONS=[
- s=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><line x1="50" y1="8" x2="50" y2="22" stroke="#4D8DFF" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="8" r="6" fill="#7FB0FF"/><rect x="10" y="22" width="80" height="68" rx="26" fill="#4D8DFF"/><circle cx="37" cy="54" r="11" fill="#fff"/><circle cx="63" cy="54" r="11" fill="#fff"/><circle cx="39" cy="55" r="5" fill="#0A0C11"/><circle cx="65" cy="55" r="5" fill="#0A0C11"/></svg>`,
- s=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><path d="M50 6 C62 26 86 42 86 64 A36 36 0 0 1 14 64 C14 42 38 26 50 6Z" fill="#2FD39A"/><circle cx="38" cy="62" r="6" fill="#06231a"/><circle cx="62" cy="62" r="6" fill="#06231a"/><path d="M40 75 Q50 83 60 75" stroke="#06231a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
- s=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><polygon points="50,6 90,28 90,72 50,94 10,72 10,28" fill="#FFB02E"/><rect x="26" y="40" width="48" height="20" rx="10" fill="#1d1300"/><rect x="34" y="47" width="14" height="6" rx="3" fill="#FFB02E"/></svg>`
-];
-const UI={
- price:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFB02E" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9c-.5-1-1.5-1.5-2.7-1.5-1.5 0-2.6.8-2.6 2s1 1.7 2.8 2.1c1.8.4 2.8.9 2.8 2.1s-1.1 2-2.7 2c-1.3 0-2.4-.6-2.9-1.7M12 6v1.5m0 9V18"/></svg>',
- lock:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2FD39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
- free:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4D8DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 20 4M9 4h11v11"/></svg>',
- limit:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5C6C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>',
- key:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFB02E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>',
- hand:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#4D8DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11m0-1V4a1.5 1.5 0 0 1 3 0v7m0-5.5a1.5 1.5 0 0 1 3 0V13m0-4.5a1.5 1.5 0 0 1 3 0V15a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L4 15c-.7-1.2.9-2.5 2-1.5l2 1.5"/></svg>'
-};
-document.querySelectorAll('[data-i]').forEach(e=>{const big=e.id==='';e.innerHTML=ICONS[+e.dataset.i](big?110:64)});
-$('#s6i0').innerHTML=UI.key;$('#s6i1').innerHTML=UI.lock;$('#s6i2').innerHTML=UI.hand;
-const tiles=[['price','Precio'],['lock','Privacidad'],['free','Libertad'],['limit','Límites']];
-tiles.forEach((x,i)=>{$('#s5t'+i).innerHTML=UI[x[0]]+'<span>'+x[1]+'</span>'});
-$('#s5t3').style.borderColor='#5a2630';$('#s5t3').style.color='#FF8795';
+$('#tk').textContent=('AGENTES DE IA ✦ DOTS ✦ MUSE ✦ GROK BOT ✦ ').repeat(8);
 
-// Grok agents grid
-const G=$('#s4g');
-for(let i=0;i<5;i++){
-  const x=28+(i%3)*166, y=(i<3?215:340), w=152;
-  const d=document.createElement('div');d.className='card';d.id='s4a'+i;
-  d.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:112px;padding:14px`;
-  d.innerHTML=`<div style="font-size:10px;letter-spacing:.14em;color:var(--mute);font-weight:700">AGENTE ${i+1}</div><div style="font-size:14px;font-weight:700;margin-top:6px">${['Investiga','Redacta','Analiza','Revisa','Publica'][i]}</div><div class="bar" style="margin-top:14px;height:6px"><i id="s4b${i}" style="background:var(--grok)"></i></div>`;
-  G.appendChild(d);
-}
-const G2=document.createElement('div');G2.id='s4t';G2.style.cssText='position:absolute;left:28px;top:476px;font-size:16px;font-weight:700;color:#FFD083';G2.textContent='Todos trabajando a la vez.';
-$('#s4').appendChild(G2);
+const rot=new WeakMap();
+document.querySelectorAll('.stk').forEach(e=>{const m=(e.style.transform||'').match(/rotate\(([-\d.]+)deg\)/);rot.set(e,m?+m[1]:0)});
+function slam(el,t,a,d=.45,s0=1.8){const k=P(t,a,d);const r=rot.get(el)||0;el.style.opacity=k>0?1:0;const s=s0-(s0-1)*outB(k);el.style.transform=`rotate(${r}deg) scale(${s})`}
+function rise(el,t,a,d=.5,y=30){const k=P(t,a,d);const r=rot.get(el)||0;el.style.opacity=clamp(k*2.5);el.style.transform=`translateY(${(1-outC(k))*y}px) rotate(${r}deg)`}
+function slideX(el,t,a,d=.5,x=-560){const k=P(t,a,d);el.style.opacity=k>0?1:0;el.style.transform=`translateX(${(1-outC(k))*x}px)`}
 
 const T={s1:[0,5.4],s2:[5.2,13],s3:[12.8,20.6],s4:[20.4,28.2],s5:[28,34.6],s6:[34.4,41.8],s7:[41.6,47]};
 const TOTAL=47;
-function pop(el,t,a,d=.55,y=26){const k=P(t,a,d);el.style.opacity=clamp(k*2.2);el.style.transform=`translateY(${(1-outC(k))*y}px) scale(${.9+.1*outB(k)})`}
 function scene(id,t){
   const [a,b]=T[id],el=$('#'+id);
-  const o=Math.min(clamp((t-a)/.35),clamp((b-t)/.35));
-  el.style.opacity=o;el.style.display=o>0?'block':'none';
+  const on=t>=a&&t<b;
+  el.style.display=on?'block':'none';
   return t-a;
 }
+function wipe(id,t){ // panel wipe in from right, out upward
+  const [a,b]=T[id];
+  const pin=inOut(P(t,a,.5)),pout=inOut(P(t,b-.4,.4));
+  const el=$('#'+id+'P');
+  el.style.clipPath=`inset(${pout*100}% 0 0 ${(1-pin)*100}%)`;
+  return pout;
+}
+// grok svg
+const SV=$('#s4g');
+const CX=320,CY=430,R=96;
+const AG=[];
+let html='';
+for(let i=0;i<5;i++){const an=-Math.PI/2+i*2*Math.PI/5;AG.push([CX+R*Math.cos(an)*1.35,CY+R*Math.sin(an)*.98])}
+AG.forEach((p,i)=>{html+=`<line id="ln${i}" x1="${CX}" y1="${CY}" x2="${p[0]}" y2="${p[1]}" stroke="#121212" stroke-width="4" stroke-dasharray="6 6"/>`});
+AG.forEach((p,i)=>{html+=`<g id="nd${i}"><circle cx="${p[0]}" cy="${p[1]}" r="27" fill="#FFFDF7" stroke="#121212" stroke-width="4"/><text x="${p[0]}" y="${p[1]+9}" text-anchor="middle" font-size="26" font-weight="900" font-family="Inter Display">${i+1}</text></g><circle id="pk${i}" r="6" fill="#C6F432" stroke="#121212" stroke-width="3"/>`});
+html+=`<g id="ct"><circle cx="${CX}" cy="${CY}" r="38" fill="#C6F432" stroke="#121212" stroke-width="4"/><text x="${CX}" y="${CY+5}" text-anchor="middle" font-size="14" font-weight="900" font-family="DejaVu Sans Mono">EQUIPO</text></g>`;
+SV.innerHTML=html;
+
 function render(t){
-  $('#prog').style.width=(t/TOTAL*100)+'%';
+  $('#tk').style.transform=`translateX(${-(t*46)%420}px)`;
   // S1
   let l=scene('s1',t);
-  if(l>=0&&t<T.s1[1]){
-    [0,1,2].forEach(i=>{const e=$('#s1icons').children[i];pop(e,l,.25+i*.2,.6,40);e.style.transform+=` translateY(${Math.sin(t*2+i)*4}px)`});
-    const sw=P(l,3.3,.4);
-    $('#s1a').style.opacity=l<.2?0:1-sw;$('#s1a').style.transform=`translateY(${-sw*20}px)`;
-    $('#s1b').style.opacity=sw;$('#s1b').style.transform=`translateY(${(1-outC(sw))*30}px)`;
-    if(l<.2)$('#s1a').style.opacity=0;else if(sw===0)pop($('#s1a'),l,.2,.5,30);
-    pop($('#s1c'),l,4.1,.5,14);
+  if(t<T.s1[1]){
+    ['#s1p0','#s1p1','#s1p2'].forEach((s,i)=>{const e=$(s);slam(e,l,.2+i*.25,.45,1.7);const f=Math.sin(t*2+i*2)*4;e.style.transform+=` translateY(${f}px)`});
+    const h=$('#s1h');slam(h,l,.9,.5,1.3);
+    const n=$('#s1n');const k=P(l,3.2,.45);n.style.opacity=k>0?1:0;n.style.transform=`rotate(${-10+(1-outB(k))*12}deg) scale(${2.4-1.4*outB(k)})`;
+    h.style.opacity=l<.9?0:(1-.55*P(l,3.4,.3));
+    rise($('#s1s'),l,4,.4,10);
   }
-  // S2 Dots
+  // Agent scenes common
+  function agent(id,l,names,extraDelay){
+    wipe(id,t);
+    const nm=$('#'+id+'n');const k=P(l,.35,.45);nm.style.opacity=k>0?1:0;nm.style.transform=`translateY(${(1-outB(k))*-60}px)`;nm.style.letterSpacing=(-.055-.04*(1-outC(k)))+'em';
+    slam($('#'+id+'a'),l,.7,.4,1.6);slam($('#'+id+'t'),l,.9,.4,1.5);
+  }
+  // S2
   l=scene('s2',t);
   if(t>=T.s2[0]&&t<T.s2[1]){
-    pop($('#s2ic'),l,.1,.55);pop($('#s2n'),l,.25,.5);pop($('#s2s'),l,.4,.5);pop($('#s2c'),l,.6,.6,34);
-    const pr=clamp((l-1.4)/5.2);
-    $('#s2b').style.width=(pr*100)+'%';$('#s2p').textContent=Math.round(pr*100)+'%';
-    $('#s2x').style.opacity=P(l,3.2,.4);$('#s2x').style.transform=`translateY(${(1-outC(P(l,3.2,.4)))*10}px)`;
-    $('#s2y').style.opacity=.55+.45*Math.abs(Math.sin(t*3));
-    $('#s2z').style.opacity=P(l,6.6,.4);
+    agent('s2',l);
+    const w=$('#s2w');const kin=P(l,1.1,.5),kout=P(l,3.2,.35);
+    w.style.opacity=kin>0&&kout<1?1:0;w.style.transform=`scale(${(.7+.3*outB(kin))*(1-inOut(kout))}) rotate(${kout*-18}deg)`;
+    slam($('#s2c'),l,3.5,.4,1.8);
+    [0,1,2,3].forEach(i=>slideX($('#s2k'+i),l,1.1+i*.12,.5,260));
+    const tick=[2.0,2.9,4.3,5.5];
+    [0,1,2,3].forEach(i=>{$('#s2c'+i).textContent=l>=tick[i]?'✓':'';$('#s2c'+i).style.background=l>=tick[i]?'#C6F432':'#FFFDF7'});
+    const zz=$('#s2z');zz.style.opacity=l>3.7?(.5+.5*Math.abs(Math.sin(t*3.5))):0;
+    zz.textContent=l>6.2?'✓ LISTO CUANDO VUELVES':'▶ SIGUE TRABAJANDO';
   }
-  // S3 Muse
+  // S3
   l=scene('s3',t);
   if(t>=T.s3[0]&&t<T.s3[1]){
-    pop($('#s3ic'),l,.1,.55);pop($('#s3n'),l,.25,.5);pop($('#s3s'),l,.4,.5);pop($('#s3c'),l,.6,.6,34);
+    agent('s3',l);
+    const b=$('#s3b');rise(b,l,1.1,.5,24);
     const txt='Reserva cena el viernes y avísale a Ana';
-    const n=Math.floor(clamp((l-1.3)/2.2)*txt.length);$('#s3q').textContent=txt.slice(0,n)+(n<txt.length&&Math.floor(t*3)%2?'▍':'');
-    [0,1,2].forEach(i=>pop($('#s3c'+i),l,3.7+i*.3,.45,14));
-    $('#s3d').style.opacity=P(l,5.8,.4);
+    const n=Math.floor(clamp((l-1.6)/2)*txt.length);b.textContent=txt.slice(0,n)+(n<txt.length&&Math.floor(t*3)%2?'|':'');
+    [0,1,2].forEach(i=>{const e=$('#s3k'+i);const k=P(l,3.9+i*.3,.55);const r=[-5,4,-3][i];e.style.opacity=k>0?1:0;const y=-(1-outB(k))*160;e.style.transform=`translateY(${y}px) rotate(${r+(1-k)*20}deg)`});
+    rise($('#s3d'),l,5.8,.4,10);
   }
-  // S4 Grok
+  // S4
   l=scene('s4',t);
   if(t>=T.s4[0]&&t<T.s4[1]){
-    pop($('#s4ic'),l,.1,.55);pop($('#s4n'),l,.25,.5);pop($('#s4s'),l,.4,.5);
+    agent('s4',l);
+    const sc=P(l,.9,.4);$('#ct').style.opacity=sc;
     for(let i=0;i<5;i++){
-      pop($('#s4a'+i),l,.8+i*.25,.5,26);
-      const sp=.28+i*.07;
-      $('#s4b'+i).style.width=(((l-1)*sp)%1*100)+'%';
+      const k=P(l,1.1+i*.25,.45);
+      $('#nd'+i).style.opacity=k;$('#ln'+i).style.opacity=k;
+      const ph=((l*.55+i*.21)%1);const p=AG[i];
+      const pk=$('#pk'+i);pk.setAttribute('cx',CX+(p[0]-CX)*(1-ph));pk.setAttribute('cy',CY+(p[1]-CY)*(1-ph));pk.style.opacity=k;
+      $('#nd'+i).style.transformOrigin=`${p[0]}px ${p[1]}px`;
+      $('#nd'+i).style.transform=`scale(${.92+.08*Math.sin(t*5+i)+(1-outB(k))*-.5})`;
     }
-    pop($('#s4t'),l,2.9,.5,10);
+    $('#s4g').style.opacity=1;
   }
   // S5
   l=scene('s5',t);
   if(t>=T.s5[0]&&t<T.s5[1]){
-    const sw=P(l,2,.4);
-    $('#s5a').style.opacity=(l<.1?0:1-sw);$('#s5a').style.transform=`translateY(${-sw*16}px)`;
-    $('#s5b').style.opacity=sw;$('#s5b').style.transform=`translateY(${(1-outC(sw))*24}px)`;
-    if(sw===0&&l>=.1)pop($('#s5a'),l,.1,.5,24);
-    for(let i=0;i<4;i++)pop($('#s5t'+i),l,2.5+i*.45,.5,22);
+    rise($('#s5a'),l,.1,.5,26);
+    $('#s5x').style.width=(P(l,1.8,.35)*100)+'%';
+    $('#s5a').style.opacity=l<.1?0:1-.45*P(l,2.1,.3);
+    rise($('#s5b'),l,2.2,.5,24);
+    [0,1,2,3].forEach(i=>slideX($('#s5r'+i),l,2.9+i*.45,.5,i%2?560:-560));
   }
   // S6
   l=scene('s6',t);
   if(t>=T.s6[0]&&t<T.s6[1]){
-    [0,1,2].forEach(i=>pop($('#s6r'+i),l,.6+i*2,.55,30));
-    const act=Math.min(2,Math.floor(Math.max(0,l-.6)/2));
-    [0,1,2].forEach(i=>{$('#s6r'+i).style.opacity=(+$('#s6r'+i).style.opacity)*(i<=act?1:1)});
+    slam($('#s6h'),l,.1,.5,1.3);
+    [0,1,2].forEach(i=>slideX($('#s6r'+i),l,.8+i*2,.55,i%2?560:-560));
   }
   // S7
   l=scene('s7',t);
   if(t>=T.s7[0]&&t<T.s7[1]){
-    pop($('#s7a'),l,.1,.5);pop($('#s7k'),l,.45,.6,30);
-    $('#s7k').style.transform+=` scale(${1+.03*Math.sin(t*5)})`;
-    pop($('#s7b'),l,1.1,.5,14);
+    slam($('#s7a'),l,.1,.5,1.4);
+    const box=$('#s7box');rise(box,l,.6,.5,30);
+    const w='AGENTE';const n=Math.floor(clamp((l-1.2)/1.2)*w.length);$('#s7t').textContent=w.slice(0,n)+(n<w.length&&Math.floor(t*3)%2?'|':'');
+    const sk=P(l,2.7,.2);$('#s7send').style.transform=`scale(${1-.2*Math.sin(sk*Math.PI)})`;
+    rise($('#s7b'),l,3,.5,14);
   }
 }
 window.render=render;window.TOTAL=TOTAL;render(0);
