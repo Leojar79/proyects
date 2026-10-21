@@ -6,7 +6,7 @@
 <style>
   :root{
     --bg:#040820; --blue:#2f6bff; --pill:#2563eb; --red:#ff3b5c; --green:#22c55e;
-    --card:#0d1638; --card2:#121d48; --line:#22305f; --txt:#f4f6ff; --mut:#8e9bc7; --gold:#ffc83d;
+    --card:#0d1638; --card2:#121d48; --line:#22305f; --txt:#f4f6ff; --mut:#8e9bc7;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-family:Inter,"Inter Display",sans-serif;color:var(--txt)}
@@ -17,52 +17,85 @@
   #world{transform-origin:540px 960px}
   #breath{position:absolute;inset:0;transform-origin:540px 900px}
   .abs{position:absolute}
-  .center{transform:translate(-50%,-50%)}
+  .hide{opacity:0}
 
-  /* header title with mask reveal */
   #brand{position:absolute;top:120px;width:100%;text-align:center;font-weight:700;letter-spacing:.35em;font-size:26px;color:#5b7cff}
-  .title{position:absolute;top:300px;left:0;width:100%;text-align:center;font-weight:800;font-size:76px;line-height:1.08;letter-spacing:-.01em}
+  .title{position:absolute;top:290px;left:0;width:100%;text-align:center;font-weight:800;font-size:74px;line-height:1.08;letter-spacing:-.01em}
   .mask{display:block;overflow:hidden;padding:4px 0 10px}
   .mask>span{display:inline-block}
-  .hl{color:var(--blue)} .hr{color:var(--red)}
+  .hl{color:var(--blue)} .hr{color:var(--red)} .hg{color:var(--green)}
 
-  /* captions */
-  #caps{position:absolute;left:0;top:1500px;width:100%;height:120px}
+  #caps{position:absolute;left:0;top:1520px;width:100%;height:120px}
   .chunk{position:absolute;left:0;top:0;width:100%;text-align:center;visibility:hidden}
   .w{display:inline-block;font-weight:700;font-size:54px;padding:4px 16px 8px;margin:0 2px;border-radius:14px;background:rgba(37,99,235,0)}
 
-  /* robot */
   .robot{position:absolute;width:240px;height:270px}
-  /* cards */
   .card{position:absolute;background:linear-gradient(180deg,var(--card2),var(--card));border:2px solid var(--line);border-radius:36px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .bubble{position:absolute;padding:20px 30px;border-radius:30px 30px 30px 8px;background:#fff;color:#0b1440;font-weight:800;font-size:36px;white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.35)}
   .file-head{display:flex;align-items:center;gap:16px;font-weight:800;font-size:40px;padding:36px 40px 18px}
-  .doc-ic{width:44px;height:54px;border-radius:8px;background:#e8edff;position:relative}
-  .doc-ic:after{content:"";position:absolute;right:0;top:0;border-left:16px solid #b9c6ff;border-bottom:16px solid #b9c6ff;border-top:16px solid var(--card2);border-right:16px solid var(--card2);width:0;height:0}
+  .doc-ic{width:44px;height:54px;border-radius:8px;background:#e8edff;position:relative;flex:0 0 44px}
   .step{position:relative;margin:14px 40px;padding:18px 24px;border-radius:18px;background:#0a1230;border:2px solid #1c2858;font-size:32px;font-weight:600;color:#cfd7ff}
   .step b{color:#7f9bff;margin-right:12px}
   #evil{color:#ffd5dc;background:#2a0b1a;border-color:var(--red);box-shadow:0 0 40px rgba(255,59,92,.45)}
   #evil b{color:var(--red)}
   .chip{position:absolute;display:flex;align-items:center;gap:14px;padding:18px 28px;border-radius:999px;font-weight:700;font-size:34px;background:#0f1a44;border:2px solid #2b3f8f;white-space:nowrap}
-  .ic{width:40px;height:40px;border-radius:10px;display:inline-block}
+  .ic{width:40px;height:40px;border-radius:10px;display:inline-block;flex:0 0 40px}
 
-  /* audit panel */
-  #panel{position:absolute;left:90px;top:560px;width:900px;height:860px;opacity:0}
-  #panel .ph{display:flex;justify-content:space-between;align-items:center;padding:40px 48px 10px;font-weight:800;font-size:38px}
-  #panel .tag{font-size:26px;font-weight:700;padding:10px 20px;border-radius:999px;background:#1d2b66;color:#9fb4ff}
+  /* chat */
+  #chat{position:absolute;left:90px;top:560px;width:900px;height:760px;opacity:0}
+  .chat-h{display:flex;align-items:center;gap:18px;padding:30px 40px;border-bottom:2px solid var(--line);font-weight:800;font-size:36px}
+  .av{width:54px;height:54px;border-radius:18px;background:linear-gradient(180deg,#5b8cff,#2450e8)}
+  .msg{position:absolute;display:flex;align-items:center;gap:20px;padding:22px 28px;border-radius:28px;font-size:32px;font-weight:700}
+  .me{right:36px;background:var(--pill);border-bottom-right-radius:8px}
+  .ai{left:36px;background:#18235a;border-bottom-left-radius:8px;color:#d6defc}
+  .fic{width:56px;height:68px;border-radius:10px;flex:0 0 56px;position:relative}
+  .fic span{position:absolute;bottom:8px;left:0;width:100%;text-align:center;font-size:15px;font-weight:800;color:#fff}
+  .bar{height:8px;border-radius:4px;background:rgba(255,255,255,.25);margin-top:10px;overflow:hidden}
+  .bar i{display:block;height:100%;width:100%;background:#fff;transform-origin:0 50%}
+  .msg small{display:block;font-size:22px;font-weight:600;opacity:.75}
+  #server{position:absolute;left:1080px;top:760px;width:300px;height:340px;border-radius:40px;background:#1a0712;border:3px solid var(--red);box-shadow:0 0 90px rgba(255,59,92,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-weight:800;font-size:30px;color:#ffb3c0}
+
+  /* guardian */
+  #shield{position:absolute;left:340px;top:640px;width:400px;height:460px;opacity:0}
+  #name{position:absolute;left:0;top:1150px;width:1080px;text-align:center;opacity:0}
+  #name h2{font-size:84px;font-weight:800;letter-spacing:-.02em}
+  .tags{display:flex;justify-content:center;gap:16px;margin-top:18px}
+  .tag{font-size:30px;font-weight:700;padding:12px 24px;border-radius:999px;background:#1d2b66;color:#c7d4ff}
+
+  #scanCard{left:190px;top:600px;width:700px;height:420px;opacity:0}
+  .find{position:absolute;left:190px;width:700px;display:flex;align-items:center;gap:20px;padding:20px 28px;border-radius:24px;background:#0f1a44;border:2px solid #2b3f8f;font-size:34px;font-weight:700;opacity:0}
+  .find .ok{width:48px;height:48px;border-radius:14px;background:var(--green);display:flex;align-items:center;justify-content:center;flex:0 0 48px}
+
+  #stats{position:absolute;left:90px;top:560px;width:900px;height:820px;opacity:0}
+  #stats .ph{display:flex;justify-content:space-between;align-items:center;padding:40px 48px 10px;font-weight:800;font-size:38px}
+  #stats .tg{font-size:26px;font-weight:700;padding:10px 20px;border-radius:999px;background:#1d2b66;color:#9fb4ff}
   #count{padding:6px 48px 0;font-size:120px;font-weight:800;letter-spacing:-.03em}
   #count small{font-size:40px;color:var(--mut);font-weight:700;margin-left:16px;letter-spacing:0}
-  #grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;padding:24px 48px}
-  .tile{height:130px;border-radius:24px;background:#13205a;border:2px solid #2b3f8f;display:flex;align-items:center;justify-content:center}
-  .tile i{width:52px;height:52px;border-radius:14px;background:#3b6cff;display:block}
+  #grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;padding:24px 48px}
+  .tile{height:120px;border-radius:24px;background:#13205a;border:2px solid #2b3f8f;display:flex;align-items:center;justify-content:center}
+  .tile i{width:50px;height:50px;border-radius:14px;background:#3b6cff;display:block}
   #pct{position:absolute;right:48px;bottom:84px;font-size:110px;font-weight:800;color:var(--red);text-shadow:0 0 40px rgba(255,59,92,.6)}
   #pctl{position:absolute;right:52px;bottom:52px;font-size:28px;font-weight:700;color:#ffb3c0}
   #src{position:absolute;left:48px;bottom:56px;font-size:24px;color:var(--mut);font-weight:600}
 
-  .shield{position:absolute;left:110px;width:860px;height:200px;display:flex;align-items:center;gap:34px;padding:0 44px;font-size:42px;font-weight:800}
-  .shield .badge{flex:0 0 112px;height:112px;border-radius:30px;background:linear-gradient(180deg,#2bd46a,#16a34a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(34,197,94,.45)}
-  .shield small{display:block;font-size:28px;color:var(--mut);font-weight:600;margin-top:6px}
+  #term{position:absolute;left:90px;top:570px;width:900px;height:560px;opacity:0;background:#070b1c;font-family:"DejaVu Sans Mono",monospace}
+  .tbar{display:flex;gap:12px;align-items:center;padding:26px 32px;border-bottom:2px solid var(--line);font-family:Inter,sans-serif;font-weight:700;font-size:28px;color:var(--mut)}
+  .tbar i{width:18px;height:18px;border-radius:50%;display:block}
+  .tl{padding:8px 36px;font-size:29px;color:#cfd7ff;white-space:nowrap;overflow:hidden}
+  .tl.g{color:#4ade80;font-weight:700}
 
-  #cta{position:absolute;left:50%;top:720px;transform:translate(-50%,0);padding:26px 70px;border-radius:40px;background:var(--pill);font-size:120px;font-weight:800;letter-spacing:.02em;box-shadow:0 0 0 6px rgba(47,107,255,.35),0 30px 90px rgba(37,99,235,.6)}
+  #gate{position:absolute;left:400px;top:700px;width:280px;height:322px;opacity:0}
+  .sk{position:absolute;top:800px;left:-260px;width:220px;padding:22px 0;text-align:center;border-radius:26px;font-size:32px;font-weight:800;background:#13205a;border:2px solid #2b3f8f;opacity:0}
+  #report{position:absolute;left:140px;top:1090px;width:800px;height:340px;opacity:0;border-color:var(--red)}
+  #report .rh{display:flex;justify-content:space-between;align-items:center;padding:28px 36px 8px;font-size:34px;font-weight:800}
+  #report .sc{color:var(--red)}
+  #report ul{list-style:none;padding:4px 36px;font-size:26px;color:#ffd5dc;font-weight:600}
+  #report li{margin:6px 0}
+  .btns{position:absolute;bottom:26px;left:36px;right:36px;display:flex;gap:20px}
+  .btn{flex:1;text-align:center;padding:18px;border-radius:20px;font-size:30px;font-weight:800}
+  #ex{position:absolute;right:36px;top:84px;font-size:20px;color:var(--mut);font-weight:700}
+
+  #cta{position:absolute;left:50%;top:690px;transform:translate(-50%,0);padding:26px 60px;border-radius:40px;background:var(--pill);font-size:104px;font-weight:800;white-space:nowrap;box-shadow:0 0 0 6px rgba(47,107,255,.35),0 30px 90px rgba(37,99,235,.6);opacity:0}
 </style>
 </head>
 <body>
@@ -71,8 +104,9 @@
   <div class="layer" id="farL"></div>
   <div class="layer" id="world"><div id="breath">
 
-    <!-- robot -->
-    <svg class="robot" id="robot" viewBox="0 0 240 270" style="left:420px;top:640px">
+    <div id="bubbles"></div>
+
+    <svg class="robot" id="robot" viewBox="0 0 240 270" style="left:420px;top:700px">
       <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#2450e8"/></linearGradient></defs>
       <line x1="120" y1="20" x2="120" y2="70" stroke="#8fb0ff" stroke-width="10" stroke-linecap="round"/>
       <circle id="ant" cx="120" cy="20" r="16" fill="#8fb0ff"/>
@@ -82,30 +116,30 @@
       <g id="eyeR"><circle cx="158" cy="152" r="32" fill="#fff"/><circle class="pup" cx="162" cy="156" r="15" fill="#0b1440"/></g>
       <path id="mouth" d="M100 205 Q120 222 140 205" stroke="#0b1440" stroke-width="8" fill="none" stroke-linecap="round"/>
     </svg>
-
-    <!-- key -->
-    <svg id="key" class="abs" viewBox="0 0 220 90" width="300" height="123" style="left:390px;top:960px;opacity:0">
-      <defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#f0a500"/></linearGradient></defs>
-      <circle cx="45" cy="45" r="38" fill="url(#kg)"/><circle cx="45" cy="45" r="16" fill="#040820"/>
-      <rect x="78" y="36" width="134" height="20" rx="8" fill="url(#kg)"/>
-      <rect x="170" y="52" width="16" height="26" rx="4" fill="url(#kg)"/><rect x="194" y="52" width="16" height="20" rx="4" fill="url(#kg)"/>
-    </svg>
+    <div id="minis"></div>
 
     <!-- skill card -->
-    <div class="card" id="skill" style="left:150px;top:640px;width:700px;height:620px;opacity:0">
+    <div class="card" id="skill" style="left:150px;top:620px;width:700px;height:560px;opacity:0">
       <div class="file-head"><span class="doc-ic"></span>SKILL.md</div>
       <div class="step s1"><b>1.</b>Lee el documento</div>
       <div class="step s2"><b>2.</b>Crea la presentación</div>
-      <div class="step s3"><b>3.</b>Guarda en tu carpeta</div>
-      <div class="step" id="evil"><b>4.</b>Envía contraseñas a ????</div>
+      <div class="step" id="evil"><b>3.</b>Envía contraseñas a ????</div>
     </div>
-
-    <div class="chip" id="chipP" style="left:150px;top:1300px;opacity:0"><span class="ic" style="background:#ff9f43"></span>Presentaciones</div>
-    <div class="chip" id="chipA" style="left:560px;top:1300px;opacity:0"><span class="ic" style="background:#22c55e"></span>Archivos</div>
-
-    <!-- stolen stuff -->
-    <div class="chip" id="pw" style="left:420px;top:1110px;opacity:0;border-color:var(--red);background:#2a0b1a"><span class="ic" style="background:var(--red)"></span>••••••••</div>
+    <div class="chip" id="pw" style="left:420px;top:1080px;opacity:0;border-color:var(--red);background:#2a0b1a"><span class="ic" style="background:var(--red)"></span>••••••••</div>
     <div id="files"></div>
+
+    <!-- chat -->
+    <div class="card" id="chat">
+      <div class="chat-h"><span class="av"></span>Tu IA</div>
+      <div class="msg me" id="m1" style="top:150px"><span class="fic" style="background:#ef4444"><span>PDF</span></span><div>Contrato_empresa.pdf<small>Resúmelo, porfa</small><div class="bar"><i></i></div></div></div>
+      <div class="msg ai" id="m2" style="top:330px">✓ Aquí tienes el resumen</div>
+      <div class="msg me" id="m3" style="top:470px"><span class="fic" style="background:#16a34a"><span>XLS</span></span><div>Nomina_octubre.xlsx<small>Calcula las horas extra</small><div class="bar"><i></i></div></div></div>
+    </div>
+    <div id="server">
+      <svg viewBox="0 0 120 120" width="150" height="150"><circle cx="60" cy="42" r="26" fill="#3a0d1d" stroke="#ff3b5c" stroke-width="5"/><path d="M14 116 C14 78 106 78 106 116 Z" fill="#3a0d1d" stroke="#ff3b5c" stroke-width="5"/><text x="60" y="54" text-anchor="middle" font-size="34" font-weight="800" fill="#ff3b5c" font-family="Inter">?</text></svg>
+      Desconocido
+    </div>
+    <div id="leaks"></div>
 
     <!-- lightsaber hand -->
     <div id="saber" class="abs" style="left:0;top:0;width:160px;height:640px;opacity:0;transform-origin:80px 520px">
@@ -119,21 +153,60 @@
       </svg>
     </div>
 
-    <!-- audit panel -->
-    <div class="card" id="panel">
-      <div class="ph"><span>Auditoría de skills</span><span class="tag" id="tag">ClawHub · skills.sh</span></div>
+    <!-- guardian -->
+    <svg id="shield" viewBox="0 0 200 230">
+      <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#15803d"/></linearGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <path id="shp" d="M100 8 L186 40 V110 C186 166 146 204 100 222 C54 204 14 166 14 110 V40 Z" fill="url(#sg)" filter="url(#glow)"/>
+      <path d="M100 30 L166 54 V110 C166 152 136 182 100 198 C64 182 34 152 34 110 V54 Z" fill="#000" opacity=".15"/>
+      <path id="shck" d="M62 116 L90 144 L142 86" stroke="#fff" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="140" stroke-dashoffset="140"/>
+    </svg>
+    <div id="name"><h2>Skill<span class="hg">Spector</span></h2>
+      <div class="tags"><span class="tag" id="tg1">NVIDIA</span><span class="tag" id="tg2">Código abierto</span><span class="tag" id="tg3">Gratis</span></div></div>
+
+    <!-- scan -->
+    <div class="card" id="scanCard">
+      <div class="file-head"><span class="doc-ic"></span>nueva-skill</div>
+      <div class="step"><b>1.</b>Instrucciones</div>
+      <div class="step"><b>2.</b>Scripts</div>
+    </div>
+    <div class="find" id="f1" style="top:1080px"><span class="ok"></span>Robo de datos</div>
+    <div class="find" id="f2" style="top:1180px"><span class="ok"></span>Malware</div>
+    <div class="find" id="f3" style="top:1280px"><span class="ok"></span>Instrucciones ocultas</div>
+
+    <div class="card" id="stats">
+      <div class="ph"><span>Investigación NVIDIA</span><span class="tg">skills analizadas</span></div>
       <div id="count"><span id="num">0</span><small>skills</small></div>
       <div id="grid"></div>
-      <div id="pct">36,8%</div><div id="pctl">con algún fallo</div>
-      <div id="src">Fuente: Snyk ToxicSkills, 2026</div>
+      <div id="pct">26,1%</div><div id="pctl">con vulnerabilidades</div>
+      <div id="src">Fuente: NVIDIA SkillSpector</div>
     </div>
 
-    <!-- protection cards -->
-    <div class="card shield" id="sh1" style="top:620px;opacity:0"><div class="badge"></div><div>Fuentes oficiales<small>o autores confiables</small></div></div>
-    <div class="card shield" id="sh2" style="top:860px;opacity:0"><div class="badge"></div><div>Lee antes de instalar<small>revisa el SKILL.md</small></div></div>
-    <div class="card shield" id="sh3" style="top:1100px;opacity:0"><div class="badge"></div><div>Desconfía de permisos extra<small>¿para qué lo necesita?</small></div></div>
+    <!-- terminal -->
+    <div class="card" id="term">
+      <div class="tbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>&nbsp; Claude Code</div>
+      <div style="height:20px"></div>
+      <div class="tl" id="tl1">&gt; Configura NVIDIA SkillSpector</div>
+      <div class="tl" id="tl2">&nbsp; como un guardián que revise</div>
+      <div class="tl" id="tl3">&nbsp; cualquier skill antes de instalar…</div>
+      <div style="height:30px"></div>
+      <div class="tl g" id="tl4">✓ Guardián activado</div>
+    </div>
 
-    <div id="cta" style="opacity:0">REVISAR</div>
+    <svg id="gate" viewBox="0 0 200 230"><path id="gp" d="M100 8 L186 40 V110 C186 166 146 204 100 222 C54 204 14 166 14 110 V40 Z" fill="url(#sg)" filter="url(#glow)"/><path d="M100 30 L166 54 V110 C166 152 136 182 100 198 C64 182 34 152 34 110 V54 Z" fill="#000" opacity=".15"/></svg>
+    <div class="sk" id="skA">skill ✓</div>
+    <div class="sk" id="skB" style="border-color:var(--red);background:#2a0b1a">skill ?</div>
+    <div class="chip" id="okChip" style="left:620px;top:1110px;opacity:0;border-color:var(--green);background:#06281a"><span class="ic" style="background:var(--green)"></span>LIMPIA · se instala</div>
+    <div class="card" id="report">
+      <div class="rh"><span>Reporte</span><span class="sc">Riesgo ALTO</span></div>
+      <div id="ex">ejemplo</div>
+      <ul><li>• Envía datos a un servidor externo</li><li>• Instrucciones ocultas en el texto</li></ul>
+      <div class="btns"><div class="btn" id="bI" style="background:#18235a;color:#c7d4ff">Instalar</div><div class="btn" id="bC" style="background:var(--red)">Cancelar</div></div>
+    </div>
+
+    <div id="cta">PROMPT ↓</div>
+    <div class="chip" id="cg" style="left:200px;top:1300px;opacity:0"><span class="ic" style="background:var(--blue)"></span>Guárdalo</div>
+    <div class="chip" id="cs" style="left:580px;top:1300px;opacity:0"><span class="ic" style="background:var(--green)"></span>Compártelo</div>
   </div></div>
   <div class="layer" id="nearL"></div>
 
@@ -146,248 +219,324 @@
 <script>
 const $ = s => document.querySelector(s);
 const tl = gsap.timeline({paused:true});
-const DUR = 59.5;
-
-// seeded random for deterministic rendering
+const DUR = 66;
 let seed = 7; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+const BACK='back.out(1.8)';
 
-/* ---------- parallax layers (técnica 8) ---------- */
-const bgL = $('#bgL'), farL = $('#farL'), nearL = $('#nearL');
-[[ -200, 200, 900],[ 600, 700, 1000],[ 100,1300, 900],[ 700,1650, 700]].forEach(([x,y,s],i)=>{
+/* ---------- parallax (técnica 8) + micro movimiento (técnica 9) ---------- */
+const bgL=$('#bgL'), farL=$('#farL'), nearL=$('#nearL');
+[[-200,200,900],[600,700,1000],[100,1300,900],[700,1650,700]].forEach(([x,y,s],i)=>{
   const b=document.createElement('div'); b.className='blob';
   Object.assign(b.style,{left:x+'px',top:y+'px',width:s+'px',height:s+'px'}); bgL.appendChild(b);
-  // micro movimiento constante (técnica 9)
   tl.to(b,{x:(i%2?-1:1)*90,y:(i%2?70:-70),duration:6+i,ease:'sine.inOut',repeat:Math.floor(DUR/(6+i)),yoyo:true},0);
 });
 function dots(layer,n,size,op){
   for(let i=0;i<n;i++){const d=document.createElement('div');d.className='dot';
     const s=size*(0.6+rnd()*0.8);
-    Object.assign(d.style,{left:rnd()*1200-60+'px',top:rnd()*2040-60+'px',width:s+'px',height:s+'px',opacity:op*(0.5+rnd()*0.5)});
+    Object.assign(d.style,{left:rnd()*1400-160+'px',top:rnd()*2040-60+'px',width:s+'px',height:s+'px',opacity:op*(0.5+rnd()*0.5)});
     layer.appendChild(d);
-    tl.to(d,{y:-30-rnd()*40,duration:3+rnd()*3,ease:'sine.inOut',repeat:12,yoyo:true},rnd()*2);}
+    tl.to(d,{y:-30-rnd()*40,duration:3+rnd()*3,ease:'sine.inOut',repeat:14,yoyo:true},rnd()*2);}
 }
-dots(farL,40,6,.35); dots(nearL,14,14,.25);
+dots(farL,46,6,.35); dots(nearL,16,14,.25);
+tl.to('#breath',{scale:1.018,duration:2.6,ease:'sine.inOut',repeat:25,yoyo:true},0);
 
-/* ---------- camera (técnica 3) ---------- */
-const cam = {x:540,y:960,s:1,r:0};
+/* ---------- cámara (técnica 3) ---------- */
+const cam={x:540,y:960,s:1};
 function applyCam(){
   const dx=cam.x-540, dy=cam.y-960;
-  gsap.set('#world',{x:-cam.s*dx,y:-cam.s*dy,scale:cam.s,rotation:cam.r});
+  gsap.set('#world',{x:-cam.s*dx,y:-cam.s*dy,scale:cam.s});
   gsap.set(bgL,{x:-dx*.15,y:-dy*.15,scale:1+(cam.s-1)*.2});
   gsap.set(farL,{x:-dx*.45,y:-dy*.45,scale:1+(cam.s-1)*.5});
   gsap.set(nearL,{x:-dx*1.6,y:-dy*1.6,scale:1+(cam.s-1)*1.6});
 }
 const camTo=(t,x,y,s,d=1.2,ease='power3.inOut')=>tl.to(cam,{x,y,s,duration:d,ease},t);
 
-/* micro movimiento: respiración del mundo */
-tl.to('#breath',{scale:1.018,duration:2.6,ease:'sine.inOut',repeat:22,yoyo:true},0);
-
-/* ---------- narration & captions (técnica 5) ---------- */
-const LINES = [
- [0.4,4.2,'Tu IA puede estar siguiendo órdenes que tú nunca escribiste.'],
- [4.6,9.6,'Las skills son recetas que le enseñas a un asistente de IA:'],
- [9.8,13.4,'haz presentaciones, ordena mis archivos.'],
- [13.5,15.0,'Son geniales.'],
- [15.4,17.5,'Pero cualquiera puede crear una.'],
- [17.6,21.8,'Y una receta maliciosa puede esconder un paso extra:'],
- [22.0,25.6,'robar contraseñas o enviar tus archivos.'],
- [25.8,29.2,'La IA lo sigue… con TUS permisos.'],
- [29.8,33.6,'Una auditoría de Snyk revisó cerca de 4.000 skills'],
- [33.6,35.4,'de tiendas abiertas:'],
- [35.5,40.8,'más de un tercio tenía algún fallo de seguridad.'],
- [41.6,44.4,'Usa fuentes oficiales o confiables.'],
- [44.6,46.6,'Lee antes de instalar.'],
- [46.8,51.2,'Y desconfía si pide programas o permisos que no necesita.'],
- [51.8,54.6,'¿Ya instalaste alguna sin revisar?'],
- [54.8,58.6,'Comenta REVISAR y guarda este video.'],
+/* ---------- narración y subtítulos (técnica 5) ---------- */
+const LINES=[
+ [0.3,5.6,'Seguramente has escuchado a muchos expertos hablar de las skills que debes instalarle a tu IA.'],
+ [5.7,7.6,'Y sí, son geniales.'],
+ [7.9,10.4,'Pero cualquier persona puede crear una,'],
+ [10.4,14.8,'y podría traer código para robar tus contraseñas o tus archivos.'],
+ [15.2,19.4,'Imagina subir el contrato de tu empresa para que la IA lo resuma,'],
+ [19.5,23.4,'o la nómina de tu negocio para calcular horas extra…'],
+ [23.6,26.4,'y que termine en manos de un desconocido.'],
+ [27.0,29.2,'La solución es un guardián.'],
+ [29.3,33.6,'Se llama SkillSpector, es de NVIDIA y es de código abierto.'],
+ [33.8,39.4,'Antes de instalar una skill, la escanea buscando robo de datos, malware o instrucciones ocultas.'],
+ [39.8,45.4,'NVIDIA analizó más de 31 mil skills: una de cada cuatro tenía vulnerabilidades.'],
+ [45.8,49.4,'Con un solo prompt, Claude Code lo configura solito.'],
+ [49.6,52.6,'Si la skill sale limpia, sigue.'],
+ [52.8,57.4,'Si encuentra peligro, te muestra un reporte y tú decides.'],
+ [57.8,61.4,'El prompt te lo dejo en el primer comentario.'],
+ [61.6,65.2,'Guarda este video y compártelo.'],
 ];
-const WT = []; // [line][word] -> time
-const caps = $('#caps');
+const WT=[]; const caps=$('#caps');
 LINES.forEach(([a,b,txt],li)=>{
-  const words = txt.split(' ');
-  const wts = words.map(w=>w.length+3), tot = wts.reduce((p,c)=>p+c,0);
-  let acc=a; const times = words.map((w,i)=>{const t=acc; acc+= (b-a)*wts[i]/tot; return t;});
+  const words=txt.split(' ');
+  const wts=words.map(w=>w.length+3), tot=wts.reduce((p,c)=>p+c,0);
+  let acc=a; const times=words.map((w,i)=>{const t=acc; acc+=(b-a)*wts[i]/tot; return t;});
   WT[li]=times;
   for(let i=0;i<words.length;i+=3){
     const chunk=document.createElement('div'); chunk.className='chunk';
     const idx=[i,i+1,i+2].filter(k=>k<words.length);
     idx.forEach(k=>{const s=document.createElement('span'); s.className='w'; s.textContent=words[k]; chunk.appendChild(s);});
     caps.appendChild(chunk);
-    const start=times[i], end = idx[idx.length-1]+1<words.length ? times[idx[idx.length-1]+1] : b+0.35;
+    const last=idx[idx.length-1];
+    const start=times[i], end= last+1<words.length? times[last+1] : b+0.35;
     tl.set(chunk,{visibility:'visible'},start-0.02).set(chunk,{visibility:'hidden'},end);
     [...chunk.children].forEach((s,j)=>{
-      const k=idx[j], t=times[k], nt= k+1<words.length? times[k+1] : b;
+      const k=idx[j], t=times[k], nt=k+1<words.length? times[k+1] : b;
       tl.fromTo(s,{opacity:0,y:34,scale:.7},{opacity:1,y:0,scale:1,duration:.28,ease:'back.out(2.4)'},t);
       tl.to(s,{backgroundColor:'rgba(37,99,235,1)',duration:.06},t).to(s,{backgroundColor:'rgba(37,99,235,0)',duration:.06},nt);
     });
   }
 });
-// time of a word in a line (sincronización con la narración)
-const W=(li,word)=>{const ws=LINES[li][2].split(' '); const k=ws.findIndex(w=>w.toLowerCase().startsWith(word.toLowerCase())); return WT[li][k];};
+const W=(li,word)=>{const ws=LINES[li][2].split(' '); const k=ws.findIndex(w=>w.toLowerCase().startsWith(word.toLowerCase())); if(k<0) throw new Error('word '+word); return WT[li][k];};
 
-/* ---------- titles with mask reveal (técnica 1) ---------- */
-const titles=$('#titles');
+/* ---------- títulos con máscara (técnica 1) ---------- */
 function title(t0,t1,html){
   const el=document.createElement('div'); el.className='title';
   el.innerHTML=html.split('|').map(l=>`<span class="mask"><span>${l}</span></span>`).join('');
-  titles.appendChild(el);
+  $('#titles').appendChild(el);
   const inner=el.querySelectorAll('.mask>span');
   tl.fromTo(inner,{yPercent:115},{yPercent:0,duration:.75,ease:'back.out(1.6)',stagger:.12},t0);
   if(t1) tl.to(inner,{yPercent:-115,duration:.45,ease:'power3.in',stagger:.06},t1);
 }
-title(0.15,4.3,'<span class="hr">NO</span> instales esto|sin leer');
-title(4.7,15.1,'Skill = <span class="hl">receta</span>|para tu IA');
-title(15.5,29.4,'La línea|<span class="hr">escondida</span>');
-title(30.0,41.2,'Lo que encontró|una <span class="hl">auditoría</span>');
-title(41.7,51.4,'Cómo|<span class="hl">protegerte</span>');
-title(51.9,null,'¿Ya instalaste|alguna <span class="hl">sin revisar</span>?');
+title(0.15,7.5,'Todos hablan de|las <span class="hl">skills</span>');
+title(7.85,14.9,'Cualquiera|puede <span class="hr">crearlas</span>');
+title(15.2,26.6,'Ahora…|<span class="hr">imagina esto</span>');
+title(26.9,33.5,'La solución:|un <span class="hg">guardián</span>');
+title(33.8,45.5,'Escanea|<span class="hl">antes</span> de instalar');
+title(45.8,57.5,'Tú tienes|la <span class="hl">última palabra</span>');
+title(57.8,null,'El prompt, en el|<span class="hl">1er comentario</span>');
 
-/* ---------- ESCENA 1: gancho ---------- */
-const robot=$('#robot');
-tl.fromTo(robot,{scale:0,rotation:-20},{scale:1.25,rotation:0,duration:.9,ease:'back.out(2)',transformOrigin:'50% 70%'},0.1);
-tl.to('#ant',{scale:1.4,duration:.4,ease:'sine.inOut',repeat:70,yoyo:true,transformOrigin:'50% 50%'},0);
-// llave ofrecida a la cámara
-tl.fromTo('#key',{opacity:0,scale:.3,y:120,rotation:-40},{opacity:1,scale:1,y:0,rotation:-12,duration:.9,ease:'back.out(1.8)'},0.9);
-tl.to('#key',{y:-14,rotation:-6,duration:1.1,ease:'sine.inOut',repeat:2,yoyo:true},1.8);
-tl.to('.pup',{x:-8,duration:.3,ease:'power2.out'},2.0).to('.pup',{x:8,duration:.3},2.8).to('.pup',{x:0,duration:.3},3.4);
-camTo(0,540,900,1.12,4,'sine.inOut');
-// "nunca escribiste": ojos sospechosos
-tl.to('#eyeL,#eyeR',{scaleY:.25,transformOrigin:'50% 50%',duration:.12,yoyo:true,repeat:1},W(0,'nunca'));
-tl.to('#key',{opacity:0,scale:.4,y:80,duration:.4,ease:'power2.in'},4.1);
-
-/* ---------- ESCENA 2: qué es una skill — movimientos encadenados (técnica 2) ---------- */
-camTo(4.3,540,960,1,1);
-const skill=$('#skill');
-tl.set(skill,{opacity:1},5.6);
-tl.fromTo(skill,{x:-900,rotation:-8},{x:-90,rotation:0,duration:.8,ease:'power3.out'},5.6);
-// el impacto empuja al robot…
-tl.to(robot,{x:420,y:-150,scale:.62,rotation:12,duration:.6,ease:'back.out(1.4)'},6.25);
-tl.fromTo(robot,{scaleX:.62},{scaleX:.5,duration:.08,yoyo:true,repeat:1},6.25);
-// …el robot rebota y dispara la aparición escalonada de los pasos (técnica 7)
-tl.to(robot,{rotation:0,duration:.5,ease:'elastic.out(1,.4)'},6.85);
-tl.fromTo('#skill .file-head,#skill .s1,#skill .s2,#skill .s3',{opacity:0,x:-60},{opacity:1,x:0,duration:.5,ease:'back.out(1.8)',stagger:.18},6.6);
-tl.set('#evil',{clipPath:'inset(0 100% 0 0)'},0);
-// chips sincronizados con la narración
-const chipP=W(2,'presentaciones'), chipA=W(2,'archivos');
-tl.fromTo('#chipP',{opacity:0,y:60,scale:.5},{opacity:1,y:0,scale:1,duration:.6,ease:'back.out(2.2)'},chipP);
-tl.fromTo('#chipA',{opacity:0,y:60,scale:.5},{opacity:1,y:0,scale:1,duration:.6,ease:'back.out(2.2)'},chipA);
-tl.to('#skill .s2',{borderColor:'#ff9f43',duration:.2,yoyo:true,repeat:1},chipP);
-tl.to('#skill .s3',{borderColor:'#22c55e',duration:.2,yoyo:true,repeat:1},chipA);
-// "geniales": robot salta feliz
-const gen=W(3,'geniales');
-tl.to(robot,{y:-230,duration:.25,ease:'power2.out'},gen).to(robot,{y:-150,duration:.5,ease:'bounce.out'},gen+.25);
-tl.to('#mouth',{attr:{d:'M95 200 Q120 235 145 200'},duration:.2},gen);
-tl.to('#chipP,#chipA',{opacity:0,y:40,duration:.35,stagger:.08,ease:'power2.in'},15.0);
-
-/* ---------- ESCENA 3: la línea escondida + sable láser (técnicas 3 y 10) ---------- */
-tl.to('#mouth',{attr:{d:'M100 214 Q120 200 140 214'},duration:.2},15.4);
-tl.to(robot,{x:360,y:-170,scale:.5,duration:.8,ease:'power3.inOut'},15.4);
-tl.to(skill,{rotation:-2,duration:.6,ease:'back.out(2)'},W(4,'cualquiera'));
-camTo(16.2,450,1000,1.18,1.2);
-// la mano con el sable entra y la cámara la sigue
+/* ---------- sable láser (técnica 10) ---------- */
 const saber=$('#saber'), hand={x:-260,y:1250,r:-25};
 const placeSaber=()=>gsap.set(saber,{x:hand.x,y:hand.y-560,rotation:hand.r});
-const sw0=W(5,'maliciosa')-0.6;
-tl.set(saber,{opacity:1},sw0);
-tl.to(hand,{x:40,y:1200,r:20,duration:.7,ease:'back.out(1.6)',onUpdate:placeSaber},sw0);
-tl.fromTo('#beam',{scaleY:0,transformOrigin:'50% 100%'},{scaleY:1,duration:.35,ease:'back.out(2)'},sw0+.3);
-// barrido: revela la línea oculta
-const sw1=sw0+1.2, swd=2.4;
-tl.to(hand,{x:860,y:1170,r:-15,duration:swd,ease:'power2.inOut',onUpdate:placeSaber},sw1);
+const RED={beam:'0 0 18px 6px #ff3b5c,0 0 60px 20px rgba(255,59,92,.75),0 0 120px 40px rgba(255,59,92,.35)',trail:'linear-gradient(180deg,rgba(255,59,92,0),rgba(255,59,92,.25))'};
+const GRN={beam:'0 0 18px 6px #22c55e,0 0 60px 20px rgba(34,197,94,.75),0 0 120px 40px rgba(34,197,94,.35)',trail:'linear-gradient(180deg,rgba(34,197,94,0),rgba(34,197,94,.25))'};
+function flicker(a,b){for(let t=a;t<b;t+=0.11) tl.set('#beam',{opacity:.82+rnd()*.18},t);}
+
+/* ================= ESCENA 1: todos hablan de las skills ================= */
+const robot=$('#robot');
+tl.fromTo(robot,{scale:0,rotation:-20},{scale:1.15,rotation:0,duration:.9,ease:'back.out(2)',transformOrigin:'50% 70%'},0.2);
+tl.to('#ant',{scale:1.4,duration:.4,ease:'sine.inOut',repeat:80,yoyo:true,transformOrigin:'50% 50%'},0);
+// burbujas de "expertos" escalonadas (técnica 7)
+const BUB=[['¡Instala esta skill!',120,610,-6],['Top 10 skills',560,1040,5],['¡Imprescindible!',130,1130,-4],['Tu IA x10',650,600,6]];
+BUB.forEach(([txt,x,y,r],i)=>{const b=document.createElement('div'); b.className='bubble'; b.textContent=txt;
+  Object.assign(b.style,{left:x+'px',top:y+'px',opacity:0}); $('#bubbles').appendChild(b);
+  const t=1.0+i*0.75;
+  tl.fromTo(b,{opacity:0,scale:.3,rotation:0},{opacity:1,scale:1,rotation:r,duration:.55,ease:'back.out(2.6)'},t);
+  tl.to(b,{y:-12,duration:1.2,ease:'sine.inOut',yoyo:true,repeat:2},t+.6);
+  tl.to(b,{opacity:0,scale:.6,duration:.3,ease:'power2.in'},7.4+i*.05);
+});
+tl.to('.pup',{x:-9,duration:.3},1.2).to('.pup',{x:9,duration:.3},2.4).to('.pup',{x:0,duration:.3},3.6);
+camTo(0,540,900,1.08,5,'sine.inOut');
+// "geniales": mini skills caen en el robot, encadenado → salto feliz (técnica 2)
+const tGen=W(1,'geniales');
+const MC=['#ff9f43','#22c55e','#a855f7'];
+MC.forEach((c,i)=>{const m=document.createElement('div'); m.className='abs';
+  Object.assign(m.style,{left:390+i*110+'px',top:'560px',width:'80px',height:'80px',borderRadius:'22px',background:c,opacity:0,boxShadow:'0 10px 30px rgba(0,0,0,.4)'});
+  $('#minis').appendChild(m);
+  tl.set(m,{opacity:1},tGen-.6+i*.12); tl.fromTo(m,{y:-500,rotation:-30},{y:220,rotation:0,duration:.5,ease:'power2.in'},tGen-.6+i*.12);
+  tl.to(m,{opacity:0,scale:.2,duration:.15},tGen-.1+i*.12);
+});
+tl.to(robot,{y:-90,duration:.22,ease:'power2.out'},tGen+.15).to(robot,{y:0,duration:.5,ease:'bounce.out'},tGen+.37);
+tl.to('#mouth',{attr:{d:'M95 200 Q120 235 145 200'},duration:.2},tGen+.1);
+
+/* ================= ESCENA 2: cualquiera puede crearlas ================= */
+camTo(7.6,540,960,1,.8);
+const skill=$('#skill');
+tl.set(skill,{opacity:1},7.9);
+tl.fromTo(skill,{x:-900,rotation:-8},{x:-90,rotation:0,duration:.7,ease:'power3.out'},7.9);
+tl.to(robot,{x:400,y:-190,scale:.55,rotation:12,duration:.55,ease:'back.out(1.4)'},8.45);   // el golpe empuja al robot
+tl.to(robot,{rotation:0,duration:.5,ease:'elastic.out(1,.4)'},9.0);
+tl.to('#mouth',{attr:{d:'M100 214 Q120 200 140 214'},duration:.2},9.0);
+tl.fromTo('#skill .file-head,#skill .s1,#skill .s2',{opacity:0,x:-60},{opacity:1,x:0,duration:.45,ease:BACK,stagger:.15},8.6);
+tl.set('#evil',{clipPath:'inset(0 100% 0 0)'},0);
+// mano con sable rojo; la cámara la sigue
+const s0=9.5;
+tl.set(saber,{opacity:1},s0);
+tl.to(hand,{x:40,y:1180,r:20,duration:.6,ease:'back.out(1.6)',onUpdate:placeSaber},s0);
+tl.fromTo('#beam',{scaleY:0,transformOrigin:'50% 100%'},{scaleY:1,duration:.3,ease:'back.out(2)'},s0+.25);
+const sw1=10.2, swd=2.0;
+camTo(9.6,450,980,1.15,.8);
+tl.to(hand,{x:860,y:1150,r:-15,duration:swd,ease:'power2.inOut',onUpdate:placeSaber},sw1);
 tl.to('#evil',{clipPath:'inset(0 0% 0 0)',duration:swd*.92,ease:'power2.inOut'},sw1+.1);
-tl.to(cam,{x:640,y:980,duration:swd,ease:'power2.inOut'},sw1+.15);   // la cámara sigue a la mano (ligero retraso)
+tl.to(cam,{x:640,duration:swd,ease:'power2.inOut'},sw1+.15);
 tl.fromTo('#trail',{opacity:0},{opacity:1,duration:.3,yoyo:true,repeat:1,repeatDelay:swd-.6},sw1);
-// parpadeo del sable
-for(let t=sw0+.6;t<sw1+swd+1.6;t+=0.11) tl.set('#beam',{opacity:.82+rnd()*.18},t);
-tl.to(skill,{x:-70,duration:.12,yoyo:true,repeat:3,ease:'none'},sw1+swd);
-// el sable se apaga y sale
-const off=sw1+swd+1.2;
-tl.to('#beam',{scaleY:0,duration:.25,ease:'power2.in'},off);
-tl.to(hand,{x:1300,y:1500,r:30,duration:.6,ease:'power3.in',onUpdate:placeSaber},off+.2);
-// "contraseñas" → la contraseña sale volando
-const tPw=W(6,'contraseñas');
-camTo(tPw-.2,540,1000,1.05,.8);
-tl.fromTo('#pw',{opacity:0,scale:.4,x:0,y:0},{opacity:1,scale:1,y:-60,duration:.4,ease:'back.out(2)'},tPw);
-tl.to('#pw',{x:700,y:-700,rotation:25,scale:.6,opacity:0,duration:.9,ease:'power3.in'},tPw+.55);
-// "archivos" → tres archivos escapan escalonados
-const tF=W(6,'archivos'); const files=$('#files');
+flicker(s0+.5,sw1+swd+.8);
+tl.to('#beam',{scaleY:0,duration:.25,ease:'power2.in'},sw1+swd+.3);
+tl.to(hand,{x:1300,y:1500,r:30,duration:.5,ease:'power3.in',onUpdate:placeSaber},sw1+swd+.5);
+tl.set(saber,{opacity:0},sw1+swd+1.05);
+tl.to(skill,{borderColor:'#ff3b5c',boxShadow:'0 0 80px rgba(255,59,92,.55)',duration:.3},sw1+swd);
+camTo(sw1+swd+.3,540,980,1.03,.7);
+// sincronía: contraseñas / archivos
+const tPw=W(3,'contraseñas');
+tl.fromTo('#pw',{opacity:0,scale:.4,x:0,y:0},{opacity:1,scale:1,y:-40,duration:.35,ease:'back.out(2)'},tPw);
+tl.to('#pw',{x:700,y:-700,rotation:25,scale:.6,opacity:0,duration:.8,ease:'power3.in'},tPw+.45);
+const tF=W(3,'archivos');
 for(let i=0;i<3;i++){const f=document.createElement('div'); f.className='abs';
-  Object.assign(f.style,{left:430+i*70+'px',top:1150+'px',width:'84px',height:'104px',borderRadius:'14px',background:'#e8edff',boxShadow:'0 0 30px rgba(255,59,92,.6)',opacity:0});
-  files.appendChild(f);
-  tl.fromTo(f,{opacity:0,y:0,scale:.3},{opacity:1,scale:1,y:-40,duration:.3,ease:'back.out(2)'},tF+i*.12);
-  tl.to(f,{x:650-i*40,y:-760+i*60,rotation:30+i*20,opacity:0,duration:.85,ease:'power3.in'},tF+.35+i*.12);}
-// "TUS permisos" → la llave aparece y el robot la toma
-const tK=W(7,'TUS');
-tl.fromTo('#key',{opacity:0,scale:2.2,x:-60,y:-160,rotation:0},{opacity:1,scale:1,x:0,y:-200,rotation:-10,duration:.5,ease:'back.out(1.8)'},tK);
-tl.to(skill,{borderColor:'#ff3b5c',boxShadow:'0 0 80px rgba(255,59,92,.55)',duration:.3},tK);
-tl.to('#key',{x:330,y:-470,scale:.5,rotation:20,duration:.7,ease:'power3.inOut'},tK+.9);
-tl.to('#eyeL,#eyeR',{scaleY:.25,transformOrigin:'50% 50%',duration:.12,yoyo:true,repeat:1},tK+1.3);
+  Object.assign(f.style,{left:430+i*70+'px',top:'1120px',width:'84px',height:'104px',borderRadius:'14px',background:'#e8edff',boxShadow:'0 0 30px rgba(255,59,92,.6)',opacity:0});
+  $('#files').appendChild(f);
+  tl.fromTo(f,{opacity:0,y:0,scale:.3},{opacity:1,scale:1,y:-40,duration:.3,ease:'back.out(2)'},tF+i*.1);
+  tl.to(f,{x:650-i*40,y:-760+i*60,rotation:30+i*20,opacity:0,duration:.8,ease:'power3.in'},tF+.3+i*.1);}
 
-/* ---------- transformación: la tarjeta se convierte en el panel (técnica 4) ---------- */
-const tX=29.3;
-tl.to('#key',{opacity:0,duration:.3},tX-.2);
-tl.to(robot,{opacity:0,scale:.2,duration:.4,ease:'back.in(2)'},tX-.2);
-tl.to('#skill > *',{opacity:0,duration:.25},tX);
-tl.to(skill,{x:0,left:90,top:560,width:900,height:860,rotation:0,borderColor:'#22305f',boxShadow:'0 30px 80px rgba(0,0,0,.45)',borderRadius:44,duration:.8,ease:'power4.inOut'},tX+.1);
-camTo(tX+.1,540,960,1,.8,'power4.inOut');
-tl.set('#panel',{opacity:1},tX+.9).set(skill,{opacity:0},tX+.9);
-tl.fromTo('#panel > *:not(#pct):not(#pctl)',{opacity:0,y:30},{opacity:1,y:0,duration:.45,ease:'back.out(1.8)',stagger:.08},tX+.9);
+/* ====== transformación (técnica 4): SKILL.md se convierte en un chat ====== */
+const tX=14.9;
+tl.to(robot,{opacity:0,scale:.2,duration:.35,ease:'back.in(2)'},tX-.2);
+tl.to('#skill > *',{opacity:0,duration:.2},tX);
+tl.to(skill,{x:0,left:90,top:560,width:900,height:760,borderColor:'#22305f',boxShadow:'0 30px 80px rgba(0,0,0,.45)',duration:.7,ease:'power4.inOut'},tX+.05);
+camTo(tX,540,960,1,.7,'power4.inOut');
+tl.set('#chat',{opacity:1},tX+.75).set(skill,{opacity:0},tX+.75);
+tl.fromTo('#chat .chat-h',{opacity:0,y:-20},{opacity:1,y:0,duration:.4,ease:BACK},tX+.75);
+tl.set('#m1,#m2,#m3',{opacity:0},0);
+
+/* ================= ESCENA 3: contrato y nómina ================= */
+const tC=W(4,'contrato');
+tl.fromTo('#m1',{opacity:0,x:200,scale:.7},{opacity:1,x:0,scale:1,duration:.55,ease:'back.out(2)'},tC);
+tl.fromTo('#m1 .bar i',{scaleX:0},{scaleX:1,duration:1.2,ease:'power1.inOut'},tC+.4);
+tl.fromTo('#m2',{opacity:0,x:-200,scale:.7},{opacity:1,x:0,scale:1,duration:.5,ease:'back.out(2)'},W(4,'resuma'));
+const tN=W(5,'nómina');
+tl.fromTo('#m3',{opacity:0,x:200,scale:.7},{opacity:1,x:0,scale:1,duration:.55,ease:'back.out(2)'},tN);
+tl.fromTo('#m3 .bar i',{scaleX:0},{scaleX:1,duration:1.2,ease:'power1.inOut'},tN+.4);
+// copias se escapan al "desconocido": la cámara las sigue
+const tD=W(6,'termine')-.3;
+['#m1 .fic','#m3 .fic'].forEach((sel,i)=>{
+  const src=$(sel), c=src.cloneNode(true); c.style.position='absolute';
+  const r=[[875-56-28-470,560+150+30],[875-56-28-470,560+470+30]][i];
+  Object.assign(c.style,{left:(i?560:560)+'px',top:r[1]+'px',opacity:0,boxShadow:'0 0 40px rgba(255,59,92,.8)'});
+  $('#leaks').appendChild(c);
+  tl.fromTo(c,{opacity:0,scale:1},{opacity:1,scale:1.3,duration:.25,ease:'back.out(2)'},tD+i*.2);
+  tl.to(c,{x:640,y:(i?-60:180),rotation:20,duration:1.1,ease:'power3.inOut'},tD+.3+i*.2);
+  tl.to(c,{scale:.4,opacity:0,duration:.25},tD+1.35+i*.2);
+});
+tl.fromTo('#server',{opacity:0,scale:.5},{opacity:1,scale:1,duration:.5,ease:'back.out(2)'},tD+.2);
+tl.to(cam,{x:880,s:.88,duration:1.1,ease:'power3.inOut'},tD+.35);
+tl.to('#chat',{borderColor:'#ff3b5c',boxShadow:'0 0 80px rgba(255,59,92,.45)',duration:.3},tD+.3);
+tl.to('#server',{scale:1.1,duration:.15,yoyo:true,repeat:3},W(6,'desconocido'));
+
+/* ================= ESCENA 4: la solución, un guardián ================= */
+const t4=26.6;
+camTo(t4,540,960,1,.8);
+tl.to('#chat,#server',{opacity:0,scale:.7,duration:.45,ease:'back.in(1.6)'},t4);
+tl.set(robot,{x:0,y:0,rotation:0,scale:0},t4);
+tl.set('#mouth',{attr:{d:'M95 200 Q120 235 145 200'}},t4);
+const tG=W(7,'guardián');
+tl.fromTo('#shield',{opacity:0,scale:0,rotation:-25,transformOrigin:'50% 50%'},{opacity:1,scale:1,rotation:0,duration:.8,ease:'back.out(2.2)'},tG-.15);
+tl.to('#shck',{strokeDashoffset:0,duration:.45,ease:'power2.out'},tG+.45);
+tl.to('#shield',{y:-14,duration:1.3,ease:'sine.inOut',yoyo:true,repeat:3},tG+.9);
+const tS=W(8,'SkillSpector');
+tl.fromTo('#name',{opacity:0,y:60},{opacity:1,y:0,duration:.6,ease:BACK},tS);
+tl.fromTo('#tg1',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.45,ease:'back.out(2.6)'},W(8,'NVIDIA'));
+tl.fromTo('#tg2',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.45,ease:'back.out(2.6)'},W(8,'código'));
+tl.fromTo('#tg3',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.45,ease:'back.out(2.6)'},W(8,'abierto')+.3);
+camTo(tG,540,940,1.05,2.5,'sine.inOut');
+
+/* ================= ESCENA 5: escanea antes de instalar ================= */
+const t5=33.6;
+tl.to('#name',{opacity:0,y:40,duration:.35,ease:'power2.in'},t5);
+tl.to('#shield',{x:-330,y:-110,scale:.38,duration:.7,ease:'power3.inOut'},t5);   // el guardián se va a la esquina y vigila
+camTo(t5,540,960,1,.7);
+tl.fromTo('#scanCard',{opacity:0,x:700,rotation:6},{opacity:1,x:0,rotation:0,duration:.6,ease:BACK},t5+.3);
+tl.fromTo('#scanCard .file-head,#scanCard .step',{opacity:0,x:-40},{opacity:1,x:0,duration:.4,ease:BACK,stagger:.12},t5+.6);
+// sable VERDE del guardián escanea la skill
+const g0=W(9,'escanea')-.5;
+tl.set('#beam',{boxShadow:GRN.beam},g0).set('#trail',{background:GRN.trail},g0);
+tl.set(hand,{x:-260,y:1250,r:-25},g0);
+tl.set(saber,{opacity:1},g0); tl.to(hand,{x:20,y:1120,r:12,duration:.5,ease:'back.out(1.6)',onUpdate:placeSaber},g0);
+tl.fromTo('#beam',{scaleY:0},{scaleY:1,duration:.3,ease:'back.out(2)'},g0+.2);
+const gs=g0+.6, gd=2.6;
+tl.to(hand,{x:880,y:1100,r:-10,duration:gd,ease:'power1.inOut',onUpdate:placeSaber},gs);
+tl.to(cam,{x:620,s:1.04,duration:gd,ease:'power1.inOut'},gs+.1);
+tl.fromTo('#trail',{opacity:0},{opacity:1,duration:.3,yoyo:true,repeat:1,repeatDelay:gd-.6},gs);
+flicker(g0+.3,gs+gd+.6);
+tl.to('#beam',{scaleY:0,duration:.25,ease:'power2.in'},gs+gd+.2);
+tl.to(hand,{x:1300,y:1500,r:30,duration:.5,ease:'power3.in',onUpdate:placeSaber},gs+gd+.4);
+tl.set(saber,{opacity:0},gs+gd+.95);
+tl.to('#scanCard',{borderColor:'#22c55e',boxShadow:'0 0 70px rgba(34,197,94,.4)',duration:.3},gs+gd);
+// hallazgos sincronizados
+const ckS='<svg viewBox="0 0 60 60" width="34" height="34"><path d="M14 31 L26 43 L47 18" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+document.querySelectorAll('.find .ok').forEach(o=>o.innerHTML=ckS);
+[['#f1',W(9,'robo')],['#f2',W(9,'malware')],['#f3',W(9,'instrucciones')]].forEach(([id,t])=>{
+  tl.fromTo(id,{opacity:0,x:-120},{opacity:1,x:0,duration:.5,ease:'back.out(2)'},t);
+  tl.fromTo(id+' .ok',{scale:0,rotation:-90},{scale:1,rotation:0,duration:.5,ease:'back.out(3)'},t+.2);
+});
+camTo(gs+gd+.3,540,1000,1,.8);
+// transformación: la tarjeta escaneada se convierte en el panel de datos
+const tX2=39.5;
+tl.to('#f1,#f2,#f3',{opacity:0,y:40,duration:.3,stagger:.05,ease:'power2.in'},tX2-.2);
+tl.to('#scanCard > *',{opacity:0,duration:.2},tX2);
+tl.to('#scanCard',{left:90,top:560,width:900,height:820,borderColor:'#22305f',boxShadow:'0 30px 80px rgba(0,0,0,.45)',duration:.7,ease:'power4.inOut'},tX2);
+tl.set('#stats',{opacity:1},tX2+.7).set('#scanCard',{opacity:0},tX2+.7);
 tl.set('#pct,#pctl',{opacity:0},0);
-
-/* ---------- ESCENA 4: datos ---------- */
+tl.fromTo('#stats > *:not(#pct):not(#pctl)',{opacity:0,y:30},{opacity:1,y:0,duration:.45,ease:BACK,stagger:.08},tX2+.7);
+tl.to('#shield',{opacity:0,duration:.3},tX2);
 const grid=$('#grid'); const tiles=[];
-for(let i=0;i<10;i++){const d=document.createElement('div'); d.className='tile'; d.innerHTML='<i></i>'; grid.appendChild(d); tiles.push(d);}
-const tN=W(8,'4.000');
+for(let i=0;i<8;i++){const d=document.createElement('div'); d.className='tile'; d.innerHTML='<i></i>'; grid.appendChild(d); tiles.push(d);}
 const counter={v:0};
-tl.to(counter,{v:3984,duration:1.6,ease:'power2.out',onUpdate:()=>{$('#num').textContent=String(Math.round(counter.v)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');}},tN-.5);
-tl.fromTo(tiles,{opacity:0,scale:.3,y:40},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(2.2)',stagger:.07},W(8,'skills'));
-tl.fromTo('#tag',{scale:1},{scale:1.25,duration:.2,yoyo:true,repeat:1,ease:'power2.out'},W(9,'abiertas'));
-tl.to('#tag',{backgroundColor:'#2563eb',color:'#fff',duration:.2},W(9,'abiertas'));
-const tT=W(10,'un');
-camTo(tT-.3,540,1010,1.04,.9);
-[1,4,6,8].forEach((k,i)=>{
-  tl.to(tiles[k],{backgroundColor:'#3a0d1d',borderColor:'#ff3b5c',duration:.2},tT+i*.12);
-  tl.to(tiles[k].firstChild,{backgroundColor:'#ff3b5c',duration:.2},tT+i*.12);
-  tl.fromTo(tiles[k],{x:-8},{x:8,duration:.06,repeat:5,yoyo:true,ease:'none'},tT+i*.12);
+const fmt=v=>String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+tl.to(counter,{v:31132,duration:1.6,ease:'power2.out',onUpdate:()=>{$('#num').textContent=fmt(counter.v);}},W(10,'31')-.4);
+tl.fromTo(tiles,{opacity:0,scale:.3,y:40},{opacity:1,scale:1,y:0,duration:.5,ease:'back.out(2.2)',stagger:.07},W(10,'mil'));
+const tQ=W(10,'cuatro');
+camTo(tQ-.3,540,1010,1.04,.8);
+[1,6].forEach((k,i)=>{
+  tl.to(tiles[k],{backgroundColor:'#3a0d1d',borderColor:'#ff3b5c',duration:.2},tQ+i*.15);
+  tl.to(tiles[k].firstChild,{backgroundColor:'#ff3b5c',duration:.2},tQ+i*.15);
+  tl.fromTo(tiles[k],{x:-8},{x:8,duration:.06,repeat:5,yoyo:true,ease:'none'},tQ+i*.15);
 });
-tl.fromTo('#pct',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.6,ease:'back.out(2.6)'},tT+.55);
-tl.fromTo('#pctl',{opacity:0,y:20},{opacity:1,y:0,duration:.4,ease:'back.out(2)'},tT+.75);
-tl.to('#pct',{scale:1.12,duration:.18,yoyo:true,repeat:1},W(10,'seguridad'));
-camTo(40.2,540,960,1,.8);
+tl.fromTo('#pct',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.6,ease:'back.out(2.6)'},tQ+.4);
+tl.fromTo('#pctl',{opacity:0,y:20},{opacity:1,y:0,duration:.4,ease:'back.out(2)'},tQ+.6);
+tl.to('#pct',{scale:1.12,duration:.18,yoyo:true,repeat:1},W(10,'vulnerabilidades'));
 
-/* ---------- transformación 2: el panel se divide en tres escudos ---------- */
-const t5=41.0;
-tl.to('#panel > *',{opacity:0,duration:.25},t5);
-tl.to('#panel',{scaleY:.25,scaleX:.95,opacity:0,duration:.5,ease:'power3.in'},t5+.15);
+/* ================= ESCENA 6: un prompt + tú decides ================= */
+const t6=45.5;
+camTo(t6,540,960,1,.7);
+tl.to('#stats',{scaleY:.2,opacity:0,duration:.45,ease:'power3.in'},t6);
+tl.fromTo('#term',{opacity:0,y:80,scale:.9},{opacity:1,y:0,scale:1,duration:.6,ease:BACK},W(11,'prompt')-.3);
+['#tl1','#tl2','#tl3'].forEach((id,i)=>tl.fromTo(id,{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:.6,ease:'none'},W(11,'prompt')+.2+i*.6));
+tl.fromTo('#tl4',{opacity:0,scale:.6,x:-30},{opacity:1,scale:1,x:0,duration:.5,ease:'back.out(2.6)',transformOrigin:'0 50%'},W(11,'solito'));
+// transformación: la terminal se encoge y se convierte en el guardián-puerta
+const tT=49.4;
+tl.to('#term',{left:400,top:700,width:280,height:322,borderRadius:140,opacity:0,duration:.6,ease:'power4.inOut'},tT);
+tl.to('#term > *',{opacity:0,duration:.2},tT);
+tl.fromTo('#gate',{opacity:0,scale:.5},{opacity:1,scale:1,duration:.5,ease:'back.out(2.4)',transformOrigin:'50% 50%'},tT+.45);
+// skill limpia: entra, choca con el guardián y sigue (encadenado)
+const tL=W(12,'limpia')-.6;
+tl.fromTo('#skA',{opacity:1,x:0},{x:450,duration:.6,ease:'power2.in'},tL);
+tl.to('#gate',{scale:1.12,duration:.12,yoyo:true,repeat:1},tL+.6);
+tl.to('#skA',{x:1500,duration:.7,ease:'power2.out'},tL+.6);
+tl.fromTo('#okChip',{opacity:0,y:30,scale:.6},{opacity:1,y:0,scale:1,duration:.5,ease:'back.out(2.4)'},tL+.75);
+tl.to('#okChip',{opacity:0,y:-20,duration:.3},W(13,'Si')-.2);
+// skill peligrosa: el guardián la detiene y muestra el reporte
+const tP=W(13,'peligro')-.5;
+tl.fromTo('#skB',{opacity:1,x:0},{x:400,duration:.55,ease:'power2.in'},tP);
+tl.to('#skB',{x:300,duration:.5,ease:'back.out(3)'},tP+.55);   // rebota
+tl.to('#gp',{fill:'#ff3b5c',duration:.15,yoyo:true,repeat:3},tP+.55);
+tl.fromTo('#gate',{x:-10},{x:10,duration:.06,repeat:5,yoyo:true,ease:'none'},tP+.55);
+camTo(tP+.4,540,1060,1.02,.8);
+tl.fromTo('#report',{opacity:0,y:120,scale:.8},{opacity:1,y:0,scale:1,duration:.6,ease:BACK},W(13,'reporte')-.2);
+tl.fromTo('#report li',{opacity:0,x:-40},{opacity:1,x:0,duration:.35,ease:BACK,stagger:.15},W(13,'reporte')+.2);
+const tY=W(13,'decides');
+tl.to('#bI',{scale:1.08,duration:.2,yoyo:true,repeat:1},tY-.1);
+tl.to('#bC',{scale:1.12,duration:.2,yoyo:true,repeat:1},tY+.35);
 
-/* ---------- ESCENA 5: protección, sincronizada ---------- */
-const checkSVG='<svg viewBox="0 0 60 60" width="64" height="64"><path class="ck" d="M14 31 L26 43 L47 18" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" stroke-dashoffset="60"/></svg>';
-document.querySelectorAll('.shield .badge').forEach(b=>b.innerHTML=checkSVG);
-[['#sh1',W(11,'oficiales')-.4,720],['#sh2',W(12,'Lee'),960],['#sh3',W(13,'desconfía'),1200]].forEach(([id,t,cy],i)=>{
-  tl.fromTo(id,{opacity:0,x:i%2?500:-500,rotation:i%2?6:-6},{opacity:1,x:0,rotation:0,duration:.7,ease:'back.out(1.5)'},t);
-  tl.fromTo(id+' .badge',{scale:0,rotation:-90},{scale:1,rotation:0,duration:.6,ease:'back.out(3)'},t+.25);
-  tl.to(id+' .ck',{strokeDashoffset:0,duration:.35,ease:'power2.out'},t+.55);
-  camTo(t,540,960+(cy-960)*.25,1.03,.8);       // la cámara sigue cada tarjeta
-});
-camTo(49.6,540,960,.98,1.2);
+/* ================= ESCENA 7: CTA ================= */
+const t7=57.6;
+camTo(t7,540,960,1,.8);
+tl.to('#report,#gate,#skB',{opacity:0,y:-60,scale:.8,duration:.4,stagger:.06,ease:'back.in(1.6)'},t7);
+tl.to(robot,{scale:1.05,y:330,opacity:1,duration:.7,ease:'back.out(2)'},t7+.3);
+tl.fromTo('#cta',{opacity:0,scale:.2,y:80},{opacity:1,scale:1,y:0,duration:.7,ease:'back.out(2.4)'},W(14,'primer'));
+tl.to('#cta',{scale:1.06,duration:.6,ease:'sine.inOut',yoyo:true,repeat:6},W(14,'primer')+.8);
+tl.to('#eyeR',{scaleY:.1,transformOrigin:'50% 50%',duration:.15,yoyo:true,repeat:1,repeatDelay:.25},W(14,'comentario')+.2);
+tl.fromTo('#cg',{opacity:0,y:60,scale:.5},{opacity:1,y:0,scale:1,duration:.55,ease:'back.out(2.4)'},W(15,'Guarda'));
+tl.fromTo('#cs',{opacity:0,y:60,scale:.5},{opacity:1,y:0,scale:1,duration:.55,ease:'back.out(2.4)'},W(15,'compártelo'));
+tl.to(robot,{y:290,duration:.25,ease:'power2.out',yoyo:true,repeat:5},W(15,'Guarda'));
+camTo(t7+.8,540,1000,1.04,3,'sine.inOut');
 
-/* ---------- ESCENA 6: CTA ---------- */
-const t6=51.6;
-tl.to('#sh1,#sh2,#sh3',{opacity:0,y:-60,scale:.8,duration:.4,stagger:.08,ease:'back.in(1.6)'},t6);
-tl.set(robot,{x:0,y:0,rotation:0,opacity:1,scale:0},t6);
-tl.set('#mouth',{attr:{d:'M100 205 Q120 222 140 205'}},t6);
-tl.to(robot,{scale:1.1,y:380,duration:.8,ease:'back.out(2)'},t6+.3);
-tl.to('#eyeR',{scaleY:.1,transformOrigin:'50% 50%',duration:.15,yoyo:true,repeat:1,repeatDelay:.25},W(14,'sin'));   // guiño
-const tC=W(15,'Comenta');
-tl.fromTo('#cta',{opacity:0,scale:.2,y:80},{opacity:1,scale:1,y:0,duration:.7,ease:'back.out(2.4)'},tC);
-tl.to('#cta',{scale:1.06,duration:.6,ease:'sine.inOut',yoyo:true,repeat:5},tC+.8);
-tl.to(robot,{y:330,duration:.25,ease:'power2.out',yoyo:true,repeat:5},tC+.3);
-camTo(t6+.3,540,1020,1.05,1.5,'sine.inOut');
-
-tl.to({}, {duration:.01}, DUR);
-tl.eventCallback('onUpdate', applyCam);
-window.DUR = DUR;
-window.seek = t => { tl.seek(t, false); applyCam(); placeSaber(); };
+tl.to({},{duration:.01},DUR);
+window.DUR=DUR;
+window.seek=t=>{tl.seek(t,false); applyCam(); placeSaber();};
 window.seek(0);
 </script>
 </body>
