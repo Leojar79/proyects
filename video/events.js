@@ -28,6 +28,7 @@ const path = require('path');
     f('whoosh',tS0); f('pop',W(16,'Snyk')); f('ticks',W(16,'4.000')-.5,1.5);
     f('pop',W(16,'skills')); f('pop',W(16,'abiertas'));
     f('alert',tTer); f('pop',tTer+.5); f('whoosh',35.35);
+    for(const x of E){ const t0=x[1]; x[1]=+window.fwd(t0).toFixed(3); if(x[2]) x[2]=+(window.fwd(t0+x[2])-x[1]).toFixed(3); }
     return E.sort((x,y)=>x[1]-y[1]); })()`);
   require('fs').writeFileSync(path.join(__dirname, 'events.json'), JSON.stringify(ev));
   console.log(ev.length, 'eventos');

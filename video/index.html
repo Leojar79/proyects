@@ -256,10 +256,10 @@ const camTo=(t,x,y,s,d=1.2,ease='power3.inOut')=>tl.to(cam,{x,y,s,duration:d,eas
 
 /* ---------- narración y subtítulos (técnica 5) ---------- */
 const LINES=[
- [0.3,5.6,'Seguramente has escuchado a muchos expertos hablar de las skills que debes instalarle a tu IA.'],
+ [0.3,5.6,'Seguramente has escuchado a muchos expertos de IA en Instagram hablar sobre las skills o habilidades que necesitas darle a Claude o a ChatGPT.'],
  [5.7,7.6,'Y sí, son geniales.'],
- [7.9,10.4,'Pero cualquier persona puede crear una,'],
- [10.4,14.8,'y podría traer código para robar tus contraseñas o tus archivos.'],
+ [7.9,10.4,'Pero ¿sabías que cualquier persona puede crear una?'],
+ [10.4,14.8,'Y estas podrían traer código malicioso y podrían robar tu información, tus contraseñas y tus archivos.'],
  [15.2,19.4,'Imagina subir el contrato de tu empresa para que la IA lo resuma,'],
  [19.5,23.4,'o la nómina de tu negocio para calcular horas extra…'],
  [23.6,26.2,'y que termine en manos de un desconocido.'],
@@ -566,8 +566,18 @@ tl.to('#spct',{scale:1.12,duration:.18,yoyo:true,repeat:1},W(16,'seguridad'));
 tl.to('#snyk',{scaleY:.2,opacity:0,duration:.45,ease:'power3.in'},35.35);
 camTo(35.3,540,960,1,.5);
 
-window.DUR=DUR+GAP;
-window.seek=t=>{tl.seek(t,false); applyCam();};
+/* ===== sincronía con la voz grabada: mapa tiempo-animación ↔ tiempo-voz ===== */
+const VOICE={"NEWT": {"0": [0.55, 8.99], "1": [9.53, 10.97], "2": [11.92, 14.52], "3": [15.12, 21.7], "4": [22.65, 26.41], "5": [26.41, 29.39], "6": [29.39, 31.47], "16": [32.19, 41.01], "7": [41.49, 43.45], "8": [43.61, 47.61], "9": [48.56, 54.66], "10": [55.3, 59.9], "11": [60.68, 63.96], "12": [64.2, 65.96], "13": [66.18, 69.4], "14": [70.35, 72.67], "15": [72.97, 74.63]}, "END": 76.83};
+const ANCH=[[0,0]];
+LINES.forEach(([a,b],k)=>{ const sh=(k>=7&&k<=15)?GAP:0; const n=VOICE.NEWT[k]; ANCH.push([a+sh,n[0]],[b+sh-0.002,n[1]]); });
+ANCH.push([DUR+GAP,VOICE.END]);
+ANCH.sort((x,y)=>x[0]-y[0]);
+for(let i=1;i<ANCH.length;i++){ if(ANCH[i][0]<=ANCH[i-1][0]) ANCH[i][0]=ANCH[i-1][0]+0.002; if(ANCH[i][1]<=ANCH[i-1][1]) ANCH[i][1]=ANCH[i-1][1]+0.002; }
+function interp(x,from,to){ for(let i=1;i<ANCH.length;i++){ const A=ANCH[i-1],B=ANCH[i]; if(x<=B[from]||i===ANCH.length-1){ const f=(x-A[from])/(B[from]-A[from]); return A[to]+Math.max(0,Math.min(1,f))*(B[to]-A[to]); } } }
+window.fwd=t=>interp(t,0,1);   // tiempo de animación → tiempo de voz
+window.inv=T=>interp(T,1,0);   // tiempo de voz → tiempo de animación
+window.DUR=VOICE.END;
+window.seek=T=>{tl.seek(window.inv(T),false); applyCam();};
 window.seek(0);
 </script>
 </body>
