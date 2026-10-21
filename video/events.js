@@ -27,7 +27,7 @@ const path = require('path');
     for(const e of E) if(e[1]>=GAP_AT) e[1]=+(e[1]+GAP).toFixed(3);
     f('whoosh',tS0); f('pop',W(16,'Snyk')); f('ticks',W(16,'4.000')-.5,1.5);
     f('pop',W(16,'skills')); f('pop',W(16,'abiertas'));
-    f('alert',tTer); f('pop',tTer+.5); f('whoosh',33.95);
+    f('alert',tTer); f('pop',tTer+.5); f('whoosh',35.35);
     return E.sort((x,y)=>x[1]-y[1]); })()`);
   require('fs').writeFileSync(path.join(__dirname, 'events.json'), JSON.stringify(ev));
   console.log(ev.length, 'eventos');
