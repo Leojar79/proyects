@@ -176,6 +176,15 @@
       <div id="src">Fuente: NVIDIA SkillSpector</div>
     </div>
 
+    <!-- informe Snyk -->
+    <div class="card" id="snyk" style="position:absolute;left:90px;top:560px;width:900px;height:760px;opacity:0">
+      <div class="ph" style="display:flex;justify-content:space-between;align-items:center;padding:40px 48px 10px;font-weight:800;font-size:38px"><span>Auditoría de skills</span><span class="tg" id="stag" style="font-size:26px;font-weight:700;padding:10px 20px;border-radius:999px;background:#1d2b66;color:#9fb4ff">Tiendas abiertas</span></div>
+      <div style="padding:6px 48px 0;font-size:120px;font-weight:800;letter-spacing:-.03em"><span id="snum">0</span><small style="font-size:40px;color:var(--mut);font-weight:700;margin-left:16px;letter-spacing:0">skills</small></div>
+      <div id="sgrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:20px;padding:24px 48px"></div>
+      <div id="spct" style="position:absolute;right:48px;bottom:84px;font-size:110px;font-weight:800;color:var(--red);text-shadow:0 0 40px rgba(255,59,92,.6)">36,8%</div>
+      <div id="spctl" style="position:absolute;right:52px;bottom:52px;font-size:28px;font-weight:700;color:#ffb3c0">con algún fallo</div>
+      <div id="ssrc" style="position:absolute;left:48px;bottom:56px;font-size:27px;color:var(--mut);font-weight:600">Fuente: Snyk ToxicSkills, 2026</div>
+    </div>
     <!-- terminal -->
     <div class="card" id="term">
       <div class="tbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>&nbsp; Claude Code</div>
@@ -213,7 +222,7 @@
 <script>
 const $ = s => document.querySelector(s);
 const tl = gsap.timeline({paused:true});
-const DUR = 66;
+const DUR = 66, GAP_AT = 26.58, GAP = 7.6;
 let seed = 7; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
 const BACK='back.out(1.8)';
 
@@ -253,7 +262,7 @@ const LINES=[
  [10.4,14.8,'y podría traer código para robar tus contraseñas o tus archivos.'],
  [15.2,19.4,'Imagina subir el contrato de tu empresa para que la IA lo resuma,'],
  [19.5,23.4,'o la nómina de tu negocio para calcular horas extra…'],
- [23.6,26.4,'y que termine en manos de un desconocido.'],
+ [23.6,26.2,'y que termine en manos de un desconocido.'],
  [27.0,29.2,'La solución es un guardián.'],
  [29.3,33.6,'Se llama SkillSpector, es de NVIDIA y es de código abierto.'],
  [33.8,39.4,'Antes de instalar una skill, la escanea buscando robo de datos, malware o instrucciones ocultas.'],
@@ -265,7 +274,7 @@ const LINES=[
  [61.6,65.2,'Guarda este video y compártelo.'],
 ];
 const WT=[]; const caps=$('#caps');
-LINES.forEach(([a,b,txt],li)=>{
+function capLine([a,b,txt],li){
   const words=txt.split(' ');
   const wts=words.map(w=>w.length+3), tot=wts.reduce((p,c)=>p+c,0);
   let acc=a; const times=words.map((w,i)=>{const t=acc; acc+=(b-a)*wts[i]/tot; return t;});
@@ -284,7 +293,8 @@ LINES.forEach(([a,b,txt],li)=>{
       tl.to(s,{backgroundColor:'rgba(37,99,235,1)',duration:.06},t).to(s,{backgroundColor:'rgba(37,99,235,0)',duration:.06},nt);
     });
   }
-});
+}
+LINES.forEach(capLine);
 const W=(li,word)=>{const ws=LINES[li][2].split(' '); const k=ws.findIndex(w=>w.toLowerCase().startsWith(word.toLowerCase())); if(k<0) throw new Error('word '+word); return WT[li][k];};
 
 /* ---------- títulos con máscara (técnica 1) ---------- */
@@ -298,7 +308,7 @@ function title(t0,t1,html){
 }
 title(0,7.5,'Todos hablan de|las <span class="hl">skills</span>');
 title(7.85,14.9,'Cualquiera|puede <span class="hr">crearlas</span>');
-title(15.2,26.6,'Ahora…|<span class="hr">imagina esto</span>');
+title(15.2,26.5,'Ahora…|<span class="hr">imagina esto</span>');
 title(26.9,33.5,'La solución:|un <span class="hg">guardián</span>');
 title(33.8,45.5,'Escanea|<span class="hl">antes</span> de instalar');
 title(45.8,57.5,'Tú tienes|la <span class="hl">última palabra</span>');
@@ -519,7 +529,44 @@ tl.to(robot,{y:215,duration:.25,ease:'power2.out',yoyo:true,repeat:5},W(15,'Guar
 camTo(t7+.8,540,1000,1.04,3,'sine.inOut');
 
 tl.to({},{duration:.01},DUR);
-window.DUR=DUR;
+
+/* ===== hueco para el informe de Snyk: todo lo posterior se recorre GAP s ===== */
+tl.getChildren(false,true,true).forEach(c=>{ if(c.startTime()>=GAP_AT) c.startTime(c.startTime()+GAP); });
+
+/* ================= ESCENA 3b: informe de Snyk ================= */
+LINES.push([26.8,33.8,'Y no exagero: Snyk auditó casi 4.000 skills de tiendas abiertas, y más de un tercio tenía fallos de seguridad.']);
+capLine(LINES[16],16);
+title(27.0,34.0,'Y no es|<span class="hr">exageración</span>');
+const tS0=26.6;
+// transformación: el chat se convierte en el panel de la auditoría
+tl.to('#server',{opacity:0,scale:.6,x:200,duration:.4,ease:'back.in(1.6)'},tS0);
+tl.to('#chat > *',{opacity:0,duration:.25},tS0);
+tl.to('#chat',{borderColor:'#22305f',boxShadow:'0 30px 80px rgba(0,0,0,.45)',height:760,duration:.5,ease:'power3.inOut'},tS0);
+camTo(tS0,540,960,1,.8,'power3.inOut');
+tl.set('#snyk',{opacity:1},tS0+.55).set('#chat',{opacity:0},tS0+.55);
+tl.set('#spct,#spctl',{opacity:0},0);
+tl.fromTo('#snyk > *:not(#spct):not(#spctl)',{opacity:0,y:30},{opacity:1,y:0,duration:.45,ease:BACK,stagger:.08},tS0+.55);
+const sg=$('#sgrid'), stiles=[];
+for(let i=0;i<10;i++){const d=document.createElement('div'); d.className='tile'; d.style.height='110px'; d.innerHTML='<i></i>'; sg.appendChild(d); stiles.push(d);}
+const sc={v:0};
+tl.to(sc,{v:3984,duration:1.5,ease:'power2.out',onUpdate:()=>{$('#snum').textContent=fmt(sc.v);}},W(16,'4.000')-.5);
+tl.fromTo(stiles,{opacity:0,scale:.3,y:40},{opacity:1,scale:1,y:0,duration:.45,ease:'back.out(2.2)',stagger:.06},W(16,'skills'));
+tl.to('#stag',{backgroundColor:'#2563eb',color:'#fff',duration:.2},W(16,'abiertas'));
+tl.fromTo('#stag',{scale:1},{scale:1.2,duration:.18,yoyo:true,repeat:1},W(16,'abiertas'));
+const tTer=W(16,'tercio')-.25;
+camTo(tTer-.2,540,1000,1.04,.8);
+[1,4,6,8].forEach((k,i)=>{
+  tl.to(stiles[k],{backgroundColor:'#3a0d1d',borderColor:'#ff3b5c',duration:.2},tTer+i*.12);
+  tl.to(stiles[k].firstChild,{backgroundColor:'#ff3b5c',duration:.2},tTer+i*.12);
+  tl.fromTo(stiles[k],{x:-8},{x:8,duration:.06,repeat:5,yoyo:true,ease:'none'},tTer+i*.12);
+});
+tl.fromTo('#spct',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.6,ease:'back.out(2.6)'},tTer+.5);
+tl.fromTo('#spctl',{opacity:0,y:20},{opacity:1,y:0,duration:.4,ease:'back.out(2)'},tTer+.7);
+tl.to('#spct',{scale:1.12,duration:.18,yoyo:true,repeat:1},W(16,'seguridad'));
+tl.to('#snyk',{scaleY:.2,opacity:0,duration:.45,ease:'power3.in'},33.95);
+camTo(33.9,540,960,1,.5);
+
+window.DUR=DUR+GAP;
 window.seek=t=>{tl.seek(t,false); applyCam();};
 window.seek(0);
 </script>
