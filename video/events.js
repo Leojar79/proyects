@@ -1,0 +1,31 @@
+const { chromium } = require('playwright');
+const path = require('path');
+(async () => {
+  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+  const p = await b.newPage({ viewport: { width: 1080, height: 1920 } });
+  await p.goto('file://' + path.resolve(__dirname, 'index.html'));
+  const ev = await p.evaluate(`(() => {
+    const E=[]; const f=(n,t,d=0)=>E.push([n,+t.toFixed(3),d]);
+    f('pop',0.05);
+    for(let i=0;i<4;i++) f('pop',1.0+i*.75);
+    for(let i=0;i<3;i++) f('tick',tGen-.1+i*.12);
+    f('boing',tGen+.15);
+    f('whoosh',7.9); f('thud',8.45);
+    f('scan',sw1-.3,swd+.3); f('alert',sw1+swd);
+    f('whoosh',tPw+.45); f('whoosh',tF+.3);
+    f('whoosh',tX); f('pop',tC); f('pop',W(4,'resuma')); f('pop',tN);
+    f('whoosh',tD+.35); f('alert',W(6,'desconocido'));
+    f('whoosh',t4); f('shine',tG-.15); f('ding',tG+.45);
+    f('pop',W(8,'NVIDIA')); f('pop',W(8,'código')); f('pop',W(8,'abierto')+.3);
+    f('whoosh',t5+.3); f('scan',gs-.3,gd+.3);
+    f('ding',W(9,'robo')+.2); f('ding',W(9,'malware')+.2); f('ding',W(9,'instrucciones')+.2);
+    f('whoosh',tX2); f('ticks',W(10,'31')-.4,1.6); f('alert',tQ); f('pop',tQ+.4);
+    f('whoosh',t6); f('typing',W(11,'prompt')+.2,1.8); f('ding',W(11,'solito'));
+    f('whoosh',tT); f('whoosh',tL); f('ding',tL+.75);
+    f('whoosh',tP); f('alert',tP+.55); f('pop',W(13,'reporte')-.2); f('click',W(13,'decides')+.35);
+    f('whoosh',t7); f('pop',W(14,'primer')); f('pop',W(15,'Guarda')); f('pop',W(15,'compártelo'));
+    return E; })()`);
+  require('fs').writeFileSync(path.join(__dirname, 'events.json'), JSON.stringify(ev));
+  console.log(ev.length, 'eventos');
+  await b.close();
+})();

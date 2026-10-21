@@ -1,0 +1,15 @@
+🛡️ PROMPT DEL GUARDIÁN (funciona en Claude Code, la versión de terminal)
+Cópialo y pégalo en Claude Code:
+
+Configura NVIDIA SkillSpector como un guardia que revise cualquier repo de GitHub antes de que entre a mi computadora.
+0. Si no lo tengo, instálalo con: uv tool install git+https://github.com/NVIDIA/skillspector.git y confirma que responde.
+1. Crea un script en ~/.claude/hooks/skillspector-guard.sh y regístralo como hook PreToolUse en ~/.claude/settings.json, con matcher "Bash" y timeout de 120 segundos.
+2. El script solo actúa si el comando es: git clone, gh repo clone, npx skills add, claude mcp add, pip install git+, uv tool install git+, o curl/wget mandado a sh o bash. Todo lo demás lo deja pasar sin tocarlo.
+3. Saca el link de GitHub del comando (si viene como usuario/repo, conviértelo a link completo) y corre: skillspector scan [link] --no-llm --format json. Lee el score y la severidad del JSON (primero haz un escaneo de prueba para ver cómo viene), no solo el código de salida.
+4. Según el resultado. LOW: deja pasar en silencio. MEDIUM: deja pasar con un aviso corto de los hallazgos. HIGH o CRITICAL por prompt injection, supply chain, robo de datos o malware: no lo corras; responde con permissionDecision "ask" y pon en el motivo el score y los 3 hallazgos más graves, para que yo decida.
+5. Si el escaneo falla o no termina a tiempo, no me bloquees, pero avísame claro que ese repo NO se revisó.
+6. Conserva todos los hooks que ya tengo. Antes de guardar, enséñame el diff de settings.json y espera mi ok.
+7. Al final pruébalo: pásale al script el comando git clone https://github.com/NVIDIA/skillspector (sin clonar de verdad) y enséñame qué decidió el guardia.
+8. Opcional: si también uso Codex, revisa en la documentación oficial de Codex cómo se configuran sus hooks y pon el mismo guardia ahí. Si Codex no puede preguntarme, que bloquee y me enseñe el reporte.
+
+Herramienta oficial: github.com/NVIDIA/skillspector
