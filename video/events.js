@@ -19,7 +19,7 @@ const path = require('path');
     f('pop',W(8,'NVIDIA')); f('pop',W(8,'código')); f('pop',W(8,'abierto')+.3);
     f('whoosh',t5+.3); f('scan',gs-.3,gd+.3);
     f('ding',W(9,'robo')+.2); f('ding',W(9,'malware')+.2); f('ding',W(9,'instrucciones')+.2);
-    f('whoosh',tX2); f('ticks',W(10,'31')-.4,1.6); f('alert',tQ); f('pop',tQ+.4);
+    f('whoosh',tX2); f('ticks',W(10,'30.000')-.4,1.6); f('alert',tQ); f('pop',tQ+.4);
     f('whoosh',t6); f('typing',W(11,'prompt')+.2,1.8); f('ding',W(11,'solito'));
     f('whoosh',tT); f('whoosh',tL); f('ding',tL+.75);
     f('whoosh',tP); f('alert',tP+.55); f('pop',W(13,'reporte')-.2); f('click',W(13,'decides')+.35);
