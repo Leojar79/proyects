@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Portada LinkedIn</title>
+<style>
+  :root{--bg:#040820;--blue:#2f6bff;--pill:#2563eb;--red:#ff3b5c;--green:#22c55e;--card:#0d1638;--card2:#121d48;--line:#22305f;--txt:#f4f6ff;--mut:#8e9bc7}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:var(--H);overflow:hidden;background:var(--bg);font-family:Inter,"Inter Display",sans-serif;color:var(--txt)}
+  .stage{position:absolute;inset:0;overflow:hidden;background:var(--bg)}
+  .blob{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(30,70,255,.6) 0%,rgba(30,70,255,.2) 45%,rgba(30,70,255,0) 70%)}
+  .blob.r{background:radial-gradient(circle,rgba(255,59,92,.35) 0%,rgba(255,59,92,.1) 45%,rgba(255,59,92,0) 70%)}
+  .dot{position:absolute;border-radius:50%;background:#6f8dff}
+  /* bloque seguro 4:5 centrado */
+  .safe{position:absolute;left:0;width:1080px;height:1350px;top:calc((var(--H) - 1350px)/2)}
+  .tag{position:absolute;top:70px;left:50%;transform:translateX(-50%);padding:14px 30px;border-radius:999px;background:rgba(255,59,92,.14);border:2px solid rgba(255,59,92,.6);color:#ffc2cc;font-weight:800;font-size:30px;letter-spacing:.08em;white-space:nowrap}
+  h1{position:absolute;top:160px;left:0;width:100%;text-align:center;font-weight:900;font-size:112px;line-height:1.02;letter-spacing:-.03em;text-shadow:0 10px 40px rgba(0,0,0,.5)}
+  h1 .hl{color:var(--blue)}
+  .sub{position:absolute;top:420px;left:0;width:100%;text-align:center;font-weight:700;font-size:44px;color:#c9d3ff}
+  .sub b{color:var(--red)}
+  .card{position:absolute;background:linear-gradient(180deg,var(--card2),var(--card));border:2px solid var(--line);border-radius:36px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  #skill{left:150px;top:540px;width:680px;height:470px;transform:rotate(-4deg);border-color:var(--red);box-shadow:0 0 90px rgba(255,59,92,.45),0 30px 80px rgba(0,0,0,.5)}
+  .fh{display:flex;align-items:center;gap:16px;font-weight:800;font-size:40px;padding:34px 40px 16px}
+  .doc{width:44px;height:54px;border-radius:8px;background:#e8edff}
+  .step{margin:14px 40px;padding:18px 24px;border-radius:18px;background:#0a1230;border:2px solid #1c2858;font-size:32px;font-weight:600;color:#cfd7ff}
+  .step b{color:#7f9bff;margin-right:12px}
+  .evil{color:#ffd5dc;background:#2a0b1a;border-color:var(--red);box-shadow:0 0 40px rgba(255,59,92,.5)}
+  .evil b{color:var(--red)}
+  #xbar{position:absolute;left:812px;top:510px;width:14px;height:520px;border-radius:7px;background:#fff;transform:rotate(-4deg);box-shadow:0 0 18px 6px #ff3b5c,0 0 60px 20px rgba(255,59,92,.7)}
+  #robot{position:absolute;left:770px;top:470px;width:220px;height:248px;transform:rotate(10deg)}
+  #shield{position:absolute;left:800px;top:870px;width:210px;height:242px;transform:rotate(8deg)}
+  .stat{position:absolute;top:1130px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:20px;padding:24px 38px;border-radius:30px;background:#140a1f;border:2px solid rgba(255,59,92,.55);white-space:nowrap}
+  .stat .n{font-size:60px;font-weight:900;color:var(--red);letter-spacing:-.02em}
+  .stat .t{font-size:34px;font-weight:700;color:#ffd5dc;line-height:1.15}
+  .src{position:absolute;top:1278px;left:0;width:100%;text-align:center;font-size:24px;font-weight:600;color:var(--mut)}
+  .brand{position:absolute;left:0;width:100%;text-align:center;font-weight:700;letter-spacing:.35em;font-size:24px;color:#5b7cff}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="blob" style="left:-250px;top:calc(var(--H)*.08);width:900px;height:900px"></div>
+  <div class="blob r" style="left:420px;top:calc(var(--H)*.30);width:900px;height:900px"></div>
+  <div class="blob" style="left:-100px;top:calc(var(--H)*.62);width:1000px;height:1000px"></div>
+  <div id="dots"></div>
+
+  <div class="safe">
+    <div class="tag">⚠️ ALERTA DE SEGURIDAD</div>
+    <h1>¿Estás instalando<br><span class="hl">skills</span> a tu IA?</h1>
+    <div class="sub">Mira esto <b>antes</b> de la próxima</div>
+
+    <div class="card" id="skill">
+      <div class="fh"><span class="doc"></span>SKILL.md</div>
+      <div class="step"><b>1.</b>Lee el documento</div>
+      <div class="step"><b>2.</b>Crea la presentación</div>
+      <div class="step evil"><b>3.</b>Envía tus contraseñas a ????</div>
+    </div>
+    <div id="xbar"></div>
+
+    <svg id="robot" viewBox="0 0 240 270">
+      <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#2450e8"/></linearGradient></defs>
+      <line x1="120" y1="20" x2="120" y2="70" stroke="#8fb0ff" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="120" cy="20" r="16" fill="#8fb0ff"/>
+      <rect x="10" y="64" width="220" height="190" rx="64" fill="url(#rg)"/>
+      <rect x="30" y="84" width="180" height="150" rx="50" fill="#1b3fd0" opacity=".35"/>
+      <circle cx="82" cy="152" r="34" fill="#fff"/><circle cx="74" cy="160" r="16" fill="#0b1440"/>
+      <circle cx="158" cy="152" r="34" fill="#fff"/><circle cx="150" cy="160" r="16" fill="#0b1440"/>
+      <ellipse cx="120" cy="214" rx="14" ry="11" fill="#0b1440"/>
+    </svg>
+
+    <svg id="shield" viewBox="0 0 200 230">
+      <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#15803d"/></linearGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <path d="M100 8 L186 40 V110 C186 166 146 204 100 222 C54 204 14 166 14 110 V40 Z" fill="url(#sg)" filter="url(#glow)"/>
+      <path d="M100 30 L166 54 V110 C166 152 136 182 100 198 C64 182 34 152 34 110 V54 Z" fill="#000" opacity=".15"/>
+      <path d="M62 116 L90 144 L142 86" stroke="#fff" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <div class="stat"><span class="n">1 de cada 4</span><span class="t">skills tiene<br>vulnerabilidades</span></div>
+    <div class="src">Fuente: NVIDIA SkillSpector · 31.132 skills analizadas</div>
+  </div>
+  <div class="brand" id="brand">SEGURIDAD · IA</div>
+</div>
+<script>
+  const H = Number(new URLSearchParams(location.search).get('h') || 1920);
+  document.documentElement.style.setProperty('--H', H + 'px');
+  let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const dots = document.getElementById('dots');
+  for (let i = 0; i < 55; i++) { const d = document.createElement('div'); d.className = 'dot'; const s = 4 + rnd() * 9;
+    Object.assign(d.style, { left: rnd() * 1080 + 'px', top: rnd() * H + 'px', width: s + 'px', height: s + 'px', opacity: .12 + rnd() * .35 }); dots.appendChild(d); }
+  const brand = document.getElementById('brand');
+  brand.style.top = H > 1400 ? (H - 1350) / 2 - 90 + 'px' : '18px';
+  brand.style.display = H > 1400 ? 'block' : 'none';
+</script>
+</body>
+</html>
