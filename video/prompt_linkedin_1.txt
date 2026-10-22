@@ -1,0 +1,10 @@
+🛡️ PROMPT DEL GUARDIÁN – Parte 1/2
+(Funciona en Claude Code, la versión de terminal. Copia las 2 partes juntas y pégalas en Claude Code)
+
+Configura NVIDIA SkillSpector como un guardia que revise cualquier repo de GitHub antes de que entre a mi computadora.
+0. Si no lo tengo, instálalo con: uv tool install git+https://github.com/NVIDIA/skillspector.git y confirma que responde.
+1. Crea un script en ~/.claude/hooks/skillspector-guard.sh y regístralo como hook PreToolUse en ~/.claude/settings.json, con matcher "Bash" y timeout de 120 segundos.
+2. El script solo actúa si el comando es: git clone, gh repo clone, npx skills add, claude mcp add, pip install git+, uv tool install git+, o curl/wget mandado a sh o bash. Todo lo demás lo deja pasar sin tocarlo.
+3. Saca el link de GitHub del comando (si viene como usuario/repo, conviértelo a link completo) y corre: skillspector scan [link] --no-llm --format json. Lee el score y la severidad del JSON (primero haz un escaneo de prueba para ver cómo viene), no solo el código de salida.
+
+👇 Sigue en la parte 2
