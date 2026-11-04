@@ -26,3 +26,4 @@ dist-ssr
 # video
 trabajo/
 salida/*.mp4
+entrada/
