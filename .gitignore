@@ -27,3 +27,4 @@ dist-ssr
 trabajo/
 salida/*.mp4
 entrada/
+salida/*.png
